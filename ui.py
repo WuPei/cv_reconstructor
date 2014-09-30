@@ -8,8 +8,24 @@ class App:
         self.initUI(master)
     
     def initUI(self,master):
-        #create frame
+        #load image use PIL library
+        img = Image.open("project.jpeg")
+        angle = 180
+        tkImage = ImageTk.PhotoImage(img.rotate(180))
+        
+        #top bar frame
+        topFrame = Frame(master,width =img.size[0]+20,height = 30)
+        topFrame.grid(row = 0, column =0)
+        topFrame.pack()
+        topFrame.pack_propagate(0)
+        self.rectangleButton = Button(topFrame,text="rectangle",command = self.rectangleButton)
+        self.rectangleButton.grid(sticky = N+W)
+        self.rectangleButton.pack(side=LEFT,fill = X)
+        
+
+        #frame of canvas + scroll bar
         frame = Frame(master)
+        frame.grid(row = 1,column = 0)
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
         
@@ -19,11 +35,6 @@ class App:
         
         yscrollbar = Scrollbar(frame)
         yscrollbar.grid(row=0, column=1, sticky=N+S)
-        
-        #load image use PIL library
-        img = Image.open("project.jpeg")
-        angle = 180
-        tkImage = ImageTk.PhotoImage(img.rotate(180))
 
         #create canvas to load the image
         canvas = Canvas(frame, width = img.size[0]+20 , height = img.size[1]+20,xscrollcommand=xscrollbar.set,yscrollcommand=yscrollbar.set)
@@ -39,7 +50,8 @@ class App:
         yscrollbar.config(command=canvas.yview)
 
         frame.pack()
-
+    def rectangleButton(self):
+        print "rectangleButton"
 
 
 
