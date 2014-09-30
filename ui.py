@@ -18,9 +18,11 @@ class App:
         topFrame.grid(row = 0, column =0)
         topFrame.pack()
         topFrame.pack_propagate(0)
+
         self.rectangleButton = Button(topFrame,text="rectangle",command = self.rectangleButton)
-        self.rectangleButton.grid(sticky = N+W)
-        self.rectangleButton.pack(side=LEFT,fill = X)
+        self.doneButton = Button(topFrame,text = "done",command = self.doneButton)
+        self.cancelButton = Button(topFrame,text = "cancel",command = self.cancelButton)
+        self.showTopButtons()
         
 
         #frame of canvas + scroll bar
@@ -51,10 +53,31 @@ class App:
         yscrollbar.config(command=canvas.yview)
 
         frame.pack()
+    
+    def hideTopButtons(self):
+        self.rectangleButton.pack_forget()
+    def showTopButtons(self):
+        self.rectangleButton.pack(side=LEFT)
+    
     def rectangleButton(self):
-        print "rectangleButton"
+        self.hideTopButtons()
+        self.doneButton.pack(side = RIGHT)
+        self.cancelButton.pack(side = LEFT)
+    
+    def doneButton(self):
+        self.showTopButtons()
+        self.doneButton.pack_forget()
+        self.cancelButton.pack_forget()
+    
+    def cancelButton(self):
+        self.showTopButtons()
+        self.doneButton.pack_forget()
+        self.cancelButton.pack_forget()
+    
     def canvasClicked(self,event):
         print event.x," ",event.y
+
+
 
 root = Tk()
 app = App(root)
