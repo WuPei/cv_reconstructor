@@ -40,6 +40,7 @@ class App:
         canvas = Canvas(frame, width = img.size[0]+20 , height = img.size[1]+20,xscrollcommand=xscrollbar.set,yscrollcommand=yscrollbar.set)
         canvas.create_image(10, 10,anchor=NW, image=tkImage)
         canvas.image = tkImage      #hold a reference
+        canvas.bind("<Button-1>", self.canvasClicked)
         #canvas.pack(fill = BOTH, expand = 1)
         canvas.grid(row=0, column=0, sticky=N+S+E+W)
 
@@ -52,8 +53,8 @@ class App:
         frame.pack()
     def rectangleButton(self):
         print "rectangleButton"
-
-
+    def canvasClicked(self,event):
+        print event.x," ",event.y
 
 root = Tk()
 app = App(root)
