@@ -6,7 +6,7 @@ class App:
         master.title("cv_recontruction")
         
         self.initUI(master)
-        self.rectangle = Rectangle([0,0],[0,0])
+        self.rectangle = Rectangle([0,0],[0,0],self.canvas)
         self.clear()
     
     def initUI(self,master):
@@ -66,7 +66,7 @@ class App:
         self.rectangle.clear()
     
     def drawPoint(self,p):
-        self.canvas.create_oval(p[0],p[1],p[0],p[1])
+        return self.canvas.create_oval(p[0],p[1],p[0],p[1])
 
     def rectangleButton(self):
         self.hideTopButtons()
@@ -85,6 +85,9 @@ class App:
         self.showTopButtons()
         self.doneButton.pack_forget()
         self.cancelButton.pack_forget()
+        #erase what have been drawn
+        if(self.rec_flag == 1):
+            self.rectangle.delete()
     
         self.clear()
     
@@ -92,11 +95,12 @@ class App:
         if (self.rec_flag == 1):
             if (self.rectangle.p1 == [0,0]):
                 self.rectangle.p1 = [event.x, event.y]
-                self.drawPoint(self.rectangle.p1)
+                self.pointId = self.drawPoint(self.rectangle.p1)
             else:
                 if (self.rectangle.p2 == [0,0]):
                     self.rectangle.p2 = [event.x, event.y]
-                    self.rectangle.draw(self.canvas)
+                    self.canvas.delete(self.pointId)
+                    self.rectangle.draw()
 
 
 
@@ -107,14 +111,17 @@ class App:
 
 
 class Rectangle:
-    def __init__(self,p1,p2):
+    def __init__(self,p1,p2,canvas):
         self.p1 = p1
         self.p2 = p2
+        self.canvas = canvas
     def clear(self):
         self.p1 = [0,0]
         self.p2 = [0,0]
-    def draw(self,canvas):
-        canvas.create_rectangle(self.p1[0],self.p1[1],self.p2[0],self.p2[1])
+    def draw(self):
+        self.recId = self.canvas.create_rectangle(self.p1[0],self.p1[1],self.p2[0],self.p2[1])
+    def delete(self):
+        self.canvas.delete(self.recId)
     def propertyUI(self):
         #to do : to pop out a window to let users to type in properties
         print "propertyUI"
