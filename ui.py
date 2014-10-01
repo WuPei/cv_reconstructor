@@ -92,13 +92,15 @@ class App:
         self.clear()
     
     def canvasClicked(self,event):
+        x = self.canvas.canvasx(event.x)
+        y = self.canvas.canvasy(event.y)
         if (self.rec_flag == 1):
             if (self.rectangle.p1 == [0,0]):
-                self.rectangle.p1 = [event.x, event.y]
+                self.rectangle.p1 = [x, y]
                 self.pointId = self.drawPoint(self.rectangle.p1)
             else:
                 if (self.rectangle.p2 == [0,0]):
-                    self.rectangle.p2 = [event.x, event.y]
+                    self.rectangle.p2 = [x, y]
                     self.canvas.delete(self.pointId)
                     self.rectangle.draw()
 
