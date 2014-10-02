@@ -6,7 +6,9 @@ class App:
         master.title("cv_recontruction")
         
         self.initUI(master)
-        self.rectangle = Rectangle([0,0],[0,0],self.canvas)
+        self.rectangle = Rectangle([],[],self.canvas)
+        self.polygon = Polygon([],self.canvas)
+        self.lineIds = []
         self.clear()
     
     def initUI(self,master):
@@ -22,6 +24,8 @@ class App:
         topFrame.pack_propagate(0)
 
         self.rectangleButton = Button(topFrame,text="rectangle",command = self.rectangleButton)
+        self.polygonButton = Button(topFrame,text="polygon",command = self.polygonButton)
+
         self.doneButton = Button(topFrame,text = "done",command = self.doneButton)
         self.cancelButton = Button(topFrame,text = "cancel",command = self.cancelButton)
         self.showTopButtons()
@@ -58,12 +62,16 @@ class App:
     
     def hideTopButtons(self):
         self.rectangleButton.pack_forget()
+        self.polygonButton.pack_forget()
     def showTopButtons(self):
         self.rectangleButton.pack(side=LEFT)
+        self.polygonButton.pack(side = LEFT)
     def clear(self):
         self.rec_flag = 0
+        self.polygon_flag = 0
         self.count_points = 0
         self.rectangle.clear()
+        self.polygon.clear()
     
     def drawPoint(self,p):
         return self.canvas.create_oval(p[0],p[1],p[0],p[1])
@@ -74,10 +82,22 @@ class App:
         self.cancelButton.pack(side = LEFT)
         self.rec_flag = 1
     
+    def polygonButton(self):
+        self.hideTopButtons()
+        self.doneButton.pack(side = RIGHT)
+        self.cancelButton.pack(side = LEFT)
+        self.polygon_flag = 1
+        self.polygon_count =0
+    
     def doneButton(self):
         self.showTopButtons()
         self.doneButton.pack_forget()
         self.cancelButton.pack_forget()
+        if self.polygon_flag == 1:
+            self.polygon.draw()
+            for i in self.lineIds:
+                self.canvas.delete(i)
+
         #to do: save data
         self.clear()
     
@@ -88,6 +108,9 @@ class App:
         #erase what have been drawn
         if(self.rec_flag == 1):
             self.rectangle.delete()
+        elif (self.polygon_flag == 1):
+            for i in self.lineIds:
+                self.canvas.delete(i)
     
         self.clear()
     
@@ -95,14 +118,29 @@ class App:
         x = self.canvas.canvasx(event.x)
         y = self.canvas.canvasy(event.y)
         if (self.rec_flag == 1):
-            if (self.rectangle.p1 == [0,0]):
+            if (self.rectangle.p1 == []):
                 self.rectangle.p1 = [x, y]
                 self.pointId = self.drawPoint(self.rectangle.p1)
             else:
-                if (self.rectangle.p2 == [0,0]):
+                if (self.rectangle.p2 == []):
                     self.rectangle.p2 = [x, y]
                     self.canvas.delete(self.pointId)
                     self.rectangle.draw()
+        elif(self.polygon_flag == 1):
+            #save the point
+            self.polygon.points.append([x,y])
+            
+            #draw polygon lines
+            pLen = len(self.polygon.points)
+            if pLen >2 :
+                lineId = self.canvas.create_line(self.polygon.points[pLen-2][0],self.polygon.points[pLen-2][1],x,y)
+                self.lineIds.append(lineId)
+            elif pLen == 1:
+                self.pointId = self.drawPoint([x,y])
+            elif pLen ==2:
+                self.canvas.delete(self.pointId)
+                lineId = self.canvas.create_line(self.polygon.points[pLen-2][0],self.polygon.points[pLen-2][1],x,y)
+                self.lineIds.append (lineId)
 
 
 
@@ -118,8 +156,8 @@ class Rectangle:
         self.p2 = p2
         self.canvas = canvas
     def clear(self):
-        self.p1 = [0,0]
-        self.p2 = [0,0]
+        self.p1 = []
+        self.p2 = []
     def draw(self):
         self.recId = self.canvas.create_rectangle(self.p1[0],self.p1[1],self.p2[0],self.p2[1])
     def delete(self):
@@ -127,6 +165,18 @@ class Rectangle:
     def propertyUI(self):
         #to do : to pop out a window to let users to type in properties
         print "propertyUI"
+
+class Polygon:
+    def __init__(self,points,canvas):
+        self.points = points
+        self.canvas = canvas
+    def clear(self):
+        self.points = []
+    def draw(self):
+        self.poId = self.canvas.create_polygon(self.points,fill = '',outline = 'black')
+    def delete(self):
+        self.canvas.delete(self.poId)
+
 
 
 
