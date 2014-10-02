@@ -114,6 +114,9 @@ class App:
     
         self.clear()
     
+    def popDoneButton(self):
+        self.top.destroy()
+    
     def canvasClicked(self,event):
         x = self.canvas.canvasx(event.x)
         y = self.canvas.canvasy(event.y)
@@ -142,27 +145,30 @@ class App:
                 lineId = self.canvas.create_line(self.polygon.points[pLen-2][0],self.polygon.points[pLen-2][1],x,y)
                 self.lineIds.append (lineId)
         else:
-            top = Toplevel(self.master)
-            top.overrideredirect(1)
-            top.geometry("%dx%d%+d%+d" % (400, 200, x, y))
+            self.top = Toplevel(self.master)
+            self.top.overrideredirect(1)
+            self.top.geometry("%dx%d%+d%+d" % (220, 140, x, y))
 
-            popFrame = Frame(top,bd=2,)
+            popFrame = Frame(self.top,bd=2,)
             popFrame.pack()
             popFrame.pack_propagate(0)
             
             emptyLabel = Label(popFrame,text = "")
             
-            
             depthLabel = Label(popFrame, text="Depth: ")
             self.depthEntry = Entry(popFrame,width = 10)
             angleLabel = Label(popFrame, text="Angle: ")
             self.angleEntry = Entry(popFrame,width = 10)
+            popCancelButton = Button(popFrame, text = "cancel",command = self.top.destroy)
+            popDoneButton = Button(popFrame, text="done",command = self.popDoneButton)
             
             emptyLabel.grid(row = 0)
             depthLabel.grid(row = 1,sticky = N+W)
             angleLabel.grid(row = 2,sticky = N+W)
             self.depthEntry.grid(row = 1, column = 1,sticky = N+W)
             self.angleEntry.grid(row = 2, column = 1,sticky = N+W)
+            popCancelButton.grid(row = 3, sticky = N+W)
+            popDoneButton.grid(row = 3, column = 1, sticky = N+E)
             
 
 
