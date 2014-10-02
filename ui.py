@@ -3,23 +3,23 @@ from PIL import Image, ImageTk
 
 class App:
     def __init__(self, master):
-        master.title("cv_recontruction")
+        self.master = master
+        self.master.title("cv_recontruction")
         
-        self.initUI(master)
+        self.initUI()
         self.rectangle = Rectangle([],[],self.canvas)
         self.polygon = Polygon([],self.canvas)
         self.lineIds = []
         self.clear()
     
-    def initUI(self,master):
+    def initUI(self):
         #load image use PIL library
         self.img = Image.open("project.jpeg")
         angle = 180
         tkImage = ImageTk.PhotoImage(self.img.rotate(180))
         
         #top bar frame
-        topFrame = Frame(master,width =self.img.size[0]+20,height = 30)
-        topFrame.grid(row = 0, column =0)
+        topFrame = Frame(self.master,width =self.img.size[0]+20,height = 30)
         topFrame.pack()
         topFrame.pack_propagate(0)
 
@@ -32,7 +32,7 @@ class App:
         
 
         #frame of canvas + scroll bar
-        frame = Frame(master)
+        frame = Frame(self.master)
         frame.grid(row = 1,column = 0)
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
@@ -141,6 +141,33 @@ class App:
                 self.canvas.delete(self.pointId)
                 lineId = self.canvas.create_line(self.polygon.points[pLen-2][0],self.polygon.points[pLen-2][1],x,y)
                 self.lineIds.append (lineId)
+        else:
+            top = Toplevel(self.master)
+            top.overrideredirect(1)
+            top.geometry("%dx%d%+d%+d" % (400, 200, x, y))
+
+            popFrame = Frame(top,bd=2,)
+            popFrame.pack()
+            popFrame.pack_propagate(0)
+            
+            emptyLabel = Label(popFrame,text = "")
+            
+            
+            depthLabel = Label(popFrame, text="Depth: ")
+            self.depthEntry = Entry(popFrame,width = 10)
+            angleLabel = Label(popFrame, text="Angle: ")
+            self.angleEntry = Entry(popFrame,width = 10)
+            
+            emptyLabel.grid(row = 0)
+            depthLabel.grid(row = 1,sticky = N+W)
+            angleLabel.grid(row = 2,sticky = N+W)
+            self.depthEntry.grid(row = 1, column = 1,sticky = N+W)
+            self.angleEntry.grid(row = 2, column = 1,sticky = N+W)
+            
+
+
+
+
 
 
 
