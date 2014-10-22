@@ -1,38 +1,25 @@
 import cv2
 import math
 import numpy as np
-import matplotlib.pyplot as plt
+
+pi = np.pi
 
 class Camera:
-    def __init__(self,fileName,cameraInitPoint,translationAxisAngles,orientationAsixAngles):
-        self.fileName = fileName;
-        self.translationAxisAngles = translationAxisAngles
-        self.orientationAsixAngles = orientationAsixAngles
-        self.camearPositions =[cameraInitPoint]
-        self.rotationMatrices = [np.matrix(np.identity(3))]
-    
-    def importPoints(self):
-        self.pts = []
-        for line in open(fileName,'r'):
-        pointStr = np.array(line.rstrip().split(","),dtype ='|S4')
-        point = pointStr.astype(np.float)
-        self.pts.append(point)
-    
-    def cameraPosition(self):
-        for i in range(self.translationAxisAngles.shape[0]):
-            axis = self.translationAxisAngles[i][0]
-            angle = self.translationAxisAngles[i][1]
-            q = axisangle_to_q(axis,angle)
-            self.cameraPosition.append ( getNewPoint(self.cameraPosition[i], q) )
+    def __init__(self,pts,camera_pos,ori_mat,focal):
+        self.pts = pts;
+        self.ori_mat = ori_mat
+        self.camera_pos =camera_pos
+        self.rotationMat = [np.matrix(np.identity(3))]
+    	self.focal = focal
+	def translateCamera(self,translateMat):
+	 	self.camera_pos = self.camera_pos + translateMat
 
-    def cameraOrientation(self):
-        for i in range(self.orientationAsixAngles.shape[0]):
-            axis = self.orientationAsixAngles[i][0]
-            angle = self.orientationAsixAngles[i][1]
-            q = axisangle_to_q(axis,angle)
-            R = quat2rot(q)
-            self.cameraOrientation.append(R)
-
+    def rotateCamera(self,axis,angle):
+   		theta = angle*1.0/180*pi
+   		quter = self.getQuternion(axis,theta)
+   		R = self.quat2rot(quter)
+   		self.ori_mat = np.dot(R,self.ori_mat)
+ 	
     def quatmult(self,q1, q2):
         #used to rotate the camera's initial position
         result = [0, 0, 0, 0]
@@ -43,7 +30,7 @@ class Camera:
         result[3] = q1[0]*q2[3] + q1[1]*q2[2] - q1[2]*q2[1] + q1[3]*q2[0]
         return result
     
-    def axisangle_to_q(self,axis,theta):
+    def getQuternion(self,axis,theta):
         out = [0,0,0,0]
         x,y,z = axis
         out = [math.cos(theta/2),math.sin(theta/2)*x,math.sin(theta/2)*y,math.sin(theta/2)*z]
@@ -69,11 +56,7 @@ class Camera:
         M[2][2] = q[0]**2+q[3]**2-q[1]**2-q[2]**2
         return np.matrix(M)
     
-    def getNewPoint(self,point,q):
-        temp = quatmult(q,point)
-        return quatmult(temp,self.conjugate(q))
-    
-    def perspProj(self,point,ori_mat,posi_mat,u_0 =0,v_0=0,beta_u=1,beta_v=1,f=1):
+    def perspProj(self,point,ori_mat,posi_mat,focal,u_0=0,v_0=0,beta_u=1,beta_v=1):
         #beta_u pixel scaling factor in horizontal direction
         #beta_v pixel scaling factor in vertical direction
         s_p = point
@@ -86,8 +69,8 @@ class Camera:
         #k_f optical axis
         k_f = ori_mat[2].T
         
-        u_fp = (float)(f*(s_p-t_f)*i_f)/(float)((s_p-t_f)*k_f*beta_u) + u_0
-        v_fp = (float)(f*(s_p-t_f)*j_f)/(float)((s_p-t_f)*k_f*beta_v) + v_0
+        u_fp = (float)(focal*(s_p-t_f)*i_f)/(float)((s_p-t_f)*k_f*beta_u) + u_0
+        v_fp = (float)(focal*(s_p-t_f)*j_f)/(float)((s_p-t_f)*k_f*beta_v) + v_0
         
         return u_fp,v_fp
     
@@ -99,39 +82,30 @@ class Camera:
         i_f = ori_mat[0].T
         #j_f vertical axis here, y is vertical axis
         j_f = ori_mat[1].T
-        #k_f optical axis
-        k_f = ori_mat[2].T
+        # #k_f optical axis
+        # k_f = ori_mat[2].T
         
         u_fp = (float) ((s_p - t_f)*i_f*beta_u + u_0)
         v_fp = (float) ((s_p - t_f)*j_f*beta_v + v_0)
         
         return u_fp,v_fp
 
-#part 2: plot projecting 3d shape points on to 2d image plane
-x_cord = [[0 for i in range(len(pts))] for j in range(4)]
-y_cord = [[0 for i in range(len(pts))] for j in range(4)]
-u_fp = [0 for i in range(4)]
-v_fp = [0 for i in range(4)]
-quatmat = [quatmat_1,quatmat_2,quatmat_3,quatmat_4]
-p = [p1,p2,p3,p4]
+    def getProjectedPts(self,height,width):
+    	#part 2: plot projecting 3d shape points on to 2d image plane
+		x_cord = [0 for i in range(len(self.pts))]
+		y_cord = [0 for i in range(len(self.pts))]
 
-height = 800
-width = 600
-blank_image = np.zeros((height,width,3),np.uint8)
+		#notice: here is normlized x,y coordinates
+		#2.1 Figure 1 for perspective projection 
+		for x in range(len(self.pts)):
+			u_fp,v_fp = self.perspProj(self.pts[x],self.ori_mat,self.camera_pos,self.focal)
+			x_cord[x]= round(height*u_fp)
+			y_cord[x]= round(width*v_fp)
 
-#2.1 Figure 1 for perspective projection 
-for x in range(len(pts)):
-	#fr_num represents for the frame number
-	for fr_num in range(4):
-		u_fp[fr_num],v_fp[fr_num] = perspProj(pts[x],quatmat[fr_num],p[fr_num])
-		x_cord[fr_num][x]= round(800*u_fp[fr_num])
-		y_cord[fr_num][x]= round(800*v_fp[fr_num])
+		return x_cord,y_cord
 
-for x in range(len(pts)):
-	u_fp = x_cord[0][x]
-	v_fp = y_cord[0][x]
-	blank_image[u_fp][v_fp] = (255,255,255)
 
-cv2.imwrite('test.jpg',blank_image)
+
+
 
 
