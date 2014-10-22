@@ -6,7 +6,7 @@ import cv2
 file = fm.FileManager("cylinderRGB.dat")
 points,rgb_values = file.importPointsWithRGB()
 
-camera_pos = [0,100,100,100] #(0,0,-200) as initial position
+camera_pos = [0,500,100,100] #(0,0,-200) as initial position
 I = [[1,0,0],[0,1,0],[0,0,1]]
 camera_ori = np.matrix(I)
 
@@ -15,12 +15,10 @@ height = 600
 
 offset_u = width/2
 offset_v = height/2
-focalLength = 1
-cam = camera.Camera(points,camera_pos,camera_ori,focalLength)
+cam = camera.Camera(points,camera_pos,camera_ori,1)
 y_axis = [0,1,0]
 x_axis = [1,0,0]
-cam.rotateCamera(y_axis,0)
-
+cam.rotateCamera(y_axis,-90)
 x_cord, y_cord = cam.getProjectedPts(height,width)
 
 blank_image = np.zeros((width,height,3),np.uint8)
