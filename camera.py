@@ -14,12 +14,16 @@ class Camera:
 	def translateCamera(self,translateMat):
 	 	self.camera_pos = self.camera_pos + translateMat
 
+    def translateCameraWithAxisAngle(self,axis,angle):
+        angle = angle*1.0/180 * np.pi
+        q = self.getQuternion(axis,angle)
+        self.camera_pos = self.quatmult(self.quatmult(q,self.camera_pos), self.conjugate(q))
+
     def rotateCamera(self,axis,angle):
    		theta = angle*1.0/180*pi
    		quter = self.getQuternion(axis,theta)
    		R = self.quat2rot(quter)
    		self.ori_mat = np.dot(R,self.ori_mat)
- 	
     def quatmult(self,q1, q2):
         #used to rotate the camera's initial position
         result = [0, 0, 0, 0]
