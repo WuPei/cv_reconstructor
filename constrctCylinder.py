@@ -7,10 +7,10 @@ fileP = open("cylinder.dat","w+")
 height = 200
 radius = 100
 pi = np.pi
-n = 60
+n = 360
 m = 100
 unit_radian = 2.0*pi/n
-unitHeight = 1.0*height/m;
+unitHeight = 2.0*height/m;
 
 offset_u = 0
 offset_v = 0
