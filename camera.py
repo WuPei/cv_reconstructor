@@ -1,9 +1,12 @@
-import cv2
 import math
 import numpy as np
 
 pi = np.pi
 
+#This class is a used to get projected 2D points from a bunch of 3D points
+#We need to set camera_pos, ori_mat matrix and focal length of camera before using
+#The points needed to be projected
+#This class support both of orthogonal projection and perspective projection.
 class Camera:
     def __init__(self,pts,camera_pos,ori_mat,focal):
         self.pts = pts;

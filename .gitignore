@@ -1,4 +1,5 @@
-cylinder.dat
 test.jpg
 *.mov
 *.pyc
+test.py
+*.dat
