@@ -5,6 +5,8 @@ class App:
 	def __init__(self, master):
 		self.master = master
 		self.master.title("cv_recontruction")
+
+		#self.shapes = []
 		
 		self.initUI()
 		self.clear()
@@ -38,7 +40,7 @@ class App:
 		"""
 		self.rectangleButton = Button(topFrame,text="rectangle",command = self.rectangleButton)
 		self.polygonButton = Button(topFrame,text="polygon",command = self.polygonButton)
-		self.circleButton = Button(topFrame,text="circle",command = self.polygonButton)
+		self.circleButton = Button(topFrame,text="circle",command = self.circleButton)
 		
 		self.doneButton = Button(topFrame,text = "done",command = self.doneButton)
 		self.cancelButton = Button(topFrame,text = "cancel",command = self.cancelButton)

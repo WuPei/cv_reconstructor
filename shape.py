@@ -44,8 +44,9 @@ class Frustum(Shape):
 		self.lowerWidth = lowerWidth
 
 class Tree():
-	def __init__(self,center):
+	def __init__(self,center,heihgt):
 		self.center = center
+		self.height = height
 
 class Ground():
 	def __init__(self,facePoints):
