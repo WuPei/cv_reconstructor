@@ -21,22 +21,23 @@ class App:
 		self.showRightFrame(1)
 		
 
+	#pragma mark -- init frames
 	def initTopFrames(self):
 		#top frame 1
 		self.topFrame1 = Frame(self.master,width =1000+20, height = 30, bd=1, relief=SUNKEN)
 
-		variable1 = StringVar(self.master)
-		variable1.set("cylinder") # default value
-		self.shapeOptionMenu = OptionMenu(self.topFrame1, variable1, "cylinder","cuboid","prism","frustum","tree","earth","sky")
+		self.shape = StringVar(self.master)
+		self.shape.set("cylinder") # default value
+		self.shapeOptionMenu = OptionMenu(self.topFrame1, self.shape, "cylinder","cuboid","prism","frustum","tree","earth","sky")
 		
 		self.newShapeButton = Button(self.topFrame1, text = "create new shape",command = self.newShapeButton)
 
 		#top frame 2
 		self.topFrame2 = Frame(self.master,width =1000+20, height = 30, bd=1, relief=SUNKEN)
 
-		variable2 = StringVar(self.master)
-		variable2.set("Rectangle") # default value
-		self.faceOptionMenu = OptionMenu(self.topFrame2, variable2, "rectangle","circle","polygon")
+		self.face = StringVar(self.master)
+		self.face.set("Rectangle") # default value
+		self.faceOptionMenu = OptionMenu(self.topFrame2, self.face, "rectangle","circle","polygon")
 		
 		self.addFaceButton = Button(self.topFrame2, text = "add new face",command = self.addFaceButton)
 
@@ -81,15 +82,20 @@ class App:
 		
 	def initRightFrames(self):
 		self.rightFrame1 = Frame(self.master,width =250, height =600+20+30, bd=1, relief=SUNKEN)
-		self.newButton = Button(self.rightFrame1, text = "new",command = self.newShapeButton)
+		self.shapesList = Listbox(self.rightFrame1)
+		self.shapesList.insert(END, "a shapes entry")
+		for item in ["one", "two", "three", "four"]:
+			self.shapesList.insert(END, item)
 
 		self.rightFrame2 = Frame(self.master,width =250, height =600+20+30, bd=1, relief=SUNKEN)
-		self.cancelButton2 = Button(self.rightFrame2, text = "cancelButton2",command = self.newShapeButton)
-		self.doneButton2 = Button(self.rightFrame2, text = "cancelButton3", command = self.newShapeButton)
+		self.cancelButton2 = Button(self.rightFrame2, text = "cancel",command = self.cancelButton2)
+		self.doneButton2 = Button(self.rightFrame2, text = "done", command = self.doneButton2)
 
 		self.rightFrame3 = Frame(self.master,width =250, height =600+20+30, bd=1, relief=SUNKEN)
-		self.label3 = Label(self.rightFrame3, text="Orientation: ")
+		self.faceDirLabel = Label(self.rightFrame3, text="Orientation: ")
+		self.faceDirEntry = Entry(self.rightFrame3)
 
+	#pragma mark -- show frames
 	def showTopFrame(self,frame):
 		if frame == 1:
 			self.showTopFrame1(1)
@@ -152,24 +158,49 @@ class App:
 		if flag == 1:
 			self.rightFrame1.grid(column=1, row =0, rowspan = 2, sticky=N+W+E+S)
 			self.rightFrame1.pack_propagate(0)
-			self.newButton.pack()
+			self.shapesList.pack(fill= BOTH)
 		else:
 			self.rightFrame1.grid_forget()
-			self.newButton.grid_forget()
+			self.shapesList.pack_forget()
 
 	def showRightFrame2(self,flag):
 		if flag == 1:
-			self.rightFrame2.grid(column=1, row =0,  rowspan = 2, sticky=N)
-			self.newButton.pack()
+			self.rightFrame2.grid(column=1, row =0,  rowspan = 2, sticky=N+W+E+S)
+			self.rightFrame2.grid_propagate(0)
+			self.doneButton2.grid(column=0,row = 0)
+			self.cancelButton2.grid( column = 0, row =1)
+
+			shape = self.shape.get()
+			if shape == "cylinder":
+				print "1"
+			elif shape == "cuboid":
+				print "1"
+			elif shape == "prism":
+				print "1"
+			elif shape == "frustum":
+				print "1"
+			elif shape == "tree":
+				print "1"
+			elif shape == "ground":
+				print "1"
+			elif shape == "sky":
+				print "1"
+
 		else:
 			self.rightFrame2.grid_forget()
+			self.doneButton2.grid_forget()
+			self.cancelButton2.grid_forget()
 
 	def showRightFrame3(self,flag):
 		if flag == 1:
 			self.rightFrame3.grid(column=1, row =0,  rowspan = 2, sticky=N)
-			self.newButton.pack()
+			self.rightFrame3.grid_propagate(0)
+			self.faceDirLabel.grid(row = 0, column = 0, sticky = W)
+			self.faceDirEntry.grid(row = 1, column = 0, sticky = W)
 		else:
 			self.rightFrame3.grid_forget()
+			self.faceDirLabel.grid_forget()
+			self.faceDirEntry.grid_forget()
 
 	def clear(self):
 		self.flag = ""
@@ -179,16 +210,33 @@ class App:
 		self.models = []
 		self.lineIds = []
 
+
+	#pragma mark -- button actions
 	def newShapeButton(self):
-		print "1"
+		self.showTopFrame(2)
+		self.showRightFrame(2)
+
 	def addFaceButton(self):
-		print "addFace"
+		self.showTopFrame(3)
+		self.showRightFrame(3)
+
+	def cancelButton2(self):
+		self.showTopFrame(1)
+		self.showRightFrame(1)
+
+	def doneButton2(self):
+		self.showTopFrame(1)
+		self.showRightFrame(1)
 
 	def cancelButton3(self):
-		print "cancel3"
-	def doneButton3(self):
-		print "done3s"
+		self.showTopFrame(2)
+		self.showRightFrame(2)
 
+	def doneButton3(self):
+		self.showTopFrame(2)
+		self.showRightFrame(2)
+
+	#pragma mark -- click event	
 	def canvasClicked(self,event):
 		x = self.canvas.canvasx(event.x)
 		y = self.canvas.canvasy(event.y)
@@ -214,9 +262,6 @@ class App:
 				lineId = self.canvas.create_line(self.points[pLen-2][0],self.points[pLen-2][1],x,y)
                 self.lineIds.append(lineId)
 			
-			
-
-
 
 root = Tk()
 app = App(root)
