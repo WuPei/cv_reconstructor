@@ -11,19 +11,17 @@ class App:
 		#init parameters
 		self.shapes = []
 		self.state = 1
-		self.currentShape = "new"
+		self.currentIndex = -1
 		self.newShapeFlag = True
 
 		#create object for test purpose
-		cylinder = sp.Cylinder(1,1,1, "cylinder 1")
-		cylinder.addFace([20,30], "Left")
-		cylinder.addFace([10,30], "Right")
-		cylinder.addFace([20,30], "Upper")
-		cylinder.addFace([20,30], "Front")
-		cuboid = sp.Cuboid(1,1,1,1,"cuboid 1")
 		for i in range(16):
-			self.shapes.append(cylinder)
-			self.shapes.append(cuboid)
+			self.shapes.append(sp.Cylinder(1,2,3, "cylinder 1"))
+			face1 = sp.Face([[20,30]], "Left")
+			face2 = sp.Face([[100,100]], "right")
+			self.shapes[i*2].faces.append(face1)
+			self.shapes[i*2].faces.append(face2)
+			self.shapes.append(sp.Cuboid(1,2,3,4,"cuboid 1"))
 		
 		self.initUI()
 		self.clear()
@@ -37,18 +35,44 @@ class App:
 		self.show(self.state)
 
 	def clear(self):
-		self.flag = ""
 		self.pointId = ""
 		self.drawId = ""
 		self.points =[]
-		self.models = []
 		self.lineIds = []
 
+	def testPrint(self):
+		print ""
+		print ""
+		for x in xrange(len(self.shapes)):
+			print self.shapes[x].name
+			if isinstance(self.shapes[self.currentIndex], sp.Cylinder):
+				print "center = ", self.shapes[self.currentIndex].center 
+				print "radius = ", self.shapes[self.currentIndex].radius
+				print "height = ", self.shapes[self.currentIndex].height
+			elif isinstance(self.shapes[self.currentIndex], sp.Cuboid) or isinstance(self.shapes[self.currentIndex], sp.Prism):
+				print "center = ", self.shapes[self.currentIndex].center 
+				print "length = ", self.shapes[self.currentIndex].length
+				print "width = " , self.shapes[self.currentIndex].width 
+				print "height = ", self.shapes[self.currentIndex].height
+			elif isinstance(self.shapes[self.currentIndex], sp.Frustum):
+				print "center = ", self.shapes[self.currentIndex].center
+				print "upperLength = " , self.shapes[self.currentIndex].upperLength
+				print "lowerLength = ", self.shapes[self.currentIndex].lowerLength 
+				print "upperWidth = " , self.shapes[self.currentIndex].upperWidth 
+				print "lowerWidth = " , self.shapes[self.currentIndex].lowerWidth 
+				print "height = " , self.shapes[self.currentIndex].height 
+			elif isinstance(self.shapes[self.currentIndex], sp.Tree):
+				print "center = " , self.shapes[self.currentIndex].center 
+				print "height = " , self.shapes[self.currentIndex].height
+		print ""
+
+
 	def updateFacesList(self):
+		self.facesList.delete(0,END)
 		if self.newShapeFlag == False:
-			for item in self.currentShape.faces:
-				print item[1]
-				self.facesList.insert(END, item[1]) #orientation
+			for item in self.shapes[self.currentIndex].faces:
+				print item.faceOrientation
+				self.facesList.insert(END, item.faceOrientation) #orientation
 		
 	#pragma mark -- init frames
 	def initTopFrames(self):
@@ -65,7 +89,7 @@ class App:
 		self.topFrame2 = Frame(self.master,width =900+20, height = 30, bd=1, relief=SUNKEN)
 
 		self.face = StringVar(self.master)
-		self.face.set("Rectangle") # default value
+		self.face.set("rectangle") # default value
 		self.faceOptionMenu = OptionMenu(self.topFrame2, self.face, "rectangle","circle","polygon")
 		
 		self.addFaceButton = Button(self.topFrame2, text = "add new face",command = self.addFaceButton)
@@ -130,7 +154,6 @@ class App:
 
 		self.faceListLabel = Label(self.rightFrame2, text = "All Faces")
 		self.facesList = Listbox(self.rightFrame2, height = 15)
-		self.editFaceButton = Button(self.rightFrame2, text = "edit",command = self.editFaceButton)
 		self.deleteFaceButton = Button(self.rightFrame2, text = "delete", command = self.deleteFaceButton)
 
 		#init right frame 3
@@ -143,6 +166,7 @@ class App:
 		if state  == 1:
 			self.showTopFrame(1)
 			self.showRightFrame(1)
+			self.testPrint()
 		elif state == 2:
 			self.showTopFrame(2)
 			self.showRightFrame(2)
@@ -235,7 +259,7 @@ class App:
 
 			self.pLabels[0].config(text = "name")
 			self.pLabels[0].grid(row = 2, column = 0)
-			if isinstance(self.currentShape, sp.Cylinder):
+			if isinstance(self.shapes[self.currentIndex], sp.Cylinder):
 				self.pLabels[1].config(text = "center")
 				self.pLabels[2].config(text = "radius")
 				self.pLabels[3].config(text = "height")
@@ -244,12 +268,12 @@ class App:
 					self.pEntries[i].grid(row = i+2, column = 1)
 					self.pEntries[i].delete(0, END)
 
-				self.pEntries[1].insert(0, self.currentShape.center)
-				self.pEntries[2].insert(0, self.currentShape.radius)
-				self.pEntries[3].insert(0, self.currentShape.height)
+				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+				self.pEntries[2].insert(0, self.shapes[self.currentIndex].radius)
+				self.pEntries[3].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 5
-			elif isinstance(self.currentShape, sp.Cuboid) or isinstance(self.currentShape, sp.Prism):
+			elif isinstance(self.shapes[self.currentIndex], sp.Cuboid) or isinstance(self.shapes[self.currentIndex], sp.Prism):
 				self.pLabels[1].config(text = "center")
 				self.pLabels[2].config(text = "length")
 				self.pLabels[3].config(text = "width")
@@ -259,13 +283,13 @@ class App:
 					self.pEntries[i].grid(row = i+2, column = 1)
 					self.pEntries[i].delete(0, END)
 
-				self.pEntries[1].insert(0, self.currentShape.center)
-				self.pEntries[2].insert(0, self.currentShape.length)
-				self.pEntries[3].insert(0, self.currentShape.width)
-				self.pEntries[4].insert(0, self.currentShape.height)
+				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+				self.pEntries[2].insert(0, self.shapes[self.currentIndex].length)
+				self.pEntries[3].insert(0, self.shapes[self.currentIndex].width)
+				self.pEntries[4].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 6
-			elif isinstance(self.currentShape, sp.Frustum):
+			elif isinstance(self.shapes[self.currentIndex], sp.Frustum):
 				self.pLabels[1].config(text = "center")
 				self.pLabels[2].config(text = "upperLength")
 				self.pLabels[3].config(text = "upperWidth")
@@ -277,15 +301,15 @@ class App:
 					self.pEntries[i].grid(row = i+2, column = 1)
 					self.pEntries[i].delete(0, END)
 
-				self.pEntries[1].insert(0, self.currentShape.center)
-				self.pEntries[2].insert(0, self.currentShape.upperLength)
-				self.pEntries[3].insert(0, self.currentShape.upperWidth)
-				self.pEntries[4].insert(0, self.currentShape.lowerLength)
-				self.pEntries[5].insert(0, self.currentShape.lowerWidth)
-				self.pEntries[6].insert(0, self.currentShape.height)
+				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+				self.pEntries[2].insert(0, self.shapes[self.currentIndex].upperLength)
+				self.pEntries[3].insert(0, self.shapes[self.currentIndex].upperWidth)
+				self.pEntries[4].insert(0, self.shapes[self.currentIndex].lowerLength)
+				self.pEntries[5].insert(0, self.shapes[self.currentIndex].lowerWidth)
+				self.pEntries[6].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 8
-			elif isinstance(self.currentShape, sp.Tree):
+			elif isinstance(self.shapes[self.currentIndex], sp.Tree):
 				self.pLabels[1].config(text = "center")
 				self.pLabels[2].config(text = "height")
 				for i in range(3):
@@ -293,16 +317,15 @@ class App:
 					self.pEntries[i].grid(row = i+2, column = 1)
 					self.pEntries[i].delete(0, END)
 
-				self.pEntries[1].insert(0, self.currentShape.center)
-				self.pEntries[2].insert(0, self.currentShape.height)
+				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+				self.pEntries[2].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 4
 
-			self.pEntries[0].insert(0,self.currentShape.name)
+			self.pEntries[0].insert(0,self.shapes[self.currentIndex].name)
 
 			self.faceListLabel.grid(row = maxRow+2, column = 0, columnspan = 2)
 			self.facesList.grid(row = maxRow+3, column=0, columnspan = 2)
-			self.editFaceButton.grid(row = maxRow +4, column = 0, columnspan = 2)
 			self.deleteFaceButton.grid(row = maxRow+5, column = 0, columnspan = 2)
 
 		else:
@@ -314,7 +337,6 @@ class App:
 				self.pEntries[i].grid_forget()
 			self.faceListLabel.grid_forget()
 			self.facesList.grid_forget()
-			self.editFaceButton.grid_forget()
 			self.deleteFaceButton.grid_forget()
 
 	def showRightFrame3(self,flag):
@@ -323,6 +345,7 @@ class App:
 			self.rightFrame3.grid_propagate(0)
 			self.faceDirLabel.grid(row = 0, column = 0, sticky = W)
 			self.faceDirEntry.grid(row = 1, column = 0, sticky = W)
+			self.faceDirEntry.delete(0,END)
 		else:
 			self.rightFrame3.grid_forget()
 			self.faceDirLabel.grid_forget()
@@ -332,34 +355,34 @@ class App:
 	#buttons in scene 1
 	def newShapeButton(self):
 		self.newShapeFlag = True
+		self.currentIndex = len(self.shapes)
 		if self.shape.get() == "cylinder":
-			self.currentShape = sp.Cylinder(0,0,0,"")
+			self.shapes.append( sp.Cylinder(0,0,0,""))
 
 		elif self.shape.get() == "cuboid":
-			self.currentShape = sp.Cuboid(0,0,0,0,"")
+			self.shapes.append( sp.Cuboid(0,0,0,0,"") )
 
 		elif self.shape.get() == "prism":
-			self.currentShape = sp.Prism(0,0,0,0,"")
+			self.shapes.append( sp.Prism(0,0,0,0,"") )
 
 		elif self.shape.get() == "frustum":
-			self.currentShape = sp.Frustum(0,0,0,0,0,0,"")
+			self.shapes.append( sp.Frustum(0,0,0,0,0,0,"") )
 
 		elif self.shape.get() == "tree":
-			self.currentShape = sp.Tree(0,0,"")
+			self.shapes.append( sp.Tree(0,0,"") )
 
 		elif self.shape.get() == "sky":
-			self.currentShape = sp.Sky([],"")
+			self.shapes.append( sp.Sky([],"") )
 
 		elif self.shape.get() == "ground":
-			self.currentShape = sp.Ground([],"")
+			self.shapes.append( sp.Ground([],"") )
 		
 		self.show(2)
 		self.state = 2
 
 	def editButton1(self):
 		self.newShapeFlag = False
-		index = (self.shapesList.curselection())[0]
-		self.currentShape = self.shapes[index]
+		self.currentIndex = (self.shapesList.curselection())[0]
 		self.show(2)
 		self.state = 2
 
@@ -374,67 +397,81 @@ class App:
 		self.state = 3
 
 	def cancelButton2(self):
+		if self.newShapeFlag == True:
+			del self.shapes[self.currentIndex]
 		self.show(1)
 		self.state = 1
 
 	def doneButton2(self):
 		#save changes
-		self.currentShape.name = self.pEntries[0].get()
-		if isinstance(self.currentShape, sp.Cylinder):
-			self.currentShape.center = self.pEntries[1].get()
-			self.currentShape.radius = self.pEntries[2].get()
-			self.currentShape.height = self.pEntries[3].get()
-		elif isinstance(self.currentShape, sp.Cuboid) or isinstance(self.currentShape, sp.Prism):
-			self.currentShape.center = self.pEntries[1].get()
-			self.currentShape.length = self.pEntries[2].get()
-			self.currentShape.width  = self.pEntries[3].get()
-			self.currentShape.height = self.pEntries[4].get()
-		elif isinstance(self.currentShape, sp.Frustum):
-			self.currentShape.center = self.pEntries[1].get()
-			self.currentShape.upperLength = self.pEntries[2].get()
-			self.currentShape.upperWidth  = self.pEntries[3].get()
-			self.currentShape.lowerLength = self.pEntries[4].get()
-			self.currentShape.lowerWidth = self.pEntries[5].get()
-			self.currentShape.height = self.pEntries[6].get()
-		elif isinstance(self.currentShape, sp.Tree):
-			self.currentShape.center = self.pEntries[1].get()
-			self.currentShape.height = self.pEntries[2].get()
+		self.shapes[self.currentIndex].name = self.pEntries[0].get()
+		if isinstance(self.shapes[self.currentIndex], sp.Cylinder):
+			self.shapes[self.currentIndex].center = self.pEntries[1].get()
+			self.shapes[self.currentIndex].radius = self.pEntries[2].get()
+			self.shapes[self.currentIndex].height = self.pEntries[3].get()
+		elif isinstance(self.shapes[self.currentIndex], sp.Cuboid) or isinstance(self.shapes[self.currentIndex], sp.Prism):
+			self.shapes[self.currentIndex].center = self.pEntries[1].get()
+			self.shapes[self.currentIndex].length = self.pEntries[2].get()
+			self.shapes[self.currentIndex].width  = self.pEntries[3].get()
+			self.shapes[self.currentIndex].height = self.pEntries[4].get()
+		elif isinstance(self.shapes[self.currentIndex], sp.Frustum):
+			self.shapes[self.currentIndex].center = self.pEntries[1].get()
+			self.shapes[self.currentIndex].upperLength = self.pEntries[2].get()
+			self.shapes[self.currentIndex].upperWidth  = self.pEntries[3].get()
+			self.shapes[self.currentIndex].lowerLength = self.pEntries[4].get()
+			self.shapes[self.currentIndex].lowerWidth = self.pEntries[5].get()
+			self.shapes[self.currentIndex].height = self.pEntries[6].get()
+		elif isinstance(self.shapes[self.currentIndex], sp.Tree):
+			self.shapes[self.currentIndex].center = self.pEntries[1].get()
+			self.shapes[self.currentIndex].height = self.pEntries[2].get()
 
 		if self.newShapeFlag == True:
-			self.shapesList.insert(END, self.currentShape.name)
-			self.shapes.append(self.currentShape)
+			self.shapesList.insert(END, self.shapes[self.currentIndex].name)
 		else:
-			index = (self.shapesList.curselection())[0]
-			#update array and listBox
-			del self.shapes[index]
-			self.shapes.insert(index, self.currentShape)
-			self.shapesList.delete(index)
-			self.shapesList.insert(index, self.currentShape.name)
+			self.shapesList.delete(self.currentIndex)
+			self.shapesList.insert(self.currentIndex, self.shapes[self.currentIndex].name)
+			
 
 		self.show(1)
 		self.state = 1
 
-	def editFaceButton(self):
-		print "2"
 	def deleteFaceButton(self):
-		print "2"
+		index = (self.facesList.curselection())[0]
+		if (index < len(self.shapes[self.currentIndex].faces)):
+			self.canvas.delete(self.shapes[self.currentIndex].faces[index].drawId)
+			del self.shapes[self.currentIndex].faces[index]
+			self.facesList.delete(index)
 
 	#buttons in scene 3
 	def cancelButton3(self):
+		if isinstance(self.shapes[self.currentIndex], sp.Shape):
+				self.canvas.delete(self.drawId)
+				for i in range(len(self.lineIds)):
+					self.canvas.delete(self.lin)
+		self.clear()
 		self.show(2)
 		self.state = 2
 
 	def doneButton3(self):
+		if isinstance(self.shapes[self.currentIndex], sp.Shape):
+			face = sp.Face(self.points, self.faceDirEntry.get())
+			face.drawId = self.drawId
+			self.shapes[self.currentIndex].faces.append (face)
+		self.clear()
 		self.show(2)
 		self.state = 2
 
 
-	#pragma mark -- click event	
+	#pragma mark -- canvas draw
+	def drawPoint(self,p):
+		return self.canvas.create_oval(p[0],p[1],p[0],p[1])
+
 	def canvasClicked(self,event):
 		if self.state == 3:
+			print self.face.get()
 			x = self.canvas.canvasx(event.x)
 			y = self.canvas.canvasy(event.y)
-			if (self.flag == "drawRect"):
+			if (self.face.get() == "rectangle"):
 				if ( len(self.points) == 0):
 					self.points.append ([x, y])
 					self.pointId = self.drawPoint([x,y])
@@ -442,7 +479,7 @@ class App:
 						self.points.append ([x, y])
 						self.canvas.delete(self.pointId)
 						self.drawId = self.canvas.create_rectangle(self.points[0][0],self.points[0][1],self.points[1][0],self.points[1][1])
-			elif(self.flag == "drawPolygon"):
+			elif(self.face.get() == "polygon"):
 				lineId = ""
 				self.points.append([x,y])
 				pLen = len(self.points)

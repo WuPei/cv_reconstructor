@@ -8,8 +8,6 @@ class Shape:
 	def __init__(self, name):
 		self.faces =[]
 		self.name = name
-	def addFace(self,facePoints,faceOrientation):
-		self.faces.append([facePoints,faceOrientation])
 
 class Cylinder(Shape):
 	def __init__(self,center,radius,height, name):
@@ -57,10 +55,10 @@ class Sky():
 	def __init__(self,facePoints , name):
 		self.facePoints  = facePoints
 
-
-
-
-
-
+class Face():
+	def __init__(self,facePoints,faceOrientation):
+		self.facePoints =facePoints
+		self.drawId = ""
+		self.faceOrientation = faceOrientation
 
 
