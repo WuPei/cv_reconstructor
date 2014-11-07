@@ -12,9 +12,14 @@ class App:
 		self.shapes = []
 		self.state = 1
 		self.currentShape = "new"
+		self.newShapeFlag = True
 
 		#create object for test purpose
 		cylinder = sp.Cylinder(1,1,1, "cylinder 1")
+		cylinder.addFace([20,30], "Left")
+		cylinder.addFace([10,30], "Right")
+		cylinder.addFace([20,30], "Upper")
+		cylinder.addFace([20,30], "Front")
 		cuboid = sp.Cuboid(1,1,1,1,"cuboid 1")
 		for i in range(16):
 			self.shapes.append(cylinder)
@@ -38,6 +43,12 @@ class App:
 		self.points =[]
 		self.models = []
 		self.lineIds = []
+
+	def updateFacesList(self):
+		if self.newShapeFlag == False:
+			for item in self.currentShape.faces:
+				print item[1]
+				self.facesList.insert(END, item[1]) #orientation
 		
 	#pragma mark -- init frames
 	def initTopFrames(self):
@@ -100,7 +111,7 @@ class App:
 		
 	def initRightFrames(self):
 		self.rightFrame1 = Frame(self.master,width =250, height =600+20+30, bd=1, relief=SUNKEN)
-		self.listLabel = Label(self.rightFrame1, text = "shapes list")
+		self.listLabel = Label(self.rightFrame1, text = "All Shapes")
 		self.shapesList = Listbox(self.rightFrame1, height = 30)
 		for item in self.shapes:
 			self.shapesList.insert(END, item.name)
@@ -111,13 +122,18 @@ class App:
 		self.rightFrame2 = Frame(self.master,width =250, height =600+20+30, bd=1, relief=SUNKEN)
 		self.cancelButton2 = Button(self.rightFrame2, text = "cancel",command = self.cancelButton2)
 		self.doneButton2 = Button(self.rightFrame2, text = "done", command = self.doneButton2)
-		#init right frame 2 -- 
 		self.pLabels = [0,0,0,0,0,0,0]
 		self.pEntries = [0,0,0,0,0,0,0]
 		for i in xrange(7):
 			self.pLabels[i] = Label(self.rightFrame2)
 			self.pEntries[i] = Entry(self.rightFrame2)
 
+		self.faceListLabel = Label(self.rightFrame2, text = "All Faces")
+		self.facesList = Listbox(self.rightFrame2, height = 15)
+		self.editFaceButton = Button(self.rightFrame2, text = "edit",command = self.editFaceButton)
+		self.deleteFaceButton = Button(self.rightFrame2, text = "delete", command = self.deleteFaceButton)
+
+		#init right frame 3
 		self.rightFrame3 = Frame(self.master,width =250, height =600+20+30, bd=1, relief=SUNKEN)
 		self.faceDirLabel = Label(self.rightFrame3, text="Orientation: ")
 		self.faceDirEntry = Entry(self.rightFrame3)
@@ -209,10 +225,13 @@ class App:
 
 	def showRightFrame2(self,flag):
 		if flag == 1:
+			self.updateFacesList()
+
+			maxRow = 2
 			self.rightFrame2.grid(column=1, row =0,  rowspan = 2, sticky=N+W+E+S)
 			self.rightFrame2.grid_propagate(0)
-			self.doneButton2.grid(row = 0)
-			self.cancelButton2.grid(row =1)
+			self.doneButton2.grid(row = 0, columnspan = 2)
+			self.cancelButton2.grid(row =1, columnspan =2)
 
 			self.pLabels[0].config(text = "name")
 			self.pLabels[0].grid(row = 2, column = 0)
@@ -228,6 +247,8 @@ class App:
 				self.pEntries[1].insert(0, self.currentShape.center)
 				self.pEntries[2].insert(0, self.currentShape.radius)
 				self.pEntries[3].insert(0, self.currentShape.height)
+
+				maxRow = 5
 			elif isinstance(self.currentShape, sp.Cuboid) or isinstance(self.currentShape, sp.Prism):
 				self.pLabels[1].config(text = "center")
 				self.pLabels[2].config(text = "length")
@@ -242,6 +263,8 @@ class App:
 				self.pEntries[2].insert(0, self.currentShape.length)
 				self.pEntries[3].insert(0, self.currentShape.width)
 				self.pEntries[4].insert(0, self.currentShape.height)
+
+				maxRow = 6
 			elif isinstance(self.currentShape, sp.Frustum):
 				self.pLabels[1].config(text = "center")
 				self.pLabels[2].config(text = "upperLength")
@@ -260,6 +283,8 @@ class App:
 				self.pEntries[4].insert(0, self.currentShape.lowerLength)
 				self.pEntries[5].insert(0, self.currentShape.lowerWidth)
 				self.pEntries[6].insert(0, self.currentShape.height)
+
+				maxRow = 8
 			elif isinstance(self.currentShape, sp.Tree):
 				self.pLabels[1].config(text = "center")
 				self.pLabels[2].config(text = "height")
@@ -271,7 +296,14 @@ class App:
 				self.pEntries[1].insert(0, self.currentShape.center)
 				self.pEntries[2].insert(0, self.currentShape.height)
 
+				maxRow = 4
+
 			self.pEntries[0].insert(0,self.currentShape.name)
+
+			self.faceListLabel.grid(row = maxRow+2, column = 0, columnspan = 2)
+			self.facesList.grid(row = maxRow+3, column=0, columnspan = 2)
+			self.editFaceButton.grid(row = maxRow +4, column = 0, columnspan = 2)
+			self.deleteFaceButton.grid(row = maxRow+5, column = 0, columnspan = 2)
 
 		else:
 			self.rightFrame2.grid_forget()
@@ -280,6 +312,10 @@ class App:
 			for i in range(7):
 				self.pLabels[i].grid_forget()
 				self.pEntries[i].grid_forget()
+			self.faceListLabel.grid_forget()
+			self.facesList.grid_forget()
+			self.editFaceButton.grid_forget()
+			self.deleteFaceButton.grid_forget()
 
 	def showRightFrame3(self,flag):
 		if flag == 1:
@@ -295,6 +331,7 @@ class App:
 	#pragma mark -- button actions
 	#buttons in scene 1
 	def newShapeButton(self):
+		self.newShapeFlag = True
 		if self.shape.get() == "cylinder":
 			self.currentShape = sp.Cylinder(0,0,0,"")
 
@@ -320,6 +357,7 @@ class App:
 		self.state = 2
 
 	def editButton1(self):
+		self.newShapeFlag = False
 		index = (self.shapesList.curselection())[0]
 		self.currentShape = self.shapes[index]
 		self.show(2)
@@ -362,15 +400,24 @@ class App:
 			self.currentShape.center = self.pEntries[1].get()
 			self.currentShape.height = self.pEntries[2].get()
 
-		index = (self.shapesList.curselection())[0]
-		#update array and listBox
-		del self.shapes[index]
-		self.shapes.insert(index, self.currentShape)
-		self.shapesList.delete(index)
-		self.shapesList.insert(index, self.currentShape.name)
+		if self.newShapeFlag == True:
+			self.shapesList.insert(END, self.currentShape.name)
+			self.shapes.append(self.currentShape)
+		else:
+			index = (self.shapesList.curselection())[0]
+			#update array and listBox
+			del self.shapes[index]
+			self.shapes.insert(index, self.currentShape)
+			self.shapesList.delete(index)
+			self.shapesList.insert(index, self.currentShape.name)
 
 		self.show(1)
 		self.state = 1
+
+	def editFaceButton(self):
+		print "2"
+	def deleteFaceButton(self):
+		print "2"
 
 	#buttons in scene 3
 	def cancelButton3(self):
