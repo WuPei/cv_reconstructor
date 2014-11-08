@@ -110,6 +110,8 @@ class App:
 		self.pEntries[0].insert(0,self.shapes[self.currentIndex].name)
 
 	def updateFacesList(self):
+		print ""
+		print ""
 		self.facesList.delete(0,END)
 		for item in self.shapes[self.currentIndex].faces:
 			print item.faceOrientation
@@ -202,7 +204,9 @@ class App:
 		#init right frame 3
 		self.rightFrame3 = Frame(self.master,width =250, height =600+20+30, bd=1, relief=SUNKEN)
 		self.faceDirLabel = Label(self.rightFrame3, text="Orientation: ")
-		self.faceDirEntry = Entry(self.rightFrame3)
+		self.faceDir = StringVar(self.master)
+		self.faceDir.set("Left") # default value
+		self.faceOptionMenu = OptionMenu(self.rightFrame3, self.faceDir, "Left","Right","Upper","Front")
 
 	#pragma mark -- show frames
 	def show(self,state):
@@ -386,13 +390,12 @@ class App:
 		if flag == 1:
 			self.rightFrame3.grid(column=1, row =0,  rowspan = 2, sticky=N)
 			self.rightFrame3.grid_propagate(0)
-			self.faceDirLabel.grid(row = 0, column = 0, sticky = W)
-			self.faceDirEntry.grid(row = 1, column = 0, sticky = W)
-			self.faceDirEntry.delete(0,END)
+			self.faceDirLabel.grid(row = 0, column = 0, sticky = S+N+W+E)
+			self.faceOptionMenu.grid(row = 1, column = 0, sticky = S+N+W+E)
 		else:
 			self.rightFrame3.grid_forget()
 			self.faceDirLabel.grid_forget()
-			self.faceDirEntry.grid_forget()	
+			self.faceOptionMenu.grid_forget()	
 
 	#pragma mark -- button actions
 	#buttons in scene 1
@@ -513,14 +516,16 @@ class App:
 		self.state = 2
 
 	def doneButton3(self):
-		if self.faceDirEntry.get() != "" :
-			if isinstance(self.shapes[self.currentIndex], sp.Shape):
-				face = sp.Face(self.points, self.faceDirEntry.get())
-				face.lineIds = self.lineIds
-				self.shapes[self.currentIndex].faces.append (face)
-			self.clear()
-			self.show(2)
-			self.state = 2
+		if isinstance(self.shapes[self.currentIndex], sp.Shape):
+			pLen = len(self.points)
+			lineId = self.canvas.create_line(self.points[pLen-1][0],self.points[pLen-1][1],self.points[0][0],self.points[0][1] ,fill = "red")
+			self.lineIds.append(lineId)
+			face = sp.Face(self.points, self.faceDir.get())
+			face.lineIds = self.lineIds
+			self.shapes[self.currentIndex].faces.append (face)
+		self.clear()
+		self.show(2)
+		self.state = 2
 
 
 	#pragma mark -- canvas draw
