@@ -199,7 +199,7 @@ class ModelBuilder:
 
 		# Generate vertices on top surface
 		top_v = []
-		for i in range(17):
+		for i in range(16):
 			temp = vt(btm_v[i].x, btm_v[i].y+height, btm_v[i].z)
 			top_v.append(temp)
 
@@ -222,6 +222,56 @@ class ModelBuilder:
 
 		#-------------------------------------------------------
 		# Store corresponding Texel coordinates
+		print "----------------------------"
+		tx1 = UVs[0].facePoints[0]
+		#print tx1
+		tx2 = UVs[0].facePoints[1]
+		#print tx2
+		tx3 = UVs[0].facePoints[2]
+		#print tx3
+		tx4 = UVs[0].facePoints[3]
+		#print tx4
+		dis_btm = [tx2[0]-tx1[0], tx2[1]-tx1[1]]
+		dis_top = [tx3[0]-tx4[0], tx3[1]-tx4[1]]
+		dis_left = [tx4[0]-tx1[0], tx4[1]-tx1[1]]
+		dis_right = [tx3[0]-tx2[0], tx3[1]-tx2[1]]
+		#print dis_btm
+		#print dis_top
+		tx_btm = [] # store all nice texels on bottom edge 
+		tx_top = [] # store all nice texels on top edge 
+		tx_left = [] # store all five texels on left edge
+		tx_right = [] # store all five texels on right edge
+		uv_front = []
+		uv_back = []
+		uv_top = []
+		uv_btm = []
+		# Divide two texels into 9 texels on top and btm edge
+		for i in range(9):
+			tx_btm.append(tx(tx1[0]+i*dis_btm[0]/8.0, tx1[1]+i*dis_btm[1]/8.0))
+			tx_top.append(tx(tx4[0]+i*dis_top[0]/8.0, tx4[1]+i*dis_top[1]/8.0))
+		# Divde two texels into 5 texels on left and right edge
+		for i in range(4):
+			tx_right.append(tx(tx2[0]+i*dis_right[0]/4.0, tx2[1]+i*dis_right[1]/4.0))
+			tx_left.append(tx(tx4[0]-i*dis_left[0]/4.0, tx4[1]-i*dis_left[1]/4.0))
+
+		# Generate the 16 side surfaces based on 18 texels
+		for i in range(8):
+			uv_front.append([tx_btm[i], tx_btm[i+1], tx_top[i+1], tx_top[i]])
+			uv_back.append([tx_btm[i], tx_btm[i+1], tx_top[i+1], tx_top[i]])
+		# Generate the top and btm surface's texels
+		for i in range(4):
+			uv_btm.append(tx_btm[2*i])
+			uv_top.append(tx_btm[2*i])
+		for i in range(4):
+			uv_btm.append(tx_right[i])
+			uv_top.append(tx_right[i])
+		for i in range(4):
+			uv_btm.append(tx_top[2*i])
+			uv_top.append(tx_top[8 - 2*i])
+		for i in range(4):
+			uv_btm.append(tx_left[i])
+			uv_top.append(tx_left[i])
+
 
 		
 		#-------------------------------------------------------
@@ -233,11 +283,14 @@ class ModelBuilder:
 		for i in range(16):
 			temp_top.append(top_v[i])
 			temp_btm.append(btm_v[i])
-		polyList.append(Polygon(temp_top, []))
-		polyList.append(Polygon(temp_btm, []))
+		polyList.append(Polygon(temp_btm, uv_btm))
+		polyList.append(Polygon(temp_top, uv_top))
 		# The 16 polygons on side
-		for i in range(15):
-			tempPolygon = Polygon([btm_v[i], btm_v[(i+1)%16], top_v[(i+1)%16], top_v[i]], [])
+		for i in range(16):
+			if(i < 8):
+				tempPolygon = Polygon([btm_v[i], btm_v[(i+1)%16], top_v[(i+1)%16], top_v[i]], uv_front[i])
+			else:
+				tempPolygon = Polygon([btm_v[i], btm_v[(i+1)%16], top_v[(i+1)%16], top_v[i]], uv_back[i-8])
 			polyList.append(tempPolygon)
 		
 
