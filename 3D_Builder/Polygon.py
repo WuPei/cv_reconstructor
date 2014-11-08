@@ -11,10 +11,10 @@ class Polygon:
 		# Create list to store all vertex
 		self.Vertex = []
 		for i in newVertexList:
-			self.VertexList.append(i)
+			self.Vertex.append(i)
 			
 		# Create list to store all texel value
 		self.Texel = []
 		for i in newTexelList:
-			self.TexelList.append(i)
+			self.Texel.append(i)
 			
