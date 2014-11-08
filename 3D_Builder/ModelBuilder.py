@@ -28,9 +28,9 @@ class ModelBuilder:
 		#-------------------------------------------------------
 		# Generate all vertices from given 4 vertices
 		# with ver1-4 on bottom, ver5-8 on top
-		cx = center.x
-		cy = center.y
-		cz = center.z
+		cx = center[0]
+		cy = center[1]
+		cz = center[2]
 		ver1 = vt(cx-length/2, cy, cz+width/2)
 		ver2 = vt(cx+length/2, cy, cz+width/2)
 		ver3 = vt(cx+length/2, cy, cz-width/2)
@@ -181,13 +181,17 @@ class ModelBuilder:
 		return temp
 	def BuildCylinder (self, center, radius, height, UVs):
 		#-------------------------------------------------------
+		cx = center[0]
+		cy = center[1]
+		cz = center[2]
+		center = vt(cx, cy, cz)
 		# Generate vertices on bottom surface
 		btm_v = [None] * 16
 		# Compute btm_v0, 4, 8, 12
-		btm_v[0] = vt(center.x+radius, center.y, center.z)
-		btm_v[8] = vt(center.x-radius, center.y, center.z)
-		btm_v[4] = vt(center.x, center.y, center.z+radius)
-		btm_v[12] = vt(center.x, center.y, center.z-radius)
+		btm_v[0] = vt(cx+radius, cy, cz)
+		btm_v[8] = vt(cx-radius, cy, cz)
+		btm_v[4] = vt(cx, cy, cz+radius)
+		btm_v[12] = vt(cx, cy, cz-radius)
 		# Compute btm_v2, 6, 10, 14
 		for i in [0, 4]:
 			btm_v[i+2] = self.ComputeMidVector(btm_v[i], btm_v[i+4], center, radius)
@@ -339,9 +343,9 @@ class ModelBuilder:
 	def BuildFrustum (self, center, btm_len, btm_wid, top_len, top_wid, height, UVs):
 		#-------------------------------------------------------
 		# Generate all vertices
-		cx = center.x
-		cy = center.y
-		cz = center.z
+		cx = center[0]
+		cy = center[1]
+		cz = center[2]
 		ver1 = vt(cx-btm_len/2, cy, cz+btm_wid/2)
 		ver2 = vt(cx+btm_len/2, cy, cz+btm_wid/2)
 		ver3 = vt(cx+btm_len/2, cy, cz-btm_wid/2)
@@ -473,9 +477,9 @@ class ModelBuilder:
 	def BuildPrism (self, center, length, width, height, UVs):
 		#-------------------------------------------------------
 		# Define all 6 vertices
-		cx = center.x
-		cy = center.y
-		cz = center.z
+		cx = center[0]
+		cy = center[1]
+		cz = center[2]
 		ver1 = vt(cx-length/2, cy, cz+width/2)
 		ver2 = vt(cx+length/2, cy, cz+width/2)
 		ver3 = vt(cx+length/2, cy, cz-width/2)
