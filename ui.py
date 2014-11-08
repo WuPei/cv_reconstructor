@@ -423,16 +423,15 @@ class App:
     #pragma mark -- button actions
     #buttons in scene 1
     def generateVideoButton(self):
-        print ""
-        print ""
-        for i in range(len(self.shapes)):
-            print type(self.shapes).__name__
-            print "center: ", self.shapes[i].center
-            print "length: ", self.shapes[i].length
-            print "width: " , self.shapes[i].width
-            print "height: ", self.shapes[i].height
-            for j in range(len(self.shapes[i].faces)):
-                print self.shapes[i].faces[j].faceOrientation, " : ", self.shapes[i].faces[j].facePoints
+        # for i in range(len(self.shapes)):
+        #     print type(self.shapes).__name__
+        #     print "center: ", self.shapes[i].center
+        #     print "length: ", self.shapes[i].length
+        #     print "width: " , self.shapes[i].width
+        #     print "height: ", self.shapes[i].height
+        #     for j in range(len(self.shapes[i].faces)):
+        #         print self.shapes[i].faces[j].faceOrientation, " : ", self.shapes[i].faces[j].facePoints
+
         """
         mb = ModelBuilder()
         for i in self.shapes:
@@ -604,7 +603,6 @@ root = Tk()
 root.resizable(width=FALSE, height=FALSE)
 app = App(root)
 root.mainloop()
-		
 
 
 
