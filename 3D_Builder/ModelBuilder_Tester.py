@@ -13,7 +13,6 @@ from shape import Tree
 print "ModelBuilder Tester"
 mb = ModelBuilder()
 
-
 '''print "Test BuildCuboid"
 center = vt(0,0,0)
 length = 10
@@ -24,16 +23,13 @@ shape1 = Cuboid(center, length, width, height, "Shape1")
 shape1.faces.append(face_front)
 results = mb.BuildModel(shape1)'''
 
-
 '''print "Test Build Plane: Sky"
 sky = Sky([[1, 5],[5, 5],[5, 9],[1, 9]], "sky")
 results = mb.BuildModel(sky)'''
 
-
 '''print "Test Build Plane: Ground"
 ground = Ground([[1, 5],[5, 5],[5, 9],[1, 9]], "sky")
 results = mb.BuildModel(ground)'''
-
 
 '''print "Test Build Frustum"
 center = vt(10, 10, 10)
@@ -43,7 +39,6 @@ face_left = Face([[10, 50],[50, 50],[50, 90],[10, 90]], "Left")
 frustum.faces.append(face_front)
 frustum.faces.append(face_left)
 results = mb.BuildModel(frustum)'''
-
 
 '''print "Test Build Prism"
 center = vt(0, 0, 0)
@@ -56,12 +51,11 @@ prism.faces.append(face_left)
 prism.faces.append(face_right)
 results = mb.BuildModel(prism)'''
 
-
 for i in results:
-	print "In results, the polygon i: "
-	print "Vertex: "
-	for j in i.VertexList:
-		print j.x, j.y, j.z
-	print "Texels: "
-	for k in i.TexelList:
-		print k.u, k.v
+    print "In results, the polygon i: "
+    print "Vertex: "
+    for j in i.VertexList:
+        print j.x, j.y, j.z
+    print "Texels: "
+    for k in i.TexelList:
+        print k.u, k.v

@@ -4,10 +4,10 @@
 
 import os
 
-class Texel:
 
-	def __init__(self, u,v):
-		self.u = u
-		self.v = v
+class Texel:
+    def __init__(self, u, v):
+        self.u = u
+        self.v = v
 		
 		
