@@ -13,6 +13,7 @@ class App:
 		self.state = 1
 		self.currentIndex = -1
 		self.newShapeFlag = True
+		self.updateRightFrame2Flag = True
 
 		#create object for test purpose
 		for i in range(16):
@@ -66,13 +67,46 @@ class App:
 				print "height = " , self.shapes[self.currentIndex].height
 		print ""
 
+	def fecthRightFrame2Data(self):
+		if isinstance(self.shapes[self.currentIndex], sp.Cylinder):
+			for i in range(4):
+				self.pEntries[i].delete(0, END)
+
+			self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+			self.pEntries[2].insert(0, self.shapes[self.currentIndex].radius)
+			self.pEntries[3].insert(0, self.shapes[self.currentIndex].height)
+		elif isinstance(self.shapes[self.currentIndex], sp.Cuboid) or isinstance(self.shapes[self.currentIndex], sp.Prism):
+			for i in range(5):
+				self.pEntries[i].delete(0, END)
+
+			self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+			self.pEntries[2].insert(0, self.shapes[self.currentIndex].length)
+			self.pEntries[3].insert(0, self.shapes[self.currentIndex].width)
+			self.pEntries[4].insert(0, self.shapes[self.currentIndex].height)
+		elif isinstance(self.shapes[self.currentIndex], sp.Frustum):
+			for i in range(7):
+				self.pEntries[i].delete(0, END)
+
+			self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+			self.pEntries[2].insert(0, self.shapes[self.currentIndex].upperLength)
+			self.pEntries[3].insert(0, self.shapes[self.currentIndex].upperWidth)
+			self.pEntries[4].insert(0, self.shapes[self.currentIndex].lowerLength)
+			self.pEntries[5].insert(0, self.shapes[self.currentIndex].lowerWidth)
+			self.pEntries[6].insert(0, self.shapes[self.currentIndex].height)
+		elif isinstance(self.shapes[self.currentIndex], sp.Tree):
+			for i in range(3):
+				self.pEntries[i].delete(0, END)
+
+			self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
+			self.pEntries[2].insert(0, self.shapes[self.currentIndex].height)
+
+		self.pEntries[0].insert(0,self.shapes[self.currentIndex].name)
 
 	def updateFacesList(self):
 		self.facesList.delete(0,END)
-		if self.newShapeFlag == False:
-			for item in self.shapes[self.currentIndex].faces:
-				print item.faceOrientation
-				self.facesList.insert(END, item.faceOrientation) #orientation
+		for item in self.shapes[self.currentIndex].faces:
+			print item.faceOrientation
+			self.facesList.insert(END, item.faceOrientation) #orientation
 		
 	#pragma mark -- init frames
 	def initTopFrames(self):
@@ -266,11 +300,6 @@ class App:
 				for i in range(4):
 					self.pLabels[i].grid(row = i+2, column=0)
 					self.pEntries[i].grid(row = i+2, column = 1)
-					self.pEntries[i].delete(0, END)
-
-				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
-				self.pEntries[2].insert(0, self.shapes[self.currentIndex].radius)
-				self.pEntries[3].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 5
 			elif isinstance(self.shapes[self.currentIndex], sp.Cuboid) or isinstance(self.shapes[self.currentIndex], sp.Prism):
@@ -281,12 +310,6 @@ class App:
 				for i in range(5):
 					self.pLabels[i].grid(row = i+2, column=0)
 					self.pEntries[i].grid(row = i+2, column = 1)
-					self.pEntries[i].delete(0, END)
-
-				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
-				self.pEntries[2].insert(0, self.shapes[self.currentIndex].length)
-				self.pEntries[3].insert(0, self.shapes[self.currentIndex].width)
-				self.pEntries[4].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 6
 			elif isinstance(self.shapes[self.currentIndex], sp.Frustum):
@@ -299,14 +322,6 @@ class App:
 				for i in range(7):
 					self.pLabels[i].grid(row = i+2, column=0)
 					self.pEntries[i].grid(row = i+2, column = 1)
-					self.pEntries[i].delete(0, END)
-
-				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
-				self.pEntries[2].insert(0, self.shapes[self.currentIndex].upperLength)
-				self.pEntries[3].insert(0, self.shapes[self.currentIndex].upperWidth)
-				self.pEntries[4].insert(0, self.shapes[self.currentIndex].lowerLength)
-				self.pEntries[5].insert(0, self.shapes[self.currentIndex].lowerWidth)
-				self.pEntries[6].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 8
 			elif isinstance(self.shapes[self.currentIndex], sp.Tree):
@@ -315,18 +330,16 @@ class App:
 				for i in range(3):
 					self.pLabels[i].grid(row = i+2, column=0)
 					self.pEntries[i].grid(row = i+2, column = 1)
-					self.pEntries[i].delete(0, END)
-
-				self.pEntries[1].insert(0, self.shapes[self.currentIndex].center)
-				self.pEntries[2].insert(0, self.shapes[self.currentIndex].height)
 
 				maxRow = 4
-
-			self.pEntries[0].insert(0,self.shapes[self.currentIndex].name)
 
 			self.faceListLabel.grid(row = maxRow+2, column = 0, columnspan = 2)
 			self.facesList.grid(row = maxRow+3, column=0, columnspan = 2)
 			self.deleteFaceButton.grid(row = maxRow+5, column = 0, columnspan = 2)
+
+			if self.updateRightFrame2Flag == True:
+				self.fecthRightFrame2Data()
+
 
 		else:
 			self.rightFrame2.grid_forget()
@@ -355,6 +368,7 @@ class App:
 	#buttons in scene 1
 	def newShapeButton(self):
 		self.newShapeFlag = True
+		self.updateRightFrame2Flag = True;
 		self.currentIndex = len(self.shapes)
 		if self.shape.get() == "cylinder":
 			self.shapes.append( sp.Cylinder(0,0,0,""))
@@ -382,6 +396,7 @@ class App:
 
 	def editButton1(self):
 		self.newShapeFlag = False
+		self.updateRightFrame2Flag = True
 		self.currentIndex = (self.shapesList.curselection())[0]
 		self.show(2)
 		self.state = 2
@@ -393,6 +408,7 @@ class App:
 
 	#buttons in scene 2
 	def addFaceButton(self):
+		self.updateRightFrame2Flag = False
 		self.show(3)
 		self.state = 3
 
