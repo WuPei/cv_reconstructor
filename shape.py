@@ -58,7 +58,7 @@ class Sky():
 class Face():
 	def __init__(self,facePoints,faceOrientation):
 		self.facePoints =facePoints
-		self.drawId = ""
+		self.lineIds = []
 		self.faceOrientation = faceOrientation
 
 
