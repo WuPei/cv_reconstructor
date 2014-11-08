@@ -9,12 +9,12 @@ class Polygon:
 	
 	def __init__(self, newVertexList, newTexelList):
 		# Create list to store all vertex
-		self.VertexList = []
+		self.Vertex = []
 		for i in newVertexList:
-			self.VertexList.append(i)
+			self.Vertex.append(i)
 			
 		# Create list to store all texel value
-		self.TexelList = []
+		self.Texel = []
 		for i in newTexelList:
-			self.TexelList.append(i)
+			self.Texel.append(i)
 			
