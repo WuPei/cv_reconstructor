@@ -4,10 +4,10 @@
 
 import os
 import sys
-#import b
+# import b
 import cv2
 from Vertex import Vertex
-from texture import Texture 
+from texture import Texture
 from ModelBuilder import ModelBuilder
 from texture import Point
 
@@ -51,7 +51,7 @@ for i in temp:
 	vlst = i.VertexList
 	for j in vlst:
 		print "i, j:", j.x, j.y, j.z'''
-		
+
 '''print "verifying polygons for cynlinder"
 temp = mb.BuildCylinder(Vertex(0,0,0),Vertex(0,0,1), Vertex(0,1,0))
 for i in temp:
@@ -67,23 +67,24 @@ for i in temp:
 	print "another polygon:"
 	for j in vlst:
 		print "i, j:", j.x, j.y, j.z'''
-		
-		
+
 mb = ModelBuilder()
-UVs = [[200, 200], [200, 300], [300, 500], [300,150], [200, 200], [200, 300], [300, 500], [300,150], [200, 200], [200, 300], [300, 500], [300,150], [200, 200], [200, 300], [300, 500], [300,150], [200, 200], [200, 300], [300, 500], [300,150], [200, 200], [200, 300], [300, 500], [300,150] ]
-cube = mb.BuildCuboid(Vertex(0,0,1),Vertex(1,0,1), Vertex(0,1,1), Vertex(0,0,0), UVs)
+UVs = [[200, 200], [200, 300], [300, 500], [300, 150], [200, 200], [200, 300], [300, 500], [300, 150], [200, 200],
+       [200, 300], [300, 500], [300, 150], [200, 200], [200, 300], [300, 500], [300, 150], [200, 200], [200, 300],
+       [300, 500], [300, 150], [200, 200], [200, 300], [300, 500], [300, 150]]
+cube = mb.BuildCuboid(Vertex(0, 0, 1), Vertex(1, 0, 1), Vertex(0, 1, 1), Vertex(0, 0, 0), UVs)
 for i in cube:
-	vlst = i.Vertex
-	for j in vlst:
-		print "i, j:", j.x, j.y, j.z
-	tlst = i.Texel
-	for j in tlst:
-		print "u, v:", j.u, j.v
-		
+    vlst = i.Vertex
+    for j in vlst:
+        print "i, j:", j.x, j.y, j.z
+    tlst = i.Texel
+    for j in tlst:
+        print "u, v:", j.u, j.v
+
 texture = Texture(cv2.imread('project.jpeg', cv2.CV_LOAD_IMAGE_COLOR))
 points = []
 for i in range(len(cube)):
-	points.append(texture.putTexture(cube[i]))	
+    points.append(texture.putTexture(cube[i]))
 
 print points	
 		

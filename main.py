@@ -25,7 +25,7 @@ height = 600
 y_axis = [0, 1, 0]
 x_axis = [1, 0, 0]
 
-#initial camera
+# initial camera
 camera_pos = [0, 0, 0, 1000]  #(500,100,100) as initial position
 I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 camera_ori = np.matrix(I)
