@@ -4,6 +4,7 @@
 
 import numpy as np
 from Vertex import Vertex as vt
+from Texel import Texel as tx
 from Polygon import Polygon
 
 class ModelBuilder:
@@ -11,33 +12,147 @@ class ModelBuilder:
 	###########################################################
 	# Build cuboid from four vertex
 	###########################################################
-	# V1 is on front, left, bottom corner
-	# V2 is on front, right, bottom corner
-	# V3 is on front, left, top corner
-	# V4 is on back, left, bottom corner
+	# center is the middle point on the bottom surface
+	# len, wid and hei indicate length,width,height for cuboid
 	# UVs is a list containing all texel needed for eight vertices
-	def BuildCuboid (self, v1, v2, v3, v4, UVs):
+	def BuildCuboid (self, center, length, width, height, UVs):
+		#-------------------------------------------------------
 		# Generate all vertices from given 4 vertices
 		# with ver1-4 on bottom, ver5-8 on top
-		ver1 = vt.equal(v1);
-		ver2 = vt.equal(v2);
+		cx = center.x
+		cy = center.y
+		cz = center.z
+		ver1 = vt(cx-length/2, cy, cz+width/2)
+		ver2 = vt(cx+length/2, cy, cz+width/2)
+		ver3 = vt(cx+length/2, cy, cz-width/2)
+		ver4 = vt(cx-length/2, cy, cz-width/2)
+		ver5 = vt(cx-length/2, cy+height, cz+width/2)
+		ver6 = vt(cx+length/2, cy+height, cz+width/2)
+		ver7 = vt(cx+length/2, cy+height, cz-width/2)
+		ver8 = vt(cx-length/2, cy+height, cz-width/2)
+		'''
+		ver1 = vt.equal(v1)
+		ver2 = vt.equal(v2)
 		ver3 = vt.sum(v1, vt.sum(vt.diff(v4,v1),vt.diff(v2,v1)))
-		ver4 = vt.equal(v4);
-		ver5 = vt.equal(v3);
+		ver4 = vt.equal(v4)
+		ver5 = vt.equal(v3)
 		ver6 = vt.sum(v3, vt.diff(v2, v1))
 		ver7 = vt.sum(ver3, vt.diff(v3, v1))
 		ver8 = vt.sum(v3, vt.diff(v4, v1))
+		'''
 		
+
+		#-------------------------------------------------------
 		# Store corresponding Texel coordinates
+		exist_front = False
+		exist_left = False
+		exist_right = False
+		exist_top = False
+		uv_front = []
+		uv_back = []
+		uv_left = []
+		uv_right = []
+		uv_top = [] 
+		uv_btm = []
+		# Assign uvs from input
+		for i in UVs:
+			# Left surface
+			if(i.faceOrientation=="Left"):
+				exist_left = True
+				for j in i.facePoints:
+					uv_front.append(tx(j[0], j[1]))
+			# Right surface
+			elif(i.faceOrientation=="Right"):
+				exist_right = True
+				for j in i.facePoints:
+					uv_right.append(tx(j[0], j[1]))
+			# Front surface
+			elif(i.faceOrientation=="Front"):
+				exist_front = True
+				for j in i.facePoints:
+					uv_front.append(tx(j[0], j[1]))
+			# Upper surface
+			elif(i.faceOrientation=="Upper"):
+				exist_top = True
+				for j in i.facePoints:
+					uv_top.append(tx(j[0], j[1]))
+			else:
+				print "Face denifition got errors!! Nor left, right, front or Upper."
+		# Invent surfaces not provided in inputs
+		# Invent front surface if not exist
+		if(exist_front == False):
+			if(exist_left): # Use left surface as FRONT also
+				for i in uv_left:
+					uv_front.append(i)
+				exist_front = True
+			else:
+				if(exist_right): # use right surface as FRONT also
+					for i in uv_right:
+						uv_front.append(i)
+					exist_front = True
+				else:
+					print "Front surface wanna copy from left or right, BUT Fail !!!"
+		# Invent left surface if not exist. (front surface already exist here)
+		if(exist_left == False):
+			if(exist_right): # use right surface as LEFT also
+				for i in uv_right:
+					uv_left.append(i)
+				exist_left = True
+			else :
+				if(exist_front): # use front surface as LEFT also
+					for i in uv_front:
+						uv_left.append(i)
+					exist_left = True
+				else:
+					print "Left surface wanna copy from right or front, BUT Fail !!!"
+		# Invent right surface is not exist. (front, left already exist here)
+		if(exist_right == False):
+			if(exist_left): # use right surface as RIGHT also
+				for i in uv_left:
+					uv_right.append(i)
+				exist_right = True
+			else :
+				if(exist_front): # use front surface as RIGHT also
+					for i in uv_front:
+						uv_right.append(i)
+					exist_right = True
+				else:
+					print "Right surface wanna copy from left or front, BUT Fail !!!"
+		# Invent top surface 
+		if(exist_top == False):
+			if(exist_front):
+				for i in uv_front:
+					uv_top.append(i)
+				exist_top = True
+			else:
+				print "Top surface wanna copy from front, BUT Fail !!!"
+		# Invent btm surface
+		if(exist_top):
+			for i in uv_top:
+				uv_top.append(i)
+		else:
+			print "Bottom surface wanna copy from top, BUT Fail !!!"
+		# Invent back surface
+		if(exist_front):
+			for i in uv_front:
+				uv_back.append(i)
+		else:
+			print "Back surface wanna copy from front, BUT Fail !!!"
+
+			
 		
+
+		#-------------------------------------------------------
 		# Generate polygons
-		poly1 = Polygon([ver1, ver2, ver3, ver4], [])
-		poly2 = Polygon([ver5, ver6, ver7, ver8], [])
-		poly3 = Polygon([ver1, ver2, ver6, ver5], [])
-		poly4 = Polygon([ver2, ver3, ver7, ver6], [])
-		poly5 = Polygon([ver3, ver4, ver8, ver7], [])
-		poly6 = Polygon([ver4, ver1, ver5, ver8], [])
+		poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
+		poly2 = Polygon([ver5, ver6, ver7, ver8], uv_top)
+		poly3 = Polygon([ver1, ver2, ver6, ver5], uv_front)
+		poly4 = Polygon([ver2, ver3, ver7, ver6], uv_right)
+		poly5 = Polygon([ver3, ver4, ver8, ver7], uv_back)
+		poly6 = Polygon([ver4, ver1, ver5, ver8], uv_left)
 		
+
+		#-------------------------------------------------------
 		# Return list of polygons
 		polyList = [poly1, poly2, poly3, poly4, poly5, poly6]
 		return polyList
@@ -48,23 +163,40 @@ class ModelBuilder:
 	# Build Cylinder
 	###########################################################
 	# Given two points, compute the middle point between them on circle
-	# c being center of circle.
-	def ComputeMidVector (self, a, b, c, r):
-		temp = vt.sum(vt.diff(a, c), vt.diff(b, c))
+	# center being center of circle.
+	def ComputeMidVector (self, a, b, center, r):
+		temp = vt.sum(vt.diff(a, center), vt.diff(b, center))
 		temp = vt.normalize(temp)
 		temp = vt.scale(temp, r)
-		temp = vt.sum(c, temp)
+		temp = vt.sum(center, temp)
 		return temp
-	# V1 is the center of circle on bottom/top surface
-	# V2 is on the circle on bottom/top surface (V1,V2 on same surface)
-	# V3 is the center of circle on top/btm surface
-	def BuildCylinder (self, v1, v2, v3):
-		# Generate radius of circle
-		radius = vt.distance(v1, v2)
+	def BuildCylinder (self, center, radius, height, UVs):
+		#-------------------------------------------------------
+		# Generate vertices on bottom surface
+		btm_v = [None] * 16
+		# Compute btm_v0, 4, 8, 12
+		btm_v[0] = vt(center.x+radius, center.y, center.z)
+		btm_v[8] = vt(center.x-radius, center.y, center.z)
+		btm_v[4] = vt(center.x, center.y, center.z+radius)
+		btm_v[12] = vt(center.x, center.y, center.z-radius)
+		# Compute btm_v2, 6, 10, 14
+		for i in [0, 4]:
+			btm_v[i+2] = self.ComputeMidVector(btm_v[i], btm_v[i+4], center, radius)
+			btm_v[i+2+8] = vt.sum(center, vt.diff(center, btm_v[i+2]))
+		# Compute vtm_1,3,5,7 and 9,11,13,15
+		for i in [0, 2, 4, 6]:
+			btm_v[i+1] = self.ComputeMidVector(btm_v[i], btm_v[i+2], center, radius)
+			btm_v[i+1+8] = vt.sum(center, vt.diff(center, btm_v[i+1]))
+
+		# Generate vertices on top surface
+		top_v = []
+		for i in range(17):
+			temp = vt(btm_v[i].x, btm_v[i].y+height, btm_v[i].z)
+			top_v.append(temp)
 
 		# Generate all vertices from given
 		# Vertex on one circle surface
-		ver1 = vt.equal(v1)
+		'''ver1 = vt.equal(center)
 		ver2 = vt.equal(v2)
 		ver3 = vt.sum(v1, vt.diff(v1, v2))
 		# Generate third&fourth vertices on verticle line
@@ -76,32 +208,32 @@ class ModelBuilder:
 		ver6 = self.ComputeMidVector(ver2, ver5, ver1, radius)
 		ver7 = vt.sum(v1, vt.diff(ver1, ver6))
 		ver8 = self.ComputeMidVector(ver2, ver4, ver1, radius)
-		ver9 = vt.sum(v1, vt.diff(ver1, ver6))
-		# Vertex on the other circle surface
-		ver1_2 = vt.equal(v1)
-		ver2_2 = vt.sum(ver2, vt.diff(v3, v1))
-		ver3_2 = vt.sum(ver3, vt.diff(v3, v1))
-		ver4_2 = vt.sum(ver4, vt.diff(v3, v1))
-		ver5_2 = vt.sum(ver5, vt.diff(v3, v1))
-		ver6_2 = vt.sum(ver6, vt.diff(v3, v1))
-		ver7_2 = vt.sum(ver7, vt.diff(v3, v1))
-		ver8_2 = vt.sum(ver8, vt.diff(v3, v1))
-		ver9_2 = vt.sum(ver9, vt.diff(v3, v1))
+		ver9 = vt.sum(v1, vt.diff(ver1, ver6))'''
+
+
+		#-------------------------------------------------------
+		# Store corresponding Texel coordinates
+
 		
+		#-------------------------------------------------------
 		# Generate polygons
-		poly1 = Polygon([ver2, ver6, ver6_2, ver2_2], [])
-		poly2 = Polygon([ver6, ver5, ver5_2, ver6_2], [])
-		poly3 = Polygon([ver5, ver9, ver9_2, ver5_2], [])
-		poly4 = Polygon([ver9, ver3, ver3_2, ver9_2], [])
-		poly5 = Polygon([ver3, ver7, ver7_2, ver3_2], [])
-		poly6 = Polygon([ver7, ver4, ver4_2, ver7_2], [])
-		poly7 = Polygon([ver4, ver8, ver8_2, ver4_2], [])
-		poly8 = Polygon([ver8, ver2, ver2_2, ver8_2], [])
-		poly9 = Polygon([ver2,ver6,ver5,ver9,ver3,ver7,ver4,ver8], [])
-		poly10 = Polygon([ver2_2,ver6_2,ver5_2,ver9_2,ver3_2,ver7_2,ver4_2,ver8_2], [])
+		polyList = []
+		temp_top = []
+		temp_btm = []
+		# The two circle polygon on top and bot
+		for i in range(16):
+			temp_top.append(top_v[i])
+			temp_btm.append(btm_v[i])
+		polyList.append(Polygon(temp_top, []))
+		polyList.append(Polygon(temp_btm, []))
+		# The 16 polygons on side
+		for i in range(15):
+			tempPolygon = Polygon([btm_v[i], btm_v[(i+1)%16], top_v[(i+1)%16], top_v[i]], [])
+			polyList.append(tempPolygon)
 		
+
+		#-------------------------------------------------------
 		# Return list of polygons
-		polyList = [poly1, poly2, poly3, poly4, poly5, poly6, poly7, poly8, poly9, poly10]
 		return polyList
 		
 		
@@ -111,15 +243,26 @@ class ModelBuilder:
 	###########################################################	
 	# a, b, c are vertices of the plane
 	# UVs are all texel values
-	def BuildPlane (self, a, b, c, UVs):
+	def BuildPlane (self, height, facePoints):
+		length = 500
+		width = 500
+		#-------------------------------------------------------
 		# Generate all four vectors
-		ver1 = vt.equal(a)
-		ver2 = vt.equal(b)
-		ver3 = vt.equal(c)
-		ver4 = vt.sum(b, vt.sum(vt.diff(a,b), vt.diff(c,b)))
-		
-		#
-		poly = Polygon([ver1, ver2, ver3, ver4], [UVs])
+		ver1 = vt(-length, height, width)
+		ver2 = vt(length, height, width)
+		ver3 = vt(length, height, -width)
+		ver4 = vt(-length, height, -width)
+
+
+		#-------------------------------------------------------
+		# Store corresponding Texel coordinates
+		uvs = []
+		for i in facePoints:
+			uvs.append(tx(i[0], i[1]))
+
+
+		#-------------------------------------------------------
+		poly = Polygon([ver1, ver2, ver3, ver4], uvs)
 		polyList = [poly]
 		return polyList
 	
@@ -128,32 +271,282 @@ class ModelBuilder:
 	###########################################################
 	# Build frustum (normally for roofs)
 	###########################################################	
-	# a is front, left, bottom corner
-	# b is front, right, bottom corner
-	# c is front, left, top corner
-	# d is back, left, bottom corner
+	# The top and bottom surface are rectangle with length and width to be
+	# btm_len, btm_wid, top_len, top_wid. Height is the distance between them
 	# UVs are all texels needed for all surfaces
-	def BuildFrustum (self, a, b, c, d):
+	def BuildFrustum (self, center, btm_len, btm_wid, top_len, top_wid, height, UVs):
+		#-------------------------------------------------------
 		# Generate all vertices
-		ver1 = vt.equal(a)
-		ver2 = vt.equal(b)
-		ver3 = vt.sum(a, vt.sum(vt.diff(b,a), vt.diff(d,a)))
-		ver4 = vt.equal(d)
-		ver5 = vt.equal(c)
-		ver6 = vt(ver2.x-(ver5.x-ver1.x), ver5.y, ver2.z-(ver1.z-ver5.z))
-		ver7 = vt(ver3.x-(ver5.x-ver1.x), ver5.y, ver3.z+(ver1.z-ver5.z))
-		ver8 = vt(ver4.x+(ver5.x-ver1.x), ver5.y, ver4.z+(ver1.z-ver5.z))
+		cx = center.x
+		cy = center.y
+		cz = center.z
+		ver1 = vt(cx-btm_len/2, cy, cz+btm_wid/2)
+		ver2 = vt(cx+btm_len/2, cy, cz+btm_wid/2)
+		ver3 = vt(cx+btm_len/2, cy, cz-btm_wid/2)
+		ver4 = vt(cx-btm_len/2, cy, cz-btm_wid/2)
+		ver5 = vt(cx-top_len/2, cy+height, cz+top_wid/2)
+		ver6 = vt(cx+top_len/2, cy+height, cz+top_wid/2)
+		ver7 = vt(cx+top_len/2, cy+height, cz-top_wid/2)
+		ver8 = vt(cx-top_len/2, cy+height, cz-top_wid/2)
+
 		
+		#-------------------------------------------------------
+		# Store corresponding Texel coordinates
+		exist_front = False
+		exist_left = False
+		exist_right = False
+		exist_top = False
+		uv_front = []
+		uv_back = []
+		uv_left = []
+		uv_right = []
+		uv_top = [] 
+		uv_btm = []
+		# Assign uvs from input
+		for i in UVs:
+			# Left surface
+			if(i.faceOrientation=="Left"):
+				exist_left = True
+				for j in i.facePoints:
+					uv_front.append(tx(j[0], j[1]))
+			# Right surface
+			elif(i.faceOrientation=="Right"):
+				exist_right = True
+				for j in i.facePoints:
+					uv_right.append(tx(j[0], j[1]))
+			# Front surface
+			elif(i.faceOrientation=="Front"):
+				exist_front = True
+				for j in i.facePoints:
+					uv_front.append(tx(j[0], j[1]))
+			# Upper surface
+			elif(i.faceOrientation=="Upper"):
+				exist_top = True
+				for j in i.facePoints:
+					uv_top.append(tx(j[0], j[1]))
+			else:
+				print "Face denifition got errors!! Nor left, right, front or Upper."
+		# Invent surfaces not provided in inputs
+		# Invent front surface if not exist
+		if(exist_front == False):
+			if(exist_left): # Use left surface as FRONT also
+				for i in uv_left:
+					uv_front.append(i)
+				exist_front = True
+			else:
+				if(exist_right): # use right surface as FRONT also
+					for i in uv_right:
+						uv_front.append(i)
+					exist_front = True
+				else:
+					print "Front surface wanna copy from left or right, BUT Fail !!!"
+		# Invent left surface if not exist. (front surface already exist here)
+		if(exist_left == False):
+			if(exist_right): # use right surface as LEFT also
+				for i in uv_right:
+					uv_left.append(i)
+				exist_left = True
+			else :
+				if(exist_front): # use front surface as LEFT also
+					for i in uv_front:
+						uv_left.append(i)
+					exist_left = True
+				else:
+					print "Left surface wanna copy from right or front, BUT Fail !!!"
+		# Invent right surface is not exist. (front, left already exist here)
+		if(exist_right == False):
+			if(exist_left): # use right surface as RIGHT also
+				for i in uv_left:
+					uv_right.append(i)
+				exist_right = True
+			else :
+				if(exist_front): # use front surface as RIGHT also
+					for i in uv_front:
+						uv_right.append(i)
+					exist_right = True
+				else:
+					print "Right surface wanna copy from left or front, BUT Fail !!!"
+		# Invent top surface 
+		if(exist_top == False):
+			if(exist_front):
+				for i in uv_front:
+					uv_top.append(i)
+				exist_top = True
+			else:
+				print "Top surface wanna copy from front, BUT Fail !!!"
+		# Invent btm surface
+		if(exist_top):
+			for i in uv_top:
+				uv_top.append(i)
+		else:
+			print "Bottom surface wanna copy from top, BUT Fail !!!"
+		# Invent back surface
+		if(exist_front):
+			for i in uv_front:
+				uv_back.append(i)
+		else:
+			print "Back surface wanna copy from front, BUT Fail !!!"
+
+
+		#-------------------------------------------------------
 		# Generate polygons
-		poly1 = Polygon([ver1, ver2, ver3, ver4], [])
-		poly2 = Polygon([ver5, ver6, ver7, ver8], [])
-		poly3 = Polygon([ver1, ver2, ver6, ver5], [])
-		poly4 = Polygon([ver2, ver3, ver7, ver6], [])
-		poly5 = Polygon([ver3, ver4, ver8, ver7], [])
-		poly6 = Polygon([ver4, ver1, ver5, ver8], [])
+		poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
+		poly2 = Polygon([ver5, ver6, ver7, ver8], uv_top)
+		poly3 = Polygon([ver1, ver2, ver6, ver5], uv_front)
+		poly4 = Polygon([ver2, ver3, ver7, ver6], uv_right)
+		poly5 = Polygon([ver3, ver4, ver8, ver7], uv_back)
+		poly6 = Polygon([ver4, ver1, ver5, ver8], uv_left)
 		
+
+		#-------------------------------------------------------
 		# Return list of polygons
 		polyList = [poly1, poly2, poly3, poly4, poly5, poly6]
 		return polyList
 		
+	
+
+	###########################################################
+	# Build prism (normally for roofs)
+	###########################################################	
+	def BuildPrism (self, center, length, width, height, UVs):
+		#-------------------------------------------------------
+		# Define all 6 vertices
+		cx = center.x
+		cy = center.y
+		cz = center.z
+		ver1 = vt(cx-length/2, cy, cz+width/2)
+		ver2 = vt(cx+length/2, cy, cz+width/2)
+		ver3 = vt(cx+length/2, cy, cz-width/2)
+		ver4 = vt(cx-length/2, cy, cz-width/2)
+		ver5 = vt(cx, cy+height, cz+width/2)
+		ver6 = vt(cx, cy+height, cz-width/2)
+
+
+		#-------------------------------------------------------
+		# Store corresponding Texel coordinates
+		exist_front = False
+		exist_left = False
+		exist_right = False
+		uv_front = []
+		uv_back = []
+		uv_left = []
+		uv_right = []
+		uv_btm = []
+		# Assign uvs from input
+		for i in UVs:
+			# Left surface
+			if(i.faceOrientation=="Left"):
+				exist_left = True
+				for j in i.facePoints:
+					uv_front.append(tx(j[0], j[1]))
+			# Right surface
+			elif(i.faceOrientation=="Right"):
+				exist_right = True
+				for j in i.facePoints:
+					uv_right.append(tx(j[0], j[1]))
+			# Upper surface
+			elif(i.faceOrientation=="Upper"):
+				exist_top = True
+				for j in i.facePoints:
+					uv_top.append(tx(j[0], j[1]))
+			else:
+				print "Face denifition got errors!! Nor left, right, front or Upper."
+		# Invent surfaces not provided in inputs
+		# Invent front surface if not exist
+		if(exist_front == False):
+			if(exist_left): # Use left surface as FRONT also
+				for i in uv_left:
+					uv_front.append(i)
+				exist_front = True
+			else:
+				if(exist_right): # use right surface as FRONT also
+					for i in uv_right:
+						uv_front.append(i)
+					exist_front = True
+				else:
+					print "Front surface wanna copy from left or right, BUT Fail !!!"
+		# Invent left surface if not exist. (front surface already exist here)
+		if(exist_left == False):
+			if(exist_right): # use right surface as LEFT also
+				for i in uv_right:
+					uv_left.append(i)
+				exist_left = True
+			else :
+				if(exist_front): # use front surface as LEFT also
+					for i in uv_front:
+						uv_left.append(i)
+					exist_left = True
+				else:
+					print "Left surface wanna copy from right or front, BUT Fail !!!"
+		# Invent right surface is not exist. (front, left already exist here)
+		if(exist_right == False):
+			if(exist_left): # use right surface as RIGHT also
+				for i in uv_left:
+					uv_right.append(i)
+				exist_right = True
+			else :
+				if(exist_front): # use front surface as RIGHT also
+					for i in uv_front:
+						uv_right.append(i)
+					exist_right = True
+				else:
+					print "Right surface wanna copy from left or front, BUT Fail !!!"
+		# Invent btm surface
+		if(exist_front):
+			for i in uv_front:
+				uv_top.append(i)
+		else:
+			print "Bottom surface wanna copy from front, BUT Fail !!!"
+		# Invent back surface
+		if(exist_front):
+			for i in uv_front:
+				uv_back.append(i)
+		else:
+			print "Back surface wanna copy from front, BUT Fail !!!"
+
+
+		#-------------------------------------------------------
+		# Generate polygons
+		poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
+		poly2 = Polygon([ver1, ver2, ver5], uv_front)
+		poly3 = Polygon([ver2, ver3, ver6, ver5], uv_right)
+		poly4 = Polygon([ver3, ver4, ver6], uv_back)
+		poly5 = Polygon([ver4, ver1, ver5, ver6], uv_left)
 		
+
+		#-------------------------------------------------------
+		# Return list of polygons
+		polyList = [poly1, poly2, poly3, poly4, poly5]
+		return polyList
+
+
+
+	###########################################################
+	# Build tree
+	###########################################################	
+	def BuildTree (self, center, height):
+		return 1
+
+
+
+	###########################################################
+	# Build Functions called by GUI to build 3D models.
+	###########################################################	
+	def BuildModel (self, model):
+		if(type(model) == Cuboid):
+			print "Hello"
+			self.BuildCuboid(model.center, model.length, model.width, model.height, model.faces)
+		elif(type(model) == Cylinder):
+			self.BuildCylinder(model.center, model.radius, model.height, model.faces)
+		elif(type(model) == Ground):
+			self.BuildPlane(0, model.facePoints)
+		elif(type(model) == Sky):
+			self.BuildPlane(400, model.facePoints)
+		elif(type(model) == Frustum):
+			self.BuildFrustum(model.center, model.lowerLength, model.lowerWidth, model.upperLength, model.upperWidth, model.height, model.faces)
+		elif(type(model) == Prism):
+			self.BuildPrism(model.center, model.length, model.width, model.height, model.faces)
+		elif(type(model) == Tree):
+			self.BuildTree(model.center, model.height)
+		else :
+			print "Model's type is Wrong..."
