@@ -6,6 +6,15 @@ import numpy as np
 from Vertex import Vertex as vt
 from Texel import Texel as tx
 from Polygon import Polygon
+from shape import Shape
+from shape import Cylinder
+from shape import Cuboid
+from shape import Prism
+from shape import Frustum
+from shape import Ground
+from shape import Sky
+from shape import Face
+from shape import Tree
 
 class ModelBuilder:
 
@@ -60,7 +69,7 @@ class ModelBuilder:
 			if(i.faceOrientation=="Left"):
 				exist_left = True
 				for j in i.facePoints:
-					uv_front.append(tx(j[0], j[1]))
+					uv_left.append(tx(j[0], j[1]))
 			# Right surface
 			elif(i.faceOrientation=="Right"):
 				exist_right = True
@@ -129,7 +138,7 @@ class ModelBuilder:
 		# Invent btm surface
 		if(exist_top):
 			for i in uv_top:
-				uv_top.append(i)
+				uv_btm.append(i)
 		else:
 			print "Bottom surface wanna copy from top, BUT Fail !!!"
 		# Invent back surface
@@ -308,7 +317,7 @@ class ModelBuilder:
 			if(i.faceOrientation=="Left"):
 				exist_left = True
 				for j in i.facePoints:
-					uv_front.append(tx(j[0], j[1]))
+					uv_left.append(tx(j[0], j[1]))
 			# Right surface
 			elif(i.faceOrientation=="Right"):
 				exist_right = True
@@ -377,7 +386,7 @@ class ModelBuilder:
 		# Invent btm surface
 		if(exist_top):
 			for i in uv_top:
-				uv_top.append(i)
+				uv_btm.append(i)
 		else:
 			print "Bottom surface wanna copy from top, BUT Fail !!!"
 		# Invent back surface
@@ -438,30 +447,30 @@ class ModelBuilder:
 			if(i.faceOrientation=="Left"):
 				exist_left = True
 				for j in i.facePoints:
-					uv_front.append(tx(j[0], j[1]))
+					uv_left.append(tx(j[0], j[1]))
 			# Right surface
 			elif(i.faceOrientation=="Right"):
 				exist_right = True
 				for j in i.facePoints:
 					uv_right.append(tx(j[0], j[1]))
-			# Upper surface
-			elif(i.faceOrientation=="Upper"):
-				exist_top = True
+			# Front surface
+			elif(i.faceOrientation=="Front"):
+				exist_front = True
 				for j in i.facePoints:
-					uv_top.append(tx(j[0], j[1]))
+					uv_front.append(tx(j[0], j[1]))
 			else:
 				print "Face denifition got errors!! Nor left, right, front or Upper."
 		# Invent surfaces not provided in inputs
 		# Invent front surface if not exist
 		if(exist_front == False):
 			if(exist_left): # Use left surface as FRONT also
-				for i in uv_left:
-					uv_front.append(i)
+				for i in range(3):
+					uv_front.append(uv_left[i])
 				exist_front = True
 			else:
 				if(exist_right): # use right surface as FRONT also
-					for i in uv_right:
-						uv_front.append(i)
+					for i in range(3):
+						uv_front.append(uv_right[i])
 					exist_front = True
 				else:
 					print "Front surface wanna copy from left or right, BUT Fail !!!"
@@ -473,8 +482,12 @@ class ModelBuilder:
 				exist_left = True
 			else :
 				if(exist_front): # use front surface as LEFT also
-					for i in uv_front:
-						uv_left.append(i)
+					for i in range(2):
+						uv_left.append(uv_front[i]) # only contains two texels
+					uv_left.append(tx(uv_front[2].u, uv_front[2].v)) # add the third texel
+					uv_left.append(uv_front[2]) # add the fourth texel
+					uv_left[2].u = uv_front[2].u+uv_front[1].u-uv_front[0].u
+					uv_left[2].v = uv_front[2].v+uv_front[1].v-uv_front[0].v
 					exist_left = True
 				else:
 					print "Left surface wanna copy from right or front, BUT Fail !!!"
@@ -486,17 +499,21 @@ class ModelBuilder:
 				exist_right = True
 			else :
 				if(exist_front): # use front surface as RIGHT also
-					for i in uv_front:
-						uv_right.append(i)
+					for i in range(2):
+						uv_left.append(uv_front[i]) # only contains two texels
+					uv_left.append(tx(uv_front[2].u, uv_front[2].v)) # add the third texel
+					uv_left.append(uv_front[2]) # add the fourth texel
+					uv_left[2].u = uv_front[2].u+uv_front[1].u-uv_front[0].u
+					uv_left[2].v = uv_front[2].v+uv_front[1].v-uv_front[0].v
 					exist_right = True
 				else:
 					print "Right surface wanna copy from left or front, BUT Fail !!!"
 		# Invent btm surface
-		if(exist_front):
-			for i in uv_front:
-				uv_top.append(i)
+		if(exist_left):
+			for i in uv_left:
+				uv_btm.append(i)
 		else:
-			print "Bottom surface wanna copy from front, BUT Fail !!!"
+			print "Bottom surface wanna copy from left, BUT Fail !!!"
 		# Invent back surface
 		if(exist_front):
 			for i in uv_front:
@@ -533,20 +550,26 @@ class ModelBuilder:
 	# Build Functions called by GUI to build 3D models.
 	###########################################################	
 	def BuildModel (self, model):
-		if(type(model) == Cuboid):
-			print "Hello"
-			self.BuildCuboid(model.center, model.length, model.width, model.height, model.faces)
-		elif(type(model) == Cylinder):
-			self.BuildCylinder(model.center, model.radius, model.height, model.faces)
-		elif(type(model) == Ground):
-			self.BuildPlane(0, model.facePoints)
-		elif(type(model) == Sky):
-			self.BuildPlane(400, model.facePoints)
-		elif(type(model) == Frustum):
-			self.BuildFrustum(model.center, model.lowerLength, model.lowerWidth, model.upperLength, model.upperWidth, model.height, model.faces)
-		elif(type(model) == Prism):
-			self.BuildPrism(model.center, model.length, model.width, model.height, model.faces)
-		elif(type(model) == Tree):
-			self.BuildTree(model.center, model.height)
+		if(isinstance(model, Cuboid)):
+			print "Model's type is Cuboid"
+			return self.BuildCuboid(model.center, model.length, model.width, model.height, model.faces)
+		elif(isinstance(model, Cylinder)):
+			print "Model's type is Cylinder"
+			return self.BuildCylinder(model.center, model.radius, model.height, model.faces)
+		elif(isinstance(model, Ground)):
+			print "Model's type is Ground"
+			return self.BuildPlane(0, model.facePoints)
+		elif(isinstance(model, Sky)):
+			print "Model's type is Sky"
+			return self.BuildPlane(400, model.facePoints)
+		elif(isinstance(model, Frustum)):
+			print "Model's type is Frustum"
+			return self.BuildFrustum(model.center, model.lowerLength, model.lowerWidth, model.upperLength, model.upperWidth, model.height, model.faces)
+		elif(isinstance(model, Prism)):
+			print "Model's type is Prism"
+			return self.BuildPrism(model.center, model.length, model.width, model.height, model.faces)
+		elif(isinstance(model, Tree)):
+			print "Model's type is Tree"
+			return self.BuildTree(model.center, model.height)
 		else :
 			print "Model's type is Wrong..."
