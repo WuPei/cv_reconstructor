@@ -17,8 +17,8 @@ class VideoMaker:
         # this method will create a video which the object rotating respect to certain angle.
 
     def ImgsFromCamPath(self):
-        offset_u = self.width / 2
-        offset_v = self.height / 2
+        offset_u = 0#self.width / 2
+        offset_v = 0#self.height / 2
         axis = [0, 1, 0]
         angle = 10
         for i in range(self.num_frame):

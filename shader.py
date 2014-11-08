@@ -16,8 +16,8 @@ class Shader:
         self.out_frame = np.zeros((width, height, 3), np.uint8)
 
     def shading(self, rgb_values):
+        print "len:",len(self.x_cords)
         for i in range(0, len(self.x_cords), 4):
-
             point = [0 for index in range(4)]
             if self.is_out_of_bounds(i):
                 continue

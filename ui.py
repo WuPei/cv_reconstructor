@@ -1,13 +1,17 @@
 import shape as sp
 from Tkinter import *
-from PIL import Image, ImageTk
+#from PIL import Image, ImageTk
+from ModelBuilder import ModelBuilder
+from texture import Texture
+from texture import Point
+import cv2
 
 
 class App:
     def __init__(self, master):
         self.master = master
         self.master.title("cv_recontruction")
-
+        self.imgFile = "project.gif"
         # init parameters
         self.shapes = []
         self.state = 1
@@ -160,9 +164,9 @@ class App:
 
     def initLeftFrame(self):
         # load image use PIL library
-        self.img = Image.open("project.jpeg")
-        angle = 180
-        tkImage = ImageTk.PhotoImage(self.img.rotate(180))
+        #self.img = Image.open(self.imgFile)
+        #angle = 180
+        tkImage = PhotoImage(file = self.imgFile)
 
         #window frame configuration
         self.leftFrame = Frame(self.master)
@@ -233,7 +237,7 @@ class App:
         if state == 1:
             self.showTopFrame(1)
             self.showRightFrame(1)
-            self.testPrint()
+            #self.testPrint()
         elif state == 2:
             self.showTopFrame(2)
             self.showRightFrame(2)
@@ -432,20 +436,25 @@ class App:
         #     for j in range(len(self.shapes[i].faces)):
         #         print self.shapes[i].faces[j].faceOrientation, " : ", self.shapes[i].faces[j].facePoints
 
-        """
         mb = ModelBuilder()
+        Models = []
         for i in self.shapes:
             print "One shape: -------------------"
-            results = mb.BuildModel(i)
+            each_model = mb.BuildModel(i)
+            Models.append(each_model)
+        img = cv2.imread("project.jpeg",cv2.CV_LOAD_IMAGE_COLOR)
+        cv2.imshow("img",img)
+        texture = Texture(img)
+        points = []
+        for i in range(len(Models)):
+            for j in range(len(Models[i])):
+                points.extend(texture.putTexture(Models[i][j]))
+        fileRGB = open("test.dat", "w+")
+        for i in range(len(points)):
+            point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
+            fileRGB.write(point)
 
-            for i in results:
-                print "vertex:"
-                for j in i.Vertex:
-                    print j.x, j.y, j.z
-                print "Texel"
-                for k in i.Texel:
-                    print k.u, k.v
-        """
+        
 
     def newShapeButton(self):
         self.newShapeFlag = True
