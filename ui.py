@@ -16,6 +16,17 @@ class App:
         self.updateRightFrame2Flag = True
 
         # create object for test purpose
+        #create object for test purpose
+        cuboid = sp.Cuboid([0,0,0],10,10,10, "test cuboid")
+        face1 = sp.Face([[1250.0, 867.0], [1301.0, 867.0], [1301.0, 691.0], [1248.0, 695.0]], "Front")
+        face2 = sp.Face( [[1189.0, 866.0], [1248.0, 865.0], [1249.0, 698.0], [1186.0, 710.0]], "Left")
+        cuboid.faces.append(face1)
+        cuboid.faces.append(face2)
+        prism = sp.Prism([100,100,100],10,10,10, "test prism")
+        face3 = sp.Face([[708.0, 790.0], [851.0, 793.0], [782.0, 754.0]], "Front")
+        prism.faces.append(face3)
+        self.shapes.append(cuboid)
+        self.shapes.append(prism)
 
         self.initUI()
         self.clear()
@@ -24,9 +35,24 @@ class App:
         self.initTopFrames()
         self.initLeftFrame()
         self.initRightFrames()
+        self.drawShapes()
 
         # show topframe 1 and right frame
         self.show(self.state)
+
+    def drawShapes(self):
+        for s in self.shapes:
+            for f in s.faces:
+                for i in range(len(f.facePoints) -1 ):
+                    lineId = self.canvas.create_line(f.facePoints[i][0], f.facePoints[i][1], 
+                        f.facePoints[i+1][0], f.facePoints[i+1][1], fill="red")
+                    f.lineIds.append(lineId)
+                lineId = self.canvas.create_line(f.facePoints[0][0], f.facePoints[0][1], 
+                        f.facePoints[len(f.facePoints)-1][0], f.facePoints[len(f.facePoints)-1][1], fill="red")
+                f.lineIds.append(lineId)
+
+
+
 
     def clear(self):
         self.pointId = ""
@@ -104,11 +130,8 @@ class App:
         self.pEntries[0].insert(0, self.shapes[self.currentIndex].name)
 
     def updateFacesList(self):
-        print ""
-        print ""
         self.facesList.delete(0, END)
         for item in self.shapes[self.currentIndex].faces:
-            print item.faceOrientation
             self.facesList.insert(END, item.faceOrientation)  # orientation
 
             # pragma mark -- init frames
@@ -400,7 +423,30 @@ class App:
     #pragma mark -- button actions
     #buttons in scene 1
     def generateVideoButton(self):
-        print "1"
+        print ""
+        print ""
+        for i in range(len(self.shapes)):
+            print type(self.shapes).__name__
+            print "center: ", self.shapes[i].center
+            print "length: ", self.shapes[i].length
+            print "width: " , self.shapes[i].width
+            print "height: ", self.shapes[i].height
+            for j in range(len(self.shapes[i].faces)):
+                print self.shapes[i].faces[j].faceOrientation, " : ", self.shapes[i].faces[j].facePoints
+        """
+        mb = ModelBuilder()
+        for i in self.shapes:
+            print "One shape: -------------------"
+            results = mb.BuildModel(i)
+
+            for i in results:
+                print "vertex:"
+                for j in i.Vertex:
+                    print j.x, j.y, j.z
+                print "Texel"
+                for k in i.Texel:
+                    print k.u, k.v
+        """
 
     def newShapeButton(self):
         self.newShapeFlag = True
