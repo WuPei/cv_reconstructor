@@ -1,13 +1,16 @@
 import numpy as np
 import shape as sp
 import re
-
+import os
 
 class FileManager:
     def __init__(self, fileName):
         self.fileName = fileName;
         self.pts = []
         self.rgb_value = []
+        self.x_cords = []
+        self.y_cords = []
+        self.pFileName = "testData/projectedPoints.dat"
 
     def importPoints(self):
         for line in open(self.fileName, 'r'):
@@ -25,6 +28,27 @@ class FileManager:
             self.pts.append(values_point)
             self.rgb_value.append(values_rgb)
         return self.pts, self.rgb_value
+
+    def importProjectedPoints(self):
+        if os.path.isfile(self.pFileName):
+            for line in open(self.pFileName, 'r'):
+                valuesStr = np.array(line.rstrip().split(","), dtype='|S4')
+                values = valuesStr.astype(np.float)
+                values_rgb = np.array([values[2], values[3], values[4]])
+                self.x_cords.append(values[0])
+                self.y_cords.append(values[1])
+                self.rgb_value.append(values_rgb)
+            return self.x_cords, self.y_cords, self.rgb_value
+        else:
+            return False
+        
+
+    def saveProjectedPointsWithRGB(self,x_cords,y_cords,rgb_values):
+        fileRGB = open(self.pFileName, "w+")
+        for i in range(len(x_cords)):
+            point = "{0},{1},{r},{g},{b}\n".format(x_cords[i], y_cords[i],r=rgb_values[i][0], g=rgb_values[i][1], b=rgb_values[i][2])
+            fileRGB.write(point)
+        print "projected point saved"
 
     #the format is as follows
     #0          1       2   3  4    5                       6                                                   7

@@ -447,14 +447,18 @@ class App:
             Models.append(each_model)
         print "Models list size: ", len(Models)
         img = cv2.imread("project.png",cv2.CV_LOAD_IMAGE_COLOR)
-        cv2.imshow("img",img)
         texture = Texture(img)
         points = []
         for i in range(len(Models)):
             #print "Models list #: ", i
+            pointsOfEachModel = []
             for j in range(len(Models[i])):
-                points.extend(texture.putTexture(Models[i][j]))
-                #print "length of points",len(points)
+                facesOfEachModel = texture.putTexture(Models[i][j])
+                pointsOfEachModel.extend(facesOfEachModel)
+                #print "length of points",len(points)'
+            pointsOfEachModel = sorted(pointsOfEachModel,key = lambda point:point.z,reverse = True)
+            points.extend(pointsOfEachModel)
+
         fileRGB = open("testData/test.dat", "w+")
         for i in range(len(points)):
             point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
@@ -563,7 +567,7 @@ class App:
             self.state = 1
 
     def deleteFaceButton(self):
-        index = (self.facesList.curselection())[0]
+        index = int((self.facesList.curselection())[0])
         if (index < len(self.shapes[self.currentIndex].faces)):
             for i in range(len(self.shapes[self.currentIndex].faces[index].lineIds)):
                 self.canvas.delete(self.shapes[self.currentIndex].faces[index].lineIds[i])

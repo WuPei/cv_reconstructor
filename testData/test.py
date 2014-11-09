@@ -10,4 +10,7 @@ def medianOfColor(mylist):
         return (sorts[length/2] + sorts[length/2-1]) / 2.0
     return sorts[length / 2]
 
-print medianOfColor([np.array([255,223,23]),np.array([25,223,233]),np.array([255,23,233]),np.array([255,23,233])])
+list_a = [2,55,150,24,434]
+list_b = [2,23,214,545,24]
+sorts = [(x,y) for (y,x) in sorted(zip(list_a,list_b))]
+print sorts
