@@ -3,6 +3,8 @@
 #	"Right"
 #	"Front"
 #	"Upper"
+#   "Surface"
+#"Surface" is used to represent a sky or ground face
 #face orientation and facePoints can determine a face in a 3D shape
 class Shape:
     def __init__(self, name):
@@ -11,7 +13,7 @@ class Shape:
 
 
 class Cylinder(Shape):
-    def __init__(self, center, radius, height, name):
+    def __init__(self, center, radius, height,name):
         Shape.__init__(self, name)
         self.center = center
         self.radius = radius
@@ -48,19 +50,25 @@ class Frustum(Shape):
 
 
 class Tree():
-    def __init__(self, center, heihgt, name):
+    def __init__(self, center, heihgt,name):
         self.center = center
         self.height = height
+        self.name = name
+        self.lineIds = []
 
 
 class Ground():
-    def __init__(self, facePoints, name):
-        self.facePoints = facePoints
+    def __init__(self, name):
+        self.faces =[]
+        self.name = name
+        self.lineIds = []
 
 
 class Sky():
-    def __init__(self, facePoints, name):
-        self.facePoints = facePoints
+    def __init__(self, name):
+        self.faces =[]
+        self.name = name
+        self.lineIds = []
 
 
 class Face():

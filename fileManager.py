@@ -1,4 +1,6 @@
 import numpy as np
+import shape as sp
+import re
 
 
 class FileManager:
@@ -23,4 +25,100 @@ class FileManager:
             self.pts.append(values_point)
             self.rgb_value.append(values_rgb)
         return self.pts, self.rgb_value
+
+    #the format is as follows
+    #0          1       2   3  4    5                       6                                                   7
+    #cuboid [600,0,50] 100 40 30 building1 Front:[[1250.0,867.0],[1301.0,867.0],[1301.0,691.0],[1248.0,695.0]]
+    #prism [580,25,180] 80 90 20 building2 Front:[[708.0,790.0],[851.0,793.0],[782.0,754.0]]
+    #frumstum center hight uL uW lL             lW                                                              name    faces
+    def importShapes(self):
+        shapes = []
+        for line in open(self.fileName,'r'):
+            inData = line.rstrip().split(" ")
+            if len(inData) >0:
+
+                if inData[0] == "cuboid":
+                    inData[1] = map(int,re.findall('\d+', inData[1]))
+                    shapes.append( sp.Cuboid (inData[1], int(inData[2]), int(inData[3]), int(inData[4]), inData[5] ))
+                    #read faces
+                    for i in xrange (6, len(inData)):
+                        inData[i] = inData[i].split(":")
+                        inData[i][1] = map(float, re.findall('\d+.\d+', inData[i][1]))
+                        facePoints = []
+                        for j in range(0,len(inData[i][1]), 2):
+                            facePoints.append([ inData[i][1][j], inData[i][1][j+1] ] )
+                        shapes[len(shapes)-1].faces.append(sp.Face(facePoints, inData[i][0]))
+                
+                elif inData[0] == "prism":
+                    inData[1] = map(int,re.findall('\d+', inData[1]))
+                    shapes.append( sp.Prism (inData[1], int(inData[2]), int(inData[3]), int(inData[4]), inData[5] ))
+                    #read faces
+                    for i in xrange (6, len(inData)):
+                        inData[i] = inData[i].split(":")
+                        inData[i][1] = map(float, re.findall('\d+.\d+', inData[i][1]))
+                        facePoints = []
+                        for j in range(0,len(inData[i][1]), 2):
+                            facePoints.append([ inData[i][1][j], inData[i][1][j+1] ] )
+                        shapes[len(shapes)-1].faces.append(sp.Face(facePoints, inData[i][0]))
+
+                elif inData[0] == "frustum":
+                    inData[1] = map(int,re.findall('\d+', inData[1]))
+                    shapes.append( sp.Frustum (inData[1], int(inData[2]), int(inData[3]), int(inData[4]), int(inData[5]), int(inData[6]), inData[7] ))
+                    #read faces
+                    for i in xrange (8, len(inData)):
+                        inData[i] = inData[i].split(":")
+                        inData[i][1] = map(float, re.findall('\d+.\d+', inData[i][1]))
+                        facePoints = []
+                        for j in range(0,len(inData[i][1]), 2):
+                            facePoints.append([ inData[i][1][j], inData[i][1][j+1] ] )
+                        shapes[len(shapes)-1].faces.append(sp.Face(facePoints, inData[i][0]))
+
+                elif inData[0] == "cylinder":
+                    inData[1] = map(int,re.findall('\d+', inData[1]))
+                    shapes.append( sp.Cylinder (inData[1], int(inData[2]), int(inData[3]), inData[4] ))
+                    #read faces
+                    for i in xrange (5, len(inData)):
+                        inData[i] = inData[i].split(":")
+                        inData[i][1] = map(float, re.findall('\d+.\d+', inData[i][1]))
+                        facePoints = []
+                        for j in range(0,len(inData[i][1]), 2):
+                            facePoints.append([ inData[i][1][j], inData[i][1][j+1] ] )
+                        shapes[len(shapes)-1].faces.append(sp.Face(facePoints, inData[i][0]))
+
+                elif inData[0] == "sky":
+                    shapes.append( sp.Sky (inData[2]))
+                    inData[1] = map(float, re.findall('\d+.\d+', inData[1]))
+                    facePoints = []
+                    for j in range(0,len(inData[1]), 2):
+                        facePoints.append( [inData[1][j],inData[1][j+1]] )    
+                    
+                    shapes[len(shapes)-1].faces.append(sp.Face(facePoints, "face"))
+
+                elif inData[0] == "ground":
+                    shapes.append( sp.Ground (inData[2]))
+                    inData[1] = map(float, re.findall('\d+.\d+', inData[1]))
+                    facePoints = []
+                    for j in range(0,len(inData[1]), 2):
+                        facePoints.append([ inData[1][j], inData[1][j+1] ] )
+                        
+                    shapes[len(shapes)-1].faces.append(sp.Face(facePoints, "face"))
+
+                """
+                elif inData[0] == "tree":
+
+                    inData[1] = map(float, re.findall('\d+.\d+', inData[1]))
+                    facePoints = []
+                    for j in range(0,len(inData[1]), 2):
+                        facePoints.append([ inData[1][j], inData[1][j+1] ] )
+                        
+                    shapes.append( sp.Sky (inData[1],inData[2]))
+                """
+
+        return shapes
+            
+
+
+                    
+
+
 

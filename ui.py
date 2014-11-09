@@ -1,5 +1,6 @@
 import shape as sp
 from Tkinter import *
+import fileManager as fm
 #from PIL import Image, ImageTk
 from ModelBuilder import ModelBuilder
 from texture import Texture
@@ -21,16 +22,8 @@ class App:
 
         # create object for test purpose
         #create object for test purpose
-        cuboid = sp.Cuboid([0,0,0],10,10,10, "test cuboid")
-        face1 = sp.Face([[1250.0, 867.0], [1301.0, 867.0], [1301.0, 691.0], [1248.0, 695.0]], "Front")
-        face2 = sp.Face( [[1189.0, 866.0], [1248.0, 865.0], [1249.0, 698.0], [1186.0, 710.0]], "Left")
-        cuboid.faces.append(face1)
-        cuboid.faces.append(face2)
-        prism = sp.Prism([100,100,100],10,10,10, "test prism")
-        face3 = sp.Face([[708.0, 790.0], [851.0, 793.0], [782.0, 754.0]], "Front")
-        prism.faces.append(face3)
-        self.shapes.append(cuboid)
-        self.shapes.append(prism)
+        FM = fm.FileManager("input.txt")
+        self.shapes = FM.importShapes()
 
         self.initUI()
         self.clear()
@@ -46,14 +39,17 @@ class App:
 
     def drawShapes(self):
         for s in self.shapes:
-            for f in s.faces:
-                for i in range(len(f.facePoints) -1 ):
-                    lineId = self.canvas.create_line(f.facePoints[i][0], f.facePoints[i][1], 
-                        f.facePoints[i+1][0], f.facePoints[i+1][1], fill="red")
+            if isinstance(s, sp.Tree):
+                print "tree"
+            else:
+                for f in s.faces:
+                    for i in range(len(f.facePoints) -1 ):
+                        lineId = self.canvas.create_line(f.facePoints[i][0], f.facePoints[i][1], 
+                            f.facePoints[i+1][0], f.facePoints[i+1][1], fill="red")
+                        f.lineIds.append(lineId)
+                    lineId = self.canvas.create_line(f.facePoints[0][0], f.facePoints[0][1], 
+                            f.facePoints[len(f.facePoints)-1][0], f.facePoints[len(f.facePoints)-1][1], fill="red")
                     f.lineIds.append(lineId)
-                lineId = self.canvas.create_line(f.facePoints[0][0], f.facePoints[0][1], 
-                        f.facePoints[len(f.facePoints)-1][0], f.facePoints[len(f.facePoints)-1][1], fill="red")
-                f.lineIds.append(lineId)
 
 
 
@@ -130,6 +126,7 @@ class App:
             self.pEntries[2].insert(0, self.shapes[self.currentIndex].center[1])
             self.pEntries[3].insert(0, self.shapes[self.currentIndex].center[2])
             self.pEntries[4].insert(0, self.shapes[self.currentIndex].height)
+        #no entries for ground and sky
 
         self.pEntries[0].insert(0, self.shapes[self.currentIndex].name)
 
@@ -147,7 +144,7 @@ class App:
         self.shape = StringVar(self.master)
         self.shape.set("cylinder")  # default value
         self.shapeOptionMenu = OptionMenu(self.topFrame1, self.shape, "cylinder", "cuboid", "prism", "frustum", "tree",
-                                          "earth", "sky")
+                                          "ground", "sky")
         self.newShapeButton = Button(self.topFrame1, text="create new shape", command=self.newShapeButton)
         self.generateVideoButton = Button(self.topFrame1, text="generate video", command=self.generateVideoButton)
 
@@ -230,7 +227,7 @@ class App:
         self.faceDirLabel = Label(self.rightFrame3, text="Orientation: ")
         self.faceDir = StringVar(self.master)
         self.faceDir.set("Left")  # default value
-        self.faceOptionMenu = OptionMenu(self.rightFrame3, self.faceDir, "Left", "Right", "Upper", "Front")
+        self.faceOptionMenu = OptionMenu(self.rightFrame3, self.faceDir, "Left", "Right", "Upper", "Front","Surface")
 
     # pragma mark -- show frames
     def show(self, state):
@@ -488,10 +485,10 @@ class App:
             self.shapes.append(sp.Tree([0, 0, 0], 0, ""))
 
         elif self.shape.get() == "sky":
-            self.shapes.append(sp.Sky([], ""))
+            self.shapes.append(sp.Sky(""))
 
         elif self.shape.get() == "ground":
-            self.shapes.append(sp.Ground([], ""))
+            self.shapes.append(sp.Ground(""))
 
         self.show(2)
         self.state = 2
@@ -505,7 +502,7 @@ class App:
         self.state = 2
 
     def deleteButton(self):
-        index = (self.shapesList.curselection())[0]
+        index = int ((self.shapesList.curselection())[0])
         del self.shapes[index]
         self.shapesList.delete(index)
 
@@ -577,7 +574,9 @@ class App:
 
     #buttons in scene 3
     def cancelButton3(self):
-        if isinstance(self.shapes[self.currentIndex], sp.Shape):
+        if isinstance(self.shapes[self.currentIndex], sp.Tree):
+            print "cancel tree face"
+        else:
             self.canvas.delete(self.pointId)
             for i in range(len(self.lineIds)):
                 self.canvas.delete(self.lineIds[i])
@@ -586,7 +585,9 @@ class App:
         self.state = 2
 
     def doneButton3(self):
-        if isinstance(self.shapes[self.currentIndex], sp.Shape):
+        if isinstance(self.shapes[self.currentIndex], sp.Tree):
+            print "treeFace"
+        else:
             pLen = len(self.points)
             lineId = self.canvas.create_line(self.points[pLen - 1][0], self.points[pLen - 1][1], self.points[0][0],
                                              self.points[0][1], fill="red")
@@ -594,6 +595,7 @@ class App:
             face = sp.Face(self.points, self.faceDir.get())
             face.lineIds = self.lineIds
             self.shapes[self.currentIndex].faces.append(face)
+
         self.clear()
         self.show(2)
         self.state = 2
