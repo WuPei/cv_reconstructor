@@ -91,16 +91,15 @@ class Texture:
         if self.isTexel(polygon, p):
             return True
         for i in range(len(polygon.Texel)):
-            if ((polygon.Texel[i].v > p[1]) != (polygon.Texel[j].v > p[1])) and (p[0] < (
-                        (polygon.Texel[j].u - polygon.Texel[i].u) * (p[1] - polygon.Texel[i].v) / (
-                    polygon.Texel[j].v - polygon.Texel[i].v) + polygon.Texel[i].u)):
-                if result == False:
+            if ((polygon.Texel[i].v > p[1]) != (polygon.Texel[j].v > p[1])) and (p[0] < ((polygon.Texel[j].u - polygon.Texel[i].u) * (p[1] - polygon.Texel[i].v) / (polygon.Texel[j].v - polygon.Texel[i].v) + polygon.Texel[i].u)):
+                if result is False:
                     result = True
                 else:
                     result = False
             #print ((polygon.Vertex[i].y>p[1])!=(polygon.Vertex[j].y>p[1])), " ",(polygon.Vertex[i].y>p[1]), " ", (polygon.Vertex[j].y>p[1])
             j = i
         #print result
+        #print p, " ", result
         return result
 
     def getCoord(self, polygon, texel):
@@ -156,8 +155,8 @@ class Texture:
 
         minw = int(round(minw))
         maxw = int(round(maxw))
-        minh = int(round(minw))
-        maxh = int(round(maxw))
+        minh = int(round(minh))
+        maxh = int(round(maxh))
         #print minw, " ", maxw, " ", minh, " ", maxh
         mem = np.zeros((maxw - minw, maxh - minh))
         count = 0
@@ -167,14 +166,15 @@ class Texture:
         lastPoint = Point(0, 0, 0, 0, 0, 0)
     # cache all required calculation
 
-
+        #print polygon.Texel[0].u, polygon.Texel[1].u, polygon.Texel[2].u, polygon.Texel[3].u
+        #print polygon.Texel[0].v, polygon.Texel[1].v, polygon.Texel[2].v, polygon.Texel[3].v
+        #print minw, maxw, minh, maxh
         for i in range(minw, maxw):
             for j in range(minh, maxh):
-                if self.insidePolygon(polygon, [i, j]):
+                if self.insidePolygon(polygon, [float(i), float(j)]):
                     mem[i - minw][j - minh] = 1
                     # print mem[i-minw][j-minh]
-                    memdpx[i - minw][j - minh], memdpy[i - minw][j - minh], memdpz[i - minw][j - minh] = self.getCoord(polygon,
-                                                                                                                       [i, j])
+                    memdpx[i - minw][j - minh], memdpy[i - minw][j - minh], memdpz[i - minw][j - minh] = self.getCoord(polygon,[i, j])
         '''for i in range (len(mem)):
             for j in range(len(mem[i])):
                 print mem[i][j]'''
@@ -182,27 +182,28 @@ class Texture:
             for j in range(minh, maxh - 1):
                 if mem[i - minw][j - minh] == 1:
                     dp = [memdpx[i - minw][j - minh], memdpy[i - minw][j - minh], memdpz[i - minw][j - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[i, j, 0], self.texture[i, j, 1],
-                                      self.texture[i, j, 2])
+                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i, 0], self.texture[j, i, 1],
+                                      self.texture[j, i, 2])
                     plist.append(lastPoint)
                     count = count + 1;
                 if mem[i + 1 - minw][j - minh] == 1:
                     dp = [memdpx[i + 1 - minw][j - minh], memdpy[i + 1 - minw][j - minh], memdpz[i + 1 - minw][j - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[i + 1, j, 0], self.texture[i + 1, j, 1],
-                                      self.texture[i + 1, j, 2])
+                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i+1, 0], self.texture[j, i+1, 1],
+                                      self.texture[j, i+1, 2])
                     plist.append(lastPoint)
                     count = count + 1;
                 if mem[i + 1 - minw][j + 1 - minh] == 1:
                     dp = [memdpx[i + 1 - minw][j + 1 - minh], memdpy[i + 1 - minw][j + 1 - minh],
                           memdpz[i + 1 - minw][j + 1 - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[i + 1, j + 1, 0], self.texture[i + 1, j + 1, 1],
-                                      self.texture[i + 1, j + 1, 2])
+                    #print i, j, self.texture.shape
+                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + 1, i + 1, 0], self.texture[j + 1, i + 1, 1],
+                                      self.texture[j + 1, i + 1, 2])
                     plist.append(lastPoint)
                     count = count + 1;
                 if mem[i - minw][j + 1 - minh] == 1:
                     dp = [memdpx[i - minw][j + 1 - minh], memdpy[i - minw][j + 1 - minh], memdpz[i - minw][j + 1 - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[i, j + 1, 0], self.texture[i, j + 1, 1],
-                                      self.texture[i, j + 1, 2])
+                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j+1, i, 0], self.texture[j+1, i, 1],
+                                      self.texture[j+1, i, 2])
                     plist.append(lastPoint)
                     count = count + 1;
                 if count == 3:
