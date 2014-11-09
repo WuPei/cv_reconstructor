@@ -200,9 +200,9 @@ class Texture:
 
     def coord4D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
-        if abs(txBorder[0][0] - txBorder[1][0]) < 2 and abs(txBorder[2][0] - txBorder[3][0]) < 2 and abs(txBorder[0][0]-txBorder[2][0]) < 2 and abs(txBorder[1][0] - txBorder[3][0]) < 2:
+        if abs(txBorder[0][0] - txBorder[1][0]) < 1 and abs(txBorder[2][0] - txBorder[3][0]) < 1 and abs(txBorder[0][0]-txBorder[2][0]) < 1 and abs(txBorder[1][0] - txBorder[3][0]) < 1:
             option = 1
-        if abs(txBorder[0][1] - txBorder[1][1]) < 2 and abs(txBorder[2][1] - txBorder[3][1]) < 2 and abs(txBorder[0][1] - txBorder[2][1]) < 2 and abs(txBorder[1][1] - txBorder[3][1]) < 2:
+        if abs(txBorder[0][1] - txBorder[1][1]) < 1 and abs(txBorder[2][1] - txBorder[3][1]) < 1 and abs(txBorder[0][1] - txBorder[2][1]) < 1 and abs(txBorder[1][1] - txBorder[3][1]) < 1:
             if option is 0:
                 option = 2
             else:
