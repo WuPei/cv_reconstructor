@@ -296,9 +296,9 @@ class Texture:
             self.coord3D(polygon, vtx[i], tx[i], mems, size)
 
     def coord(self, polygon, mems, size):
-        print len(polygon.Texel)
-        if len(polygon.Texel) is 4 or len(polygon.Texel) is 16:
-            print len(polygon.Texel), "= 4"
+        #print len(polygon.Texel)
+        if len(polygon.Texel) is 4:
+            #print len(polygon.Texel), "= 4"
             vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z],[polygon.Vertex[1].x, polygon.Vertex[1].y, polygon.Vertex[1].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z], [polygon.Vertex[3].x, polygon.Vertex[3].y, polygon.Vertex[3].z]]
             txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v], [polygon.Texel[3].u, polygon.Texel[3].v]]
             self.coord4D(polygon, vtxBorder, txBorder, mems, size)
@@ -321,6 +321,10 @@ class Texture:
                 vtxBorder = [centerV, [polygon.Vertex[i].x, polygon.Vertex[i].y, polygon.Vertex[i].z], [polygon.Vertex[i+1].x, polygon.Vertex[i+1].y, polygon.Vertex[i+1].z]]
                 txBorder = [centerT, [polygon.Texel[i].u, polygon.Texel[i].v], [polygon.Texel[i+1].u, polygon.Texel[i+1].v]]
                 self.coord3D(polygon, vtxBorder, txBorder, mems, size)
+            i = len(polygon.Texel)-1
+            vtxBorder = [centerV, [polygon.Vertex[i].x, polygon.Vertex[i].y, polygon.Vertex[i].z], [polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z]]
+            txBorder = [centerT, [polygon.Texel[i].u, polygon.Texel[i].v], [polygon.Texel[0].u, polygon.Texel[0].v]]
+            self.coord3D(polygon, vtxBorder, txBorder, mems, size)
 
     def putTexture(self, polygon):
         self.setPlane(polygon)
