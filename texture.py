@@ -153,8 +153,9 @@ class Texture:
         return [rx, ry, rz]
 
     def polygonDivide2D(self, border, n, option):
+
         if n is 4:
-            print border
+            #print border
             [[a, b], [c, d], [e, f], [g, h]] = border
             [A, B, C, D] = border
             E, F, G, H, I = [(a + c) / 2.0, (d + b) / 2.0], [(e + c) / 2.0, (d + f) / 2.0], [(g + e) / 2.0, (h + f) / 2.0], [(a + g) / 2.0, (h + b) / 2.0], [(a + e) / 2.0, (b + f) / 2.0]
@@ -172,6 +173,15 @@ class Texture:
                 border1 = [A, B, F, H]
                 border2 = [H, F, C, D]
                 return [border1, border2]
+        elif n is 3:
+            [[a, b], [c, d], [e, f]] = border
+            [A, B, C] = border
+            E, F, G = [(a + c) / 2.0, (d + b) / 2.0], [(e + c) / 2.0, (d + f) / 2.0], [(e + a) / 2.0, (f + b) / 2.0]
+            border1 = [A, E, G]
+            border2 = [B, F, E]
+            border3 = [E, F, G]
+            border4 = [F, C, G]
+            return [border1, border2, border3, border4]
 
     def polygonDivide3D(self, border, n, option):
         if n is 4:
@@ -197,6 +207,15 @@ class Texture:
                 border1 = [A, B, F, H]
                 border2 = [H, F, C, D]
                 return [border1, border2]
+        elif n is 3:
+            [[a, b, g], [c, d, h], [e, f, i]] = border
+            [A, B, C] = border
+            E, F, G = [(a + c) / 2.0, (d + b) / 2.0, (g + h) / 2.0], [(e + c) / 2.0, (d + f) / 2.0, (i + h) / 2.0], [(e + a) / 2.0, (f + b) / 2.0, (g + i) / 2.0]
+            border1 = [A, E, G]
+            border2 = [B, F, E]
+            border3 = [E, F, G]
+            border4 = [F, C, G]
+            return [border1, border2, border3, border4]
 
     def coord4D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
@@ -220,7 +239,7 @@ class Texture:
                 j = 0
             #print len(mems[0]), len(mems[0][0]), i, j
             mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
-            print "Reach The End"
+            #print "Reach The End"
             return 0
         elif option is 1:
             tx = self.polygonDivide2D(txBorder, 4, 0)
@@ -234,16 +253,68 @@ class Texture:
         for i in range(len(tx)):
             self.coord4D(polygon, vtx[i], tx[i], mems, size)
 
+    def coord3D(self, polygon, vtxBorder, txBorder, mems, size):
+        option = 0
+        if abs(txBorder[0][0] - txBorder[1][0]) < 1 and abs(txBorder[1][0] - txBorder[2][0]) < 1 and abs(txBorder[2][0]-txBorder[0][0]) < 1:
+            option = 1
+        if abs(txBorder[0][1] - txBorder[1][1]) < 1 and abs(txBorder[1][1] - txBorder[2][1]) < 1 and abs(txBorder[2][1] - txBorder[0][1]) < 1:
+            if option is 0:
+                option = 2
+            else:
+                option = -1
+        #print abs(txBorder[0][0] - txBorder[2][0]) < 2 and abs(txBorder[1][0] - txBorder[3][0]) < 2, abs(txBorder[0][1] - txBorder[2][1]) < 2 and abs(txBorder[1][1] - txBorder[3][1]) < 2, option
+        if option is -1:
+            i = math.floor((txBorder[0][0] + txBorder[1][0] + txBorder[2][0]) / 3.0) - size[1]
+            j = math.floor((txBorder[0][1] + txBorder[1][1] + txBorder[2][1]) / 3.0) - size[3]
+            x = (vtxBorder[0][0] + vtxBorder[1][0]+vtxBorder[2][0]) / 3.0
+            y = (vtxBorder[0][1] + vtxBorder[1][1]+vtxBorder[2][1]) / 3.0
+            z = (vtxBorder[0][2] + vtxBorder[1][2]+vtxBorder[2][2]) / 3.0
+            if i < 0:
+                i = 0
+            if j < 0:
+                j = 0
+            #print len(mems[0]), len(mems[0][0]), i, j
+            mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
+            #print "Reach The End"
+            return 0
+        elif option is 1:
+            tx = self.polygonDivide2D(txBorder, 3, 0)
+            vtx = self.polygonDivide3D(vtxBorder, 3, 0)
+        elif option is 2:
+            tx = self.polygonDivide2D(txBorder, 3, 0)
+            vtx = self.polygonDivide3D(vtxBorder, 3, 0)
+        else:
+            tx = self.polygonDivide2D(txBorder, 3, 0)
+            vtx = self.polygonDivide3D(vtxBorder, 3, 0)
+        for i in range(len(tx)):
+            self.coord3D(polygon, vtx[i], tx[i], mems, size)
+
     def coord(self, polygon, mems, size):
         print len(polygon.Texel)
         if len(polygon.Texel) is 4 or len(polygon.Texel) is 16:
             print len(polygon.Texel), "= 4"
             vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z],[polygon.Vertex[1].x, polygon.Vertex[1].y, polygon.Vertex[1].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z], [polygon.Vertex[3].x, polygon.Vertex[3].y, polygon.Vertex[3].z]]
             txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v], [polygon.Texel[3].u, polygon.Texel[3].v]]
+            self.coord4D(polygon, vtxBorder, txBorder, mems, size)
         elif len(polygon.Texel) is 3:
-            vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z], [polygon.Vertex[1].x, polygon.Vertex[1].y, polygon.Vertex[1].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z]]
-            txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v], [polygon.Texel[2].u, polygon.Texel[2].v]]
-        self.coord4D(polygon, vtxBorder, txBorder, mems, size)
+            vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z], [polygon.Vertex[1].x, polygon.Vertex[1].y, polygon.Vertex[1].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z]]
+            txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v]]
+            self.coord3D(polygon, vtxBorder, txBorder, mems, size)
+        else:
+            centerV = [0.0, 0.0, 0.0]
+            centerT = [0.0, 0.0]
+            for i in range(len(polygon.Texel)):
+                centerV[0] = centerV[0] + polygon.Vertex[i].x
+                centerV[1] = centerV[1] + polygon.Vertex[i].y
+                centerV[2] = centerV[2] + polygon.Vertex[i].z
+                centerT[0] = centerT[0] + polygon.Texel[i].u
+                centerT[1] = centerT[1] + polygon.Texel[i].v
+            centerV[0], centerV[1], centerV[2] = centerV[0] /float(len(polygon.Texel)), centerV[1] /float(len(polygon.Texel)), centerV[2] /float(len(polygon.Texel))
+            centerT[0], centerT[1] = centerT[0] /float(len(polygon.Texel)), centerT[1] /float(len(polygon.Texel))
+            for i in range(len(polygon.Texel), 2):
+                vtxBorder = [centerV, [polygon.Vertex[i].x, polygon.Vertex[i].y, polygon.Vertex[i].z], [polygon.Vertex[i+1].x, polygon.Vertex[i+1].y, polygon.Vertex[i+1].z]]
+                txBorder = [centerT, [polygon.Texel[i].u, polygon.Texel[i].v], [polygon.Texel[i+1].u, polygon.Texel[i+1].v]]
+                self.coord3D(polygon, vtxBorder, txBorder, mems, size)
 
     def putTexture(self, polygon):
         self.setPlane(polygon)
