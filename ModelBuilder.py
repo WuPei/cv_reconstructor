@@ -184,6 +184,7 @@ class ModelBuilder:
         cx = center[0]
         cy = center[1]
         cz = center[2]
+        print [cx, cy, cz]
         center = vt(cx, cy, cz)
         # Generate vertices on bottom surface
         btm_v = [None] * 16

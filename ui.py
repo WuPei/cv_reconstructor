@@ -105,8 +105,8 @@ class App:
                 self.pEntries[i].delete(0, END)
 
             self.pEntries[1].insert(0, self.shapes[self.currentIndex].center[0])
-            self.pEntries[2].insert(0, self.shapes[self.currentIndex].center[0])
-            self.pEntries[3].insert(0, self.shapes[self.currentIndex].center[0])
+            self.pEntries[2].insert(0, self.shapes[self.currentIndex].center[1])
+            self.pEntries[3].insert(0, self.shapes[self.currentIndex].center[2])
             self.pEntries[4].insert(0, self.shapes[self.currentIndex].length)
             self.pEntries[5].insert(0, self.shapes[self.currentIndex].width)
             self.pEntries[6].insert(0, self.shapes[self.currentIndex].height)
@@ -115,8 +115,8 @@ class App:
                 self.pEntries[i].delete(0, END)
 
             self.pEntries[1].insert(0, self.shapes[self.currentIndex].center[0])
-            self.pEntries[2].insert(0, self.shapes[self.currentIndex].center[0])
-            self.pEntries[3].insert(0, self.shapes[self.currentIndex].center[0])
+            self.pEntries[2].insert(0, self.shapes[self.currentIndex].center[1])
+            self.pEntries[3].insert(0, self.shapes[self.currentIndex].center[2])
             self.pEntries[4].insert(0, self.shapes[self.currentIndex].upperLength)
             self.pEntries[5].insert(0, self.shapes[self.currentIndex].upperWidth)
             self.pEntries[6].insert(0, self.shapes[self.currentIndex].lowerLength)
@@ -127,8 +127,8 @@ class App:
                 self.pEntries[i].delete(0, END)
 
             self.pEntries[1].insert(0, self.shapes[self.currentIndex].center[0])
-            self.pEntries[2].insert(0, self.shapes[self.currentIndex].center[0])
-            self.pEntries[3].insert(0, self.shapes[self.currentIndex].center[0])
+            self.pEntries[2].insert(0, self.shapes[self.currentIndex].center[1])
+            self.pEntries[3].insert(0, self.shapes[self.currentIndex].center[2])
             self.pEntries[4].insert(0, self.shapes[self.currentIndex].height)
 
         self.pEntries[0].insert(0, self.shapes[self.currentIndex].name)
@@ -442,18 +442,18 @@ class App:
             print "One shape: -------------------"
             each_model = mb.BuildModel(i)
             Models.append(each_model)
-        img = cv2.imread("project.jpeg",cv2.CV_LOAD_IMAGE_COLOR)
+        img = cv2.imread("project.png",cv2.CV_LOAD_IMAGE_COLOR)
         cv2.imshow("img",img)
         texture = Texture(img)
         points = []
         for i in range(len(Models)):
             for j in range(len(Models[i])):
                 points.extend(texture.putTexture(Models[i][j]))
-        fileRGB = open("test.dat", "w+")
+        fileRGB = open("testData/test.dat", "w+")
         for i in range(len(points)):
             point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
             fileRGB.write(point)
-
+        print "points generated"
         
 
     def newShapeButton(self):
@@ -488,6 +488,7 @@ class App:
         self.newShapeFlag = False
         self.updateRightFrame2Flag = True
         self.currentIndex = (self.shapesList.curselection())[0]
+        self.currentIndex = int(self.currentIndex)
         self.show(2)
         self.state = 2
 
@@ -513,37 +514,37 @@ class App:
         if self.pEntries[0].get() != "":
             self.shapes[self.currentIndex].name = self.pEntries[0].get()
             if isinstance(self.shapes[self.currentIndex], sp.Cylinder):
-                x = self.pEntries[1].get()
-                y = self.pEntries[2].get()
-                z = self.pEntries[3].get()
+                x = int (self.pEntries[1].get())
+                y = int (self.pEntries[2].get())
+                z = int (self.pEntries[3].get())
                 self.shapes[self.currentIndex].center = [x, y, z]
-                self.shapes[self.currentIndex].radius = self.pEntries[4].get()
-                self.shapes[self.currentIndex].height = self.pEntries[5].get()
+                self.shapes[self.currentIndex].radius = int (self.pEntries[4].get())
+                self.shapes[self.currentIndex].height = int (self.pEntries[5].get())
             elif isinstance(self.shapes[self.currentIndex], sp.Cuboid) or isinstance(self.shapes[self.currentIndex],
                                                                                      sp.Prism):
-                x = self.pEntries[1].get()
-                y = self.pEntries[2].get()
-                z = self.pEntries[3].get()
+                x = int (self.pEntries[1].get())
+                y = int (self.pEntries[2].get())
+                z = int (self.pEntries[3].get())
                 self.shapes[self.currentIndex].center = [x, y, z]
-                self.shapes[self.currentIndex].length = self.pEntries[4].get()
-                self.shapes[self.currentIndex].width = self.pEntries[5].get()
-                self.shapes[self.currentIndex].height = self.pEntries[6].get()
+                self.shapes[self.currentIndex].length = int (self.pEntries[4].get())
+                self.shapes[self.currentIndex].width = int (self.pEntries[5].get())
+                self.shapes[self.currentIndex].height = int (self.pEntries[6].get())
             elif isinstance(self.shapes[self.currentIndex], sp.Frustum):
-                x = self.pEntries[1].get()
-                y = self.pEntries[2].get()
-                z = self.pEntries[3].get()
+                x = int (self.pEntries[1].get())
+                y = int (self.pEntries[2].get())
+                z = int (self.pEntries[3].get())
                 self.shapes[self.currentIndex].center = [x, y, z]
-                self.shapes[self.currentIndex].upperLength = self.pEntries[4].get()
-                self.shapes[self.currentIndex].upperWidth = self.pEntries[5].get()
-                self.shapes[self.currentIndex].lowerLength = self.pEntries[6].get()
-                self.shapes[self.currentIndex].lowerWidth = self.pEntries[7].get()
-                self.shapes[self.currentIndex].height = self.pEntries[8].get()
+                self.shapes[self.currentIndex].upperLength = int (self.pEntries[4].get())
+                self.shapes[self.currentIndex].upperWidth = int (self.pEntries[5].get())
+                self.shapes[self.currentIndex].lowerLength = int (self.pEntries[6].get())
+                self.shapes[self.currentIndex].lowerWidth = int (self.pEntries[7].get())
+                self.shapes[self.currentIndex].height = int (self.pEntries[8].get())
             elif isinstance(self.shapes[self.currentIndex], sp.Tree):
-                x = self.pEntries[1].get()
-                y = self.pEntries[2].get()
-                z = self.pEntries[3].get()
+                x = int (self.pEntries[1].get())
+                y = int (self.pEntries[2].get())
+                z = int (self.pEntries[3].get())
                 self.shapes[self.currentIndex].center = [x, y, z]
-                self.shapes[self.currentIndex].height = self.pEntries[4].get()
+                self.shapes[self.currentIndex].height = int (self.pEntries[4].get())
 
             if self.newShapeFlag == True:
                 self.shapesList.insert(END, self.shapes[self.currentIndex].name)

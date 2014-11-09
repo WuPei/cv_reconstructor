@@ -131,7 +131,7 @@ class Texture:
                 li.append(dd)
                 aa = aa + 1.0 / dd
             else:
-                li.append(dd)
+                return [polygon.Vertex[i].x, polygon.Vertex[i].y, polygon.Vertex[i].z]
         '''for i in range(len(lix)):
             lix[i] = 1.0/(lix[i]*ax)
         for i in range(len(liy)):
