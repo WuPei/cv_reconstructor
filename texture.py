@@ -297,7 +297,7 @@ class Texture:
 
     def coord(self, polygon, mems, size):
         #print len(polygon.Texel)
-        if len(polygon.Texel) is 4 or len(polygon.Texel) is 16:
+        if len(polygon.Texel) is 4:
             #print len(polygon.Texel), "= 4"
             vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z],[polygon.Vertex[1].x, polygon.Vertex[1].y, polygon.Vertex[1].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z], [polygon.Vertex[3].x, polygon.Vertex[3].y, polygon.Vertex[3].z]]
             txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v], [polygon.Texel[3].u, polygon.Texel[3].v]]
