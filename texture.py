@@ -228,8 +228,8 @@ class Texture:
                 option = -1
         #print abs(txBorder[0][0] - txBorder[2][0]) < 2 and abs(txBorder[1][0] - txBorder[3][0]) < 2, abs(txBorder[0][1] - txBorder[2][1]) < 2 and abs(txBorder[1][1] - txBorder[3][1]) < 2, option
         if option is -1:
-            i = math.floor((txBorder[0][0] + txBorder[2][0]) / 2.0) - size[1]-1
-            j = math.floor((txBorder[0][1] + txBorder[2][1]) / 2.0) - size[3]-1
+            i = math.floor((txBorder[0][0] + txBorder[2][0]) / 2.0) - size[1]
+            j = math.floor((txBorder[0][1] + txBorder[2][1]) / 2.0) - size[3]
             x = (vtxBorder[0][0] + vtxBorder[2][0]) / 2.0
             y = (vtxBorder[0][1] + vtxBorder[2][1]) / 2.0
             z = (vtxBorder[0][2] + vtxBorder[2][2]) / 2.0
@@ -279,6 +279,12 @@ class Texture:
                 i = 0
             if j < 0:
                 j = 0
+            if i >= len(mems[0]):
+                print "i = ", i
+                i = len(mems[0])-1
+            if j >= len(mems[0][0]):
+                j = len(mems[0])-1
+                print "j = ", j
             #print len(mems[0]), len(mems[0][0]), i, j
             mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
             #print "Reach The End"
@@ -307,24 +313,10 @@ class Texture:
             txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v]]
             self.coord3D(polygon, vtxBorder, txBorder, mems, size)
         else:
-            centerV = [0.0, 0.0, 0.0]
-            centerT = [0.0, 0.0]
-            for i in range(len(polygon.Texel)):
-                centerV[0] = centerV[0] + polygon.Vertex[i].x
-                centerV[1] = centerV[1] + polygon.Vertex[i].y
-                centerV[2] = centerV[2] + polygon.Vertex[i].z
-                centerT[0] = centerT[0] + polygon.Texel[i].u
-                centerT[1] = centerT[1] + polygon.Texel[i].v
-            centerV[0], centerV[1], centerV[2] = centerV[0] /float(len(polygon.Texel)), centerV[1] /float(len(polygon.Texel)), centerV[2] /float(len(polygon.Texel))
-            centerT[0], centerT[1] = centerT[0] /float(len(polygon.Texel)), centerT[1] /float(len(polygon.Texel))
-            for i in range(len(polygon.Texel), 2):
-                vtxBorder = [centerV, [polygon.Vertex[i].x, polygon.Vertex[i].y, polygon.Vertex[i].z], [polygon.Vertex[i+1].x, polygon.Vertex[i+1].y, polygon.Vertex[i+1].z]]
-                txBorder = [centerT, [polygon.Texel[i].u, polygon.Texel[i].v], [polygon.Texel[i+1].u, polygon.Texel[i+1].v]]
+            for i in range(1, len(polygon.Texel)-1, 1):
+                vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z], [polygon.Vertex[i].x, polygon.Vertex[i].y, polygon.Vertex[i].z], [polygon.Vertex[i+1].x, polygon.Vertex[i+1].y, polygon.Vertex[i+1].z]]
+                txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[i].u, polygon.Texel[i].v], [polygon.Texel[i+1].u, polygon.Texel[i+1].v]]
                 self.coord3D(polygon, vtxBorder, txBorder, mems, size)
-            i = len(polygon.Texel)-1
-            vtxBorder = [centerV, [polygon.Vertex[i].x, polygon.Vertex[i].y, polygon.Vertex[i].z], [polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z]]
-            txBorder = [centerT, [polygon.Texel[i].u, polygon.Texel[i].v], [polygon.Texel[0].u, polygon.Texel[0].v]]
-            self.coord3D(polygon, vtxBorder, txBorder, mems, size)
 
     def putTexture(self, polygon):
         self.setPlane(polygon)
