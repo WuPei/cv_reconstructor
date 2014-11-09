@@ -611,10 +611,10 @@ class ModelBuilder:
             return self.BuildCylinder(model.center, model.radius, model.height, model.faces)
         elif (isinstance(model, Ground)):
             print "Model's type is Ground"
-            return self.BuildPlane(0, model.facePoints)
+            return self.BuildPlane(0, model.faces)
         elif (isinstance(model, Sky)):
             print "Model's type is Sky"
-            return self.BuildPlane(400, model.facePoints)
+            return self.BuildPlane(400, model.faces)
         elif (isinstance(model, Frustum)):
             print "Model's type is Frustum"
             return self.BuildFrustum(model.center, model.lowerLength, model.lowerWidth, model.upperLength,

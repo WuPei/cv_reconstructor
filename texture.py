@@ -228,8 +228,8 @@ class Texture:
                 option = -1
         #print abs(txBorder[0][0] - txBorder[2][0]) < 2 and abs(txBorder[1][0] - txBorder[3][0]) < 2, abs(txBorder[0][1] - txBorder[2][1]) < 2 and abs(txBorder[1][1] - txBorder[3][1]) < 2, option
         if option is -1:
-            i = math.floor((txBorder[0][0] + txBorder[2][0]) / 2.0) - size[1]
-            j = math.floor((txBorder[0][1] + txBorder[2][1]) / 2.0) - size[3]
+            i = math.floor((txBorder[0][0] + txBorder[2][0]) / 2.0) - size[1]-1
+            j = math.floor((txBorder[0][1] + txBorder[2][1]) / 2.0) - size[3]-1
             x = (vtxBorder[0][0] + vtxBorder[2][0]) / 2.0
             y = (vtxBorder[0][1] + vtxBorder[2][1]) / 2.0
             z = (vtxBorder[0][2] + vtxBorder[2][2]) / 2.0
@@ -237,6 +237,12 @@ class Texture:
                 i = 0
             if j < 0:
                 j = 0
+            if i >= len(mems[0]):
+                print "i = ", i
+                i = len(mems[0])-1
+            if j >= len(mems[0][0]):
+                j = len(mems[0])-1
+                print "j = ", j
             #print len(mems[0]), len(mems[0][0]), i, j
             mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
             #print "Reach The End"
@@ -388,6 +394,7 @@ class Texture:
                     plist.pop()
                 elif count == 1:
                     plist.pop()
+                count = 0
         # print "zzzzzzzzzzzzzzzzzzzzzz"
         return plist
 						

@@ -424,12 +424,12 @@ class App:
     #pragma mark -- button actions
     #buttons in scene 1
     def generateVideoButton(self):
-        for i in range(len(self.shapes)):
-            print " "
-            print self.shapes[i].name
-            for j in range(len(self.shapes[i].faces)):
-                print self.shapes[i].faces[j].faceOrientation, " : ", self.shapes[i].faces[j].facePoints
-        """
+        # for i in range(len(self.shapes)):
+        #     print " "
+        #     print self.shapes[i].name
+        #     for j in range(len(self.shapes[i].faces)):
+        #         print self.shapes[i].faces[j].faceOrientation, " : ", self.shapes[i].faces[j].facePoints
+        
         mb = ModelBuilder()
         Models = []
         for i in self.shapes:
@@ -460,7 +460,7 @@ class App:
             point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
             fileRGB.write(point)
         print "points generated"
-        """
+        
         
 
     def newShapeButton(self):

@@ -20,10 +20,8 @@ def medianOfColor(mylist):
     length = len(mylist)
     grayScale = [0 for i in range(length)]
     for x in range(length):
-        grayScale[x] = (mylist[x][0] + mylist[x][1] + mylist[x][2])/3
-    yx = zip(grayScale,mylist)
-    yx.sort(key = lambda t: t[0])
-    sorts = [x for (y,x) in yx]
+        grayScale[x] = int((mylist[x][0] + mylist[x][1] + mylist[x][2])/3)
+    sorts = [x for (y,x) in sorted(zip(grayScale,mylist),key = lambda pair:pair[0])]
     if not length % 2:
         return (sorts[length/2] + sorts[length/2-1]) / 2.0
     return sorts[length / 2]
@@ -72,7 +70,7 @@ for i in range(0, len(x_cords), 4):
     if not nextFlag:
         continue
     pts = np.array([point[0], point[1], point[3], point[2]], np.int32)
-    print  pts
+    #print  pts
     #get average color from four points
     #median filtering 
     rgbs = [rgb_values[i], rgb_values[i + 1],rgb_values[i + 2],rgb_values[i + 3]]
