@@ -505,7 +505,7 @@ class App:
         self.state = 2
 
     def deleteButton(self):
-        index = (self.shapesList.curselection())[0]
+        index = int((self.shapesList.curselection())[0])
         del self.shapes[index]
         self.shapesList.delete(index)
 
