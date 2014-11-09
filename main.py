@@ -35,7 +35,7 @@ y_axis = [0, 1, 0]
 x_axis = [1, 0, 0]
 
 # initial camera
-camera_pos = [0, 0, 0, -1000]  # (500,100,100) as initial position
+camera_pos = [0, 0, 0, -300]  # (500,100,100) as initial position
 I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 camera_ori = np.matrix(I)
 cam = camera.Camera(points, camera_pos, camera_ori, 1)
@@ -49,7 +49,8 @@ out_img2 = np.zeros((height, width, 3), np.uint8)
 for i in range(0,len(x_cords)):
 #print "x(width)",width,"y(height):",height,x_cords[i],y_cords[i]
     real_height = height - y_cords[i]
-    if x_cords[i]>=width or real_height>=height or x_cords[i]<0 or real_height<0:
+    real_width = x_cords[i]
+    if real_width>=width or real_height>=height or real_width<0 or real_height<0:
         continue;
     out_img1[real_height][x_cords[i]] = rgb_values[i]
 
@@ -79,11 +80,11 @@ for i in range(0, len(x_cords), 4):
     #shading using fillPoly with average color
     cv2.fillPoly(out_img2, [pts], median_color)
 
-cv2.imwrite("test1.png", out_img1)
-cv2.imwrite("test2.png",out_img2)
-#intialize the frames
-num_frame = 30
+cv2.imwrite("test3.png", out_img1)
+cv2.imwrite("test4.png",out_img2)
+# #intialize the frames
+# num_frame = 25
 
-#vm = vmaker.VideoMaker(num_frame, width, height, cam, rgb_values)
+# vm = vmaker.VideoMaker(num_frame, width, height, cam, rgb_values)
 
-#vm.generateVideo()
+# vm.generateVideo()

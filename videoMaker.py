@@ -30,9 +30,21 @@ class VideoMaker:
             shader = pts_shader.Shader(x_cords, y_cords, offset_u, offset_v, self.width, self.height)
             self.frames[i] = shader.shading(self.rgb_values)
 
+    def testCamPath(self):
+        offset_u = 0#self.width / 2
+        offset_v = 0#self.height / 2
+        #go forward
+        axis = [0, 0, 1]
+        for i in range(self.num_frame):
+            self.cam.camera_pos = self.cam.camera_pos - [0,0,0,100]
+            x_cords, y_cords = self.cam.getProjectedPts(self.height, self.width)
+            shader = pts_shader.Shader(x_cords, y_cords, offset_u, offset_v, self.width, self.height)
+            self.frames[i] = shader.shading(self.rgb_values)
+
     def generateVideo(self):
-        self.ImgsFromCamPath()
-        fps = 15
+        #self.ImgsFromCamPath()
+        self.testCamPath
+        fps = 25
         capSize = (self.height, self.width)
         fourcc = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
         writer = cv2.VideoWriter()
