@@ -37,7 +37,7 @@ out_img = np.zeros((height, width, 3), np.uint8)
 
 #draw all points
 for i in range(0,len(x_cords)):
-    print x_cords[i],y_cords[i]
+    print "x(width)",width,"y(height):",height,x_cords[i],y_cords[i]
     if x_cords[i]>=width or y_cords[i]>=height or x_cords[i]<0 or y_cords[i]<0:
         continue;
     out_img[y_cords[i]][x_cords[i]] = rgb_values[i]
@@ -61,7 +61,7 @@ for i in range(0,len(x_cords)):
 #             cv2.fillPoly(out_img, [pts], average_color)
 
 cv2.imshow("img",out_img)
-cv2.imwrite("test2.png",out_img)
+cv2.imwrite("test.png",out_img)
 #intialize the frames
 num_frame = 30
 

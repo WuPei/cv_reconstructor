@@ -439,16 +439,28 @@ class App:
         mb = ModelBuilder()
         Models = []
         for i in self.shapes:
-            print "One shape: -------------------"
             each_model = mb.BuildModel(i)
+            # Print out the 3D model's vertex and texel coordinate
+            print "Print out the 3D model's vertex and texel coordinate---------------------------"
+            for j in each_model:
+                # j is one polygon
+                print "Vertex is:"
+                for k in j.Vertex:
+                    print k.x, k.y, k.z
+                print "Texel is:"
+                for n in j.Texel:
+                    print n.u, n.v
             Models.append(each_model)
+        print "Models list size: ", len(Models)
         img = cv2.imread("project.png",cv2.CV_LOAD_IMAGE_COLOR)
         cv2.imshow("img",img)
         texture = Texture(img)
         points = []
         for i in range(len(Models)):
+            print "Models list #: ", i
             for j in range(len(Models[i])):
                 points.extend(texture.putTexture(Models[i][j]))
+                print "length of points",len(points)
         fileRGB = open("testData/test.dat", "w+")
         for i in range(len(points)):
             point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
