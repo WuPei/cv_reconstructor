@@ -238,11 +238,11 @@ class Texture:
             if j < 0:
                 j = 0
             if i >= len(mems[0]):
-                print "i = ", i
+                #print "i = ", i
                 i = len(mems[0])-1
             if j >= len(mems[0][0]):
                 j = len(mems[0])-1
-                print "j = ", j
+                #print "j = ", j
             #print len(mems[0]), len(mems[0][0]), i, j
             mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
             #print "Reach The End"
@@ -280,11 +280,11 @@ class Texture:
             if j < 0:
                 j = 0
             if i >= len(mems[0]):
-                print "i = ", i
+                #print "i = ", i
                 i = len(mems[0])-1
             if j >= len(mems[0][0]):
                 j = len(mems[0])-1
-                print "j = ", j
+                #print "j = ", j
             #print len(mems[0]), len(mems[0][0]), i, j
             mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
             #print "Reach The End"

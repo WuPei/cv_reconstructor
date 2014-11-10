@@ -106,15 +106,15 @@ class Camera:
         #part 2: plot projecting 3d shape points on to 2d image plane
         x_cord = [0 for i in range(len(self.pts))]
         y_cord = [0 for i in range(len(self.pts))]
-
+        z_cord = [0 for i in range(len(self.pts))]
         #notice: here is normlized x,y coordinates
         #2.1 Figure 1 for perspective projection
         for x in range(len(self.pts)):
             u_fp, v_fp = self.perspProj(self.pts[x], self.ori_mat, self.camera_pos, self.focal)
-            x_cord[x] = round(height * u_fp)
-            y_cord[x] = round(width * v_fp)
-
-        return x_cord, y_cord
+            x_cord[x] = int(round(height * u_fp))
+            y_cord[x] = int(round(width * v_fp))
+            z_cord[x] = int(round(self.pts[x][2]))
+        return x_cord, y_cord, z_cord
 
 
 

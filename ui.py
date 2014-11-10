@@ -6,6 +6,7 @@ from ModelBuilder import ModelBuilder
 from texture import Texture
 from texture import Point
 import cv2
+import camera
 
 
 class App:
@@ -435,35 +436,44 @@ class App:
         for i in self.shapes:
             each_model = mb.BuildModel(i)
             # Print out the 3D model's vertex and texel coordinate
-            print "Print out the 3D model's vertex and texel coordinate---------------------------"
-            for j in each_model:
-                # j is one polygon
-                print "Vertex is:"
-                for k in j.Vertex:
-                    print k.x, k.y, k.z
-                print "Texel is:"
-                for n in j.Texel:
-                    print n.u, n.v
+            # print "Print out the 3D model's vertex and texel coordinate---------------------------"
+            # for j in each_model:
+            #     # j is one polygon
+            #     print "Vertex is:"
+            #     for k in j.Vertex:
+            #         print k.x, k.y, k.z
+            #     print "Texel is:"
+            #     for n in j.Texel:
+            #         print n.u, n.v
             Models.append(each_model)
         print "Models list size: ", len(Models)
         img = cv2.imread("project.png",cv2.CV_LOAD_IMAGE_COLOR)
         texture = Texture(img)
         points = []
+        
         for i in range(len(Models)):
             #print "Models list #: ", i
             pointsOfEachModel = []
             for j in range(len(Models[i])):
-                facesOfEachModel = texture.putTexture(Models[i][j])
-                pointsOfEachModel.extend(facesOfEachModel)
+                pointsOfEachFace = texture.putTexture(Models[i][j])
+                pointsOfEachModel.extend(pointsOfEachFace)
                 #print "length of points",len(points)'
-            pointsOfEachModel = sorted(pointsOfEachModel,key = lambda point:point.z,reverse = True)
-            points.extend(pointsOfEachModel)
+            points = sorted(pointsOfEachModel,key = lambda point:point.z,reverse = True)
+            fileRGB = open("testData/model_"+str(i)+".dat", "w+")
+            for k in range(len(pointsOfEachModel)):
+                point = "{0},{1},{2},{r},{g},{b}\n".format(points[k].x, points[k].y,points[k].z,r=points[k].r, g=points[k].g, b=points[k].b)
+                fileRGB.write(point)
+            print "Model "+str(i)+":"+str(k)+" points generated"
 
-        fileRGB = open("testData/test.dat", "w+")
-        for i in range(len(points)):
-            point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
-            fileRGB.write(point)
-        print "points generated"
+        print "----------UI Part Finished----------"
+
+        #     points.extend(pointsOfEachModel)
+
+        # fileRGB = open("testData/test.dat", "w+")
+        # for i in range(len(points)):
+        #     point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
+        #     fileRGB.write(point)
+        # print "points generated"
         
         
 
