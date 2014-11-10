@@ -30,6 +30,7 @@ for x in range(width):
  				rgbs.append(image[y+j][x+i])
  		image[y][x] = medianOfColor(rgbs)
 
+cv2.imwrite("testing.png",image)
 print "Processing Time:", timeit.default_timer()-start,"s"
 # list_a = [2,55,150,24,434]
 # list_b = [2,23,214,545,24]
