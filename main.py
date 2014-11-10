@@ -31,11 +31,11 @@ if file.importProjectedPoints():
     print "--read from files for projected points"
 else:
     points, rgb_values = file.importPointsWithRGB()
-    camera_pos = [0, 0, 0, -400]  # (500,100,100) as initial position
+    camera_pos = [0, 100, -100, -500]  # (500,100,100) as initial position
     I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
     camera_ori = np.matrix(I)
     cam = camera.Camera(points, camera_pos, camera_ori, 1)
-    x_cords, y_cords = cam.getProjectedPts(height, width)
+    x_cords, y_cords, z_cords = cam.getProjectedPts(height, width)
     print "-----projectd points generated------"
     file.saveProjectedPointsWithRGB(x_cords,y_cords,rgb_values)
 
