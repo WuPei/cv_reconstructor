@@ -43,6 +43,27 @@ class Shader:
         print "shading image finished/n"
         return self.out_frame
 
+
+    def medianShading(self, rgb_values):
+        print "len:",len(self.x_cords)
+        for i in range(0, len(self.x_cords), 4):
+            point = [0 for index in range(4)]
+            if self.is_out_of_bounds(i):
+                continue
+            for j in range(4):
+                x = self.x_cords[i + j]
+                y = self.height - self.y_cords[i + j]
+                point[j] = [x, y]
+            pts = np.array([point[0], point[1], point[3], point[2]], np.int32)
+            #get average color from four points
+            rgbs = [rgb_values[i] , rgb_values[i + 1] , rgb_values[i + 2] , rgb_values[i + 3]]
+            median_color = self.medianOfColor(rgbs)
+            #shading using fillPoly with average color
+            cv2.fillPoly(self.out_frame, [pts], median_color)
+        #print each_frame
+        print "shading image finished/n"
+        return self.out_frame
+    
     # def testShading(self, rgb_values,num):
     #     print "len:",len(self.x_cords)
     #     #count = 0 

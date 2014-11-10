@@ -4,8 +4,7 @@ import re
 import os
 
 class FileManager:
-    def __init__(self, fileName):
-        self.fileName = fileName;
+    def __init__(self):
         self.pts = []
         self.rgb_value = []
         self.x_cords = []
@@ -19,8 +18,9 @@ class FileManager:
             self.pts.append(point)
         return self.pts
 
-    def importPointsWithRGB(self):
-        for line in open(self.fileName, 'r'):
+    def importPointsWithRGB(self,filename):
+        print "import file:",filename
+        for line in open(filename, 'r'):
             valuesStr = np.array(line.rstrip().split(","), dtype='|S4')
             values = valuesStr.astype(np.float)
             values_point = np.array([values[0], values[1], values[2]])

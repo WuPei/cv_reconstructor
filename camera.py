@@ -15,7 +15,7 @@ class Camera:
         self.rotationMat = [np.matrix(np.identity(3))]
         self.focal = focal
 
-        def translateCamera(self, translateMat):
+    def translateCamera(self, translateMat):
             self.camera_pos = self.camera_pos + translateMat
 
     def translateCameraWithAxisAngle(self, axis, angle):
