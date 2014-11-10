@@ -2,7 +2,7 @@ test.jpg
 *.mov
 *.pyc
 testData/*.*
-testData/*
+testData/imgs/*
 .idea/*
 test2.png
 test.png

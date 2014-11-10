@@ -458,7 +458,8 @@ class App:
                 pointsOfEachFace = texture.putTexture(Models[i][j])
                 pointsOfEachModel.extend(pointsOfEachFace)
                 #print "length of points",len(points)'
-            points = sorted(pointsOfEachModel,key = lambda point:point.z,reverse = True)
+            #points = sorted(pointsOfEachModel,key = lambda point:point.z,reverse = True)
+            points = pointsOfEachModel
             fileRGB = open("testData/model_"+str(i)+".dat", "w+")
             for k in range(len(pointsOfEachModel)):
                 point = "{0},{1},{2},{r},{g},{b}\n".format(points[k].x, points[k].y,points[k].z,r=points[k].r, g=points[k].g, b=points[k].b)

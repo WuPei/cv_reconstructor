@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from sklearn.neighbors import NearestNeighbors
+# from sklearn.neighbors import NearestNeighbors
 from texture import Point
 # This class is a shader for a 2D discrete points, the output is a image frame for certain width,height.
 #After projection of 3D discrete points, the frame generated will be holes in between points. 
@@ -43,34 +43,34 @@ class Shader:
         print "shading image finished/n"
         return self.out_frame
 
-    def testShading(self, rgb_values,num):
-        print "len:",len(self.x_cords)
-        #count = 0 
-        for i in range(len(self.x_cords)):
-            points = np.array(zip(self.x_cords,self.y_cords))
-            knn = NearestNeighbors(n_neighbors=num)
-            knn.fit(points)
-            NearestNeighbors(algorithm='auto', leaf_size=30, n_neighbors=num, p=2,radius=1.0, warn_on_equidistant=True)
-            indexArr = knn.kneighbors(points[i], return_distance=False)
-            #print indexArr
-            neighbourPts = []
-            rgbs = []
-            for j in range(len(indexArr)):
-                index = indexArr[j]
-                point = points[index]
-                neighbourPts.append(point)
-                rgbs.append(np.asarray(rgb_values)[index])
+    # def testShading(self, rgb_values,num):
+    #     print "len:",len(self.x_cords)
+    #     #count = 0 
+    #     for i in range(len(self.x_cords)):
+    #         points = np.array(zip(self.x_cords,self.y_cords))
+    #         knn = NearestNeighbors(n_neighbors=num)
+    #         knn.fit(points)
+    #         NearestNeighbors(algorithm='auto', leaf_size=30, n_neighbors=num, p=2,radius=1.0, warn_on_equidistant=True)
+    #         indexArr = knn.kneighbors(points[i], return_distance=False)
+    #         #print indexArr
+    #         neighbourPts = []
+    #         rgbs = []
+    #         for j in range(len(indexArr)):
+    #             index = indexArr[j]
+    #             point = points[index]
+    #             neighbourPts.append(point)
+    #             rgbs.append(np.asarray(rgb_values)[index])
 
-            uniqueNeighb = np.array(list(set(tuple(p) for p in neighbourPts[0].tolist())),np.int32)
-            if len(uniqueNeighb) < 3:
-                #print count
-                continue
-            median_color = self.medianOfColor(rgbs[0])
-            #count = count + 1
-            #print count
-            #shading using fillPoly with average color
-            cv2.fillPoly(self.out_frame, [uniqueNeighb], median_color)
-        return self.out_frame
+    #         uniqueNeighb = np.array(list(set(tuple(p) for p in neighbourPts[0].tolist())),np.int32)
+    #         if len(uniqueNeighb) < 3:
+    #             #print count
+    #             continue
+    #         median_color = self.medianOfColor(rgbs[0])
+    #         #count = count + 1
+    #         #print count
+    #         #shading using fillPoly with average color
+    #         cv2.fillPoly(self.out_frame, [uniqueNeighb], median_color)
+    #     return self.out_frame
 
 
     def plotPoints(self,rgb_values):

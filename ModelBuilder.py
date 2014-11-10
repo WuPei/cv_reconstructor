@@ -154,16 +154,17 @@ class ModelBuilder:
 		#-------------------------------------------------------
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
-		poly2 = Polygon([ver5, ver6, ver7, ver8], uv_top)
-		poly3 = Polygon([ver1, ver2, ver6, ver5], uv_front)
-		poly4 = Polygon([ver2, ver3, ver7, ver6], uv_right)
+		poly_top = Polygon([ver5, ver6, ver7, ver8], uv_top)
+		poly_front = Polygon([ver1, ver2, ver6, ver5], uv_front)
+		poly_right = Polygon([ver2, ver3, ver7, ver6], uv_right)
 		#poly5 = Polygon([ver3, ver4, ver8, ver7], uv_back)
-		poly6 = Polygon([ver4, ver1, ver5, ver8], uv_left)
+		poly_left = Polygon([ver4, ver1, ver5, ver8], uv_left)
 		
 
 		#-------------------------------------------------------
 		# Return list of polygons
-		polyList = [poly2, poly3, poly4, poly6]
+		# poly2=top, poly3=front, poly4=right, poly6=left
+		polyList = [poly_left, poly_right, poly_top, poly_front]
 		return polyList
 		
 		
@@ -309,22 +310,24 @@ class ModelBuilder:
 	###########################################################	
 	# a, b, c are vertices of the plane
 	# UVs are all texel values
-	def BuildPlane (self, height, facePoints):
-		length = 500
-		width = 500
+	def BuildPlane (self, height, faces):
 		#-------------------------------------------------------
 		# Generate all four vectors
-		ver1 = vt(-length, height, width)
-		ver2 = vt(length, height, width)
-		ver3 = vt(length, height, -width)
-		ver4 = vt(-length, height, -width)
+		ver1 = vt(-20, height, -100)
+		ver2 = vt(600, height, -100)
+		ver3 = vt(600, height, 200)
+		ver4 = vt(-20, height, 200)
 
 
 		#-------------------------------------------------------
 		# Store corresponding Texel coordinates
+		txs = []
+		for i in range(4):
+			txs[i] = faces[0].facePoints[i]
 		uvs = []
-		for i in facePoints:
-			uvs.append(tx(i[0], i[1]))
+		for i in range(4):
+			uvs.append(tx(txs[i][0], txs[i][1]))
+
 
 
 		#-------------------------------------------------------
@@ -457,16 +460,16 @@ class ModelBuilder:
 		#-------------------------------------------------------
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
-		poly2 = Polygon([ver5, ver6, ver7, ver8], uv_top)
-		poly3 = Polygon([ver1, ver2, ver6, ver5], uv_front)
-		poly4 = Polygon([ver2, ver3, ver7, ver6], uv_right)
+		poly_top = Polygon([ver5, ver6, ver7, ver8], uv_top)
+		poly_front = Polygon([ver1, ver2, ver6, ver5], uv_front)
+		poly_right = Polygon([ver2, ver3, ver7, ver6], uv_right)
 		#poly5 = Polygon([ver3, ver4, ver8, ver7], uv_back)
-		poly6 = Polygon([ver4, ver1, ver5, ver8], uv_left)
+		poly_left = Polygon([ver4, ver1, ver5, ver8], uv_left)
 		
 
 		#-------------------------------------------------------
 		# Return list of polygons
-		polyList = [poly2, poly3, poly4, poly6]
+		polyList = [poly_left, poly_right, poly_top, poly_front]
 		return polyList
 		
 	
@@ -582,15 +585,15 @@ class ModelBuilder:
 		#-------------------------------------------------------
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
-		poly2 = Polygon([ver1, ver2, ver5], uv_front)
-		poly3 = Polygon([ver2, ver3, ver6, ver5], uv_right)
+		poly_front = Polygon([ver1, ver2, ver5], uv_front)
+		poly_right = Polygon([ver2, ver3, ver6, ver5], uv_right)
 		#poly4 = Polygon([ver3, ver4, ver6], uv_back)
-		poly5 = Polygon([ver4, ver1, ver5, ver6], uv_left)
+		poly_left = Polygon([ver4, ver1, ver5, ver6], uv_left)
 		
 
 		#-------------------------------------------------------
 		# Return list of polygons
-		polyList = [poly2, poly3, poly5]
+		polyList = [poly_left, poly_right, poly_front]
 		return polyList
 
 
