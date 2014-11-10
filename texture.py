@@ -219,9 +219,10 @@ class Texture:
 
     def coord4D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
-        if abs(txBorder[0][0] - txBorder[1][0]) < 1 and abs(txBorder[2][0] - txBorder[3][0]) < 1 and abs(txBorder[0][0]-txBorder[2][0]) < 1 and abs(txBorder[1][0] - txBorder[3][0]) < 1:
+        threshold = 0.5
+        if abs(txBorder[0][0] - txBorder[1][0]) < threshold and abs(txBorder[2][0] - txBorder[3][0]) < threshold and abs(txBorder[0][0]-txBorder[2][0]) < threshold and abs(txBorder[1][0] - txBorder[3][0]) < threshold:
             option = 1
-        if abs(txBorder[0][1] - txBorder[1][1]) < 1 and abs(txBorder[2][1] - txBorder[3][1]) < 1 and abs(txBorder[0][1] - txBorder[2][1]) < 1 and abs(txBorder[1][1] - txBorder[3][1]) < 1:
+        if abs(txBorder[0][1] - txBorder[1][1]) < threshold and abs(txBorder[2][1] - txBorder[3][1]) < threshold and abs(txBorder[0][1] - txBorder[2][1]) < threshold and abs(txBorder[1][1] - txBorder[3][1]) < threshold:
             if option is 0:
                 option = 2
             else:
@@ -261,9 +262,10 @@ class Texture:
 
     def coord3D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
-        if abs(txBorder[0][0] - txBorder[1][0]) < 1 and abs(txBorder[1][0] - txBorder[2][0]) < 1 and abs(txBorder[2][0]-txBorder[0][0]) < 1:
+        threshold = 0.5
+        if abs(txBorder[0][0] - txBorder[1][0]) < threshold and abs(txBorder[1][0] - txBorder[2][0]) < threshold and abs(txBorder[2][0]-txBorder[0][0]) < threshold:
             option = 1
-        if abs(txBorder[0][1] - txBorder[1][1]) < 1 and abs(txBorder[1][1] - txBorder[2][1]) < 1 and abs(txBorder[2][1] - txBorder[0][1]) < 1:
+        if abs(txBorder[0][1] - txBorder[1][1]) < threshold and abs(txBorder[1][1] - txBorder[2][1]) < threshold and abs(txBorder[2][1] - txBorder[0][1]) < threshold:
             if option is 0:
                 option = 2
             else:
