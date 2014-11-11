@@ -54,7 +54,7 @@ class Shader:
                 x = self.x_cords[i + j]
                 y = self.height - self.y_cords[i + j]
                 point[j] = [x, y]
-            pts = np.array([point[0], point[1], point[3], point[2]], np.int32)
+            pts = np.array([point[0], point[1], point[2], point[3]], np.int32)
             #get average color from four points
             rgbs = [rgb_values[i] , rgb_values[i + 1] , rgb_values[i + 2] , rgb_values[i + 3]]
             median_color = self.medianOfColor(rgbs)
