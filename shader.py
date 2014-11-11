@@ -34,7 +34,7 @@ class Shader:
                 x = self.x_cords[i + j]
                 y = self.height - self.y_cords[i + j]
                 point[j] = [x, y]
-            pts = np.array([point[0], point[1], point[3], point[2]], np.int32)
+            pts = np.array([point[0], point[1], point[2], point[3]], np.int32)
             #get average color from four points
             average_color = (rgb_values[i] + rgb_values[i + 1] + rgb_values[i + 2] + rgb_values[i + 3]) / 4
             #shading using fillPoly with average color
@@ -95,6 +95,7 @@ class Shader:
 
 
     def plotPoints(self,rgb_values):
+        self.out_frame = np.zeros((self.height, self.width, 3), np.uint8)
         for i in range(0,len(self.x_cords)):
             real_height = self.height - self.y_cords[i]
             if self.x_cords[i]>=self.width or real_height>=self.height or self.x_cords[i]<0 or real_height<0:

@@ -59,12 +59,12 @@ for x in range(len(files)):
 	shader.x_cords = x_cords
 	shader.y_cords = y_cords
 	print "----projected poitns generated-----"
-	out_img = shader.shading(rgb_values)
-	out_points = shader.plotPoints(rgb_values)
+	out_img = shader.medianShading(rgb_values)
 	print "Processing Time:", timeit.default_timer()-start,"s"
 	print "-----points shaded------------------"
 	cv2.imwrite(os.path.join(outDir,"img_"+str(x)+".png"),out_img)
-	cv2.imwrite(os.path.join(outDir,"points_"+str(x)+".png"),out_img)
+	out_points = shader.plotPoints(rgb_values)
+	cv2.imwrite(os.path.join(outDir,"points_"+str(x)+".png"),out_points)
 	print "---img_"+str(x)+".png created!"
 	result = out_img
 

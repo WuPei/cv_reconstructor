@@ -78,6 +78,7 @@ class Camera:
         #k_f optical axis
         k_f = ori_mat[2].T
         if (float)((s_p - t_f) * k_f) == 0:
+            print "zero point",s_p,t_f,k_f
             u_fp = 0 
             v_fp = 0
         else:
