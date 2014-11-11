@@ -12,7 +12,8 @@ class Shader:
         self.y_cords = y_cords
         self.width = width
         self.height = height
-        self.out_frame = np.zeros((height, width, 3), np.uint8)
+        self.out_frame = cv2.imread("testData/sky.png",cv2.CV_LOAD_IMAGE_COLOR)
+        #np.zeros((height, width, 3), np.uint8)
 
     def medianOfColor(self,mylist):
         length = len(mylist)
