@@ -51,8 +51,6 @@ previous_img = cv2.imread(skyDir,cv2.CV_LOAD_IMAGE_COLOR)
 for x in range(len(files)-1):
 	filename = os.path.join(dir,"model_"+str(x)+".dat")
 	print filename
-	if x==0:
-		continue
 	points, rgb_values = file.importPointsWithRGB(filename)	
 
 	camera_pos = [0, 0, 0, -400]  # (500,100,100) as initial position
