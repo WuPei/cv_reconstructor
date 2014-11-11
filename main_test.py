@@ -50,8 +50,6 @@ previous_img = cv2.imread(skyDir,cv2.CV_LOAD_IMAGE_COLOR)
 for x in range(len(files)-1):
 	filename = os.path.join(dir,"model_"+str(x)+".dat")
 	print filename
-	if x == 0:
-		continue
 	points, rgb_values = file.importPointsWithRGB(filename)	
 	camera_pos = [0, 0, 0, -400]  # (500,100,100) as initial position
 	I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
@@ -71,7 +69,7 @@ for x in range(len(files)-1):
 	previous_img = out_img
 
 
-cv2.imwrite(os.path.join(outDir,"result.png"),result)
+cv2.imwrite(os.path.join(outDir,"result.png"),previous_img)
 #print "-----points plotted-----------------"
 # out_img_point = shader.plotPoints(rgb_values)
 # cv2.imwrite("points.png", out_img_point)

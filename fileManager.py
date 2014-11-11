@@ -20,6 +20,7 @@ class FileManager:
 
     def importPointsWithRGB(self,filename):
         self.pts = []
+        self.rgb_value = []
         print "import file:",filename
         for line in open(filename, 'r'):
             valuesStr = np.array(line.rstrip().split(","), dtype='|S4')
