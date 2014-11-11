@@ -4,6 +4,20 @@ import numpy as np
 import sys
 import math
 
+class Mesh:
+    def __init__(self, points, colors):
+        self.points = points
+        self.colors = colors
+        self.center = [points[0][0], points[0][1], points[0][2]]
+        self.z = points[0][2]
+    #sp = camera position, [0, x, y, z]
+    def getZ(self, sp):
+        self.z = sp[1]*self.center[0]+sp[2]*self.center[1]+sp[3]*self.center[2]
+        return self.z
+    def getPoints(self):
+        return self.points[0], self.points[1], self.points[2], self.points[3]
+    def getColors(self):
+        return self.colors[0], self.colors[1], self.colors[2], self.colors[3]
 
 class Point:
     def __init__(self, x, y, z, r, g, b):

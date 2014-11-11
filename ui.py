@@ -451,20 +451,44 @@ class App:
         texture = Texture(img)
         points = []
         
-        for i in range(len(Models)):
+        for i in range(0,len(Models),1):
+            if i>=7 and i<12:
+                continue
+
+            if i==13:
+                continue
+
             #print "Models list #: ", i
             pointsOfEachModel = []
-            for j in range(len(Models[i])):
+            for j in range(len(Models[i])): # j is surfaces of each model
                 pointsOfEachFace = texture.putTexture(Models[i][j])
                 pointsOfEachModel.extend(pointsOfEachFace)
                 #print "length of points",len(points)'
             #points = sorted(pointsOfEachModel,key = lambda point:point.z,reverse = True)
             points = pointsOfEachModel
-            fileRGB = open("testData/Models/model_"+str(i)+".dat", "w+")
+            if i==6 : # for i from 6-11, put the surfaces of those models into one file (for building 9)
+                for j in range(7, 12):
+                    for k in range(len(Models[j])): # k is surfaces of each model j from 7-11
+                        pointsOfEachFace = texture.putTexture(Models[j][k])
+                        pointsOfEachModel.extend(pointsOfEachFace)
+
+            if i==12 : # for i from 12-13, put the surfaces of 
+                for j in range(len(Models[13])):
+                    pointsOfEachFace = texture.putTexture(Models[13][j])
+                    pointsOfEachModel.extend(pointsOfEachFace)
+
+            if i<7:
+                fileIndex = i
+            elif i>13:
+                fileIndex = i - 6
+            else:
+                fileIndex = i - 5
+
+            fileRGB = open("testData/Models/model_"+str(fileIndex)+".dat", "w+")
             for k in range(len(pointsOfEachModel)):
                 point = "{0},{1},{2},{r},{g},{b}\n".format(points[k].x, points[k].y,points[k].z,r=points[k].r, g=points[k].g, b=points[k].b)
                 fileRGB.write(point)
-            print "Model "+str(i)+":"+str(k)+" points generated"
+            print "Model "+str(fileIndex)+":"+str(k)+" points generated"
 
         print "----------UI Part Finished----------"
 

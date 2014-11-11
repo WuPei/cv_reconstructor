@@ -51,3 +51,18 @@ class VideoMaker:
             for x in range(len(self.frames)):
                 writer.write(self.frames[x])
             writer.release()
+
+    def generateVideoFromFiles(self,files):
+        frames = []
+        for f in files:
+            img = cv2.imread(f,cv2.CV_LOAD_IMAGE_COLOR)
+            frames.append(img)
+        fps = 2
+        capSize = (self.height, self.width)
+        fourcc = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
+        writer = cv2.VideoWriter()
+        success = writer.open("showcase.mov", fourcc, fps, capSize, True)
+        if success:
+            for x in range(len(self.frames)):
+                writer.write(self.frames[x])
+            writer.release()

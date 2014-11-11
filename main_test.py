@@ -7,6 +7,7 @@ from random import shuffle
 import shader as pts_shader
 import os 
 import timeit
+from texture import Mesh
 
 
 def uniqfiy(seq, rgb_values,idfun=None): 
@@ -31,7 +32,7 @@ def uniqfiy(seq, rgb_values,idfun=None):
    return result,rgbs
 
 def sortBasedOnZ(mylist,refer_list):
-	return [x for (y,x) in sorted(zip(z_cords,mylist),key = lambda pair:pair[0],reverse = True)]
+	return [x for (y,x) in sorted(zip(refer_list,mylist),key = lambda pair:pair[0],reverse = False)]
 
 width = 1632
 height = 1224
@@ -54,12 +55,35 @@ for x in range(len(files)-1):
 		continue
 	points, rgb_values = file.importPointsWithRGB(filename)	
 
-	#STORE EACH FOUR PONITS INTO A MESH 
-
-
 	camera_pos = [0, 0, 0, -400]  # (500,100,100) as initial position
 	I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 	camera_ori = np.matrix(I)
+
+	#STORE EACH FOUR PONITS INTO A MESH
+	meshlist = []
+	meshz = []
+	for i in range(0, len(points), 4):
+		mesh = Mesh([points[i], points[i+1], points[i+2], points[i+3]], [rgb_values[i], rgb_values[i+1], rgb_values[i+2], rgb_values[i+3]])
+		meshlist.append(mesh)
+		meshz.append(mesh.getZ(camera_pos))
+	#Sort Meshes
+	meshlist = sortBasedOnZ(meshlist, meshz)
+
+	#Mesh back to points
+	points = []
+	rgb_values = []
+	for i in range(len(meshlist)):
+		p1, p2, p3, p4 = meshlist[i].getPoints()
+		c1, c2, c3, c4 = meshlist[i].getColors()
+		points.append(p1)
+		points.append(p2)
+		points.append(p3)
+		points.append(p4)
+		rgb_values.append(c1)
+		rgb_values.append(c2)
+		rgb_values.append(c3)
+		rgb_values.append(c4)
+
 	cam = camera.Camera(points, camera_pos, camera_ori, 1)
 	start = timeit.default_timer()
 	x_cords, y_cords ,z_cords = cam.getProjectedPts(height, width)

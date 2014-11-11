@@ -3,7 +3,6 @@ test.jpg
 *.pyc
 testData/*.*
 testData/imgs/*
-testData/Models/*
 .idea/*
 test2.png
 test.png

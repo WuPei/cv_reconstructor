@@ -142,11 +142,11 @@ class ModelBuilder:
 		# else:
 		# 	print "Bottom surface wanna copy from top, BUT Fail !!!"
 		# # Invent back surface
-		# if(exist_front):
-		#  	for i in uv_front:
-		# 		uv_back.append(i)
-		# else:
-		# 	print "Back surface wanna copy from front, BUT Fail !!!"
+		if(exist_front):
+		 	for i in uv_front:
+				uv_back.append(i)
+		else:
+			print "Back surface wanna copy from front, BUT Fail !!!"
 
 			
 		
@@ -155,7 +155,7 @@ class ModelBuilder:
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
 		poly_top = Polygon([ver5, ver6, ver7, ver8], uv_top)
-		#poly_back = Polygon([ver1, ver2, ver6, ver5], uv_back)
+		poly_back = Polygon([ver1, ver2, ver6, ver5], uv_back)
 		poly_right = Polygon([ver2, ver3, ver7, ver6], uv_right)
 		poly_front = Polygon([ver3, ver4, ver8, ver7], uv_front)
 		poly_left = Polygon([ver4, ver1, ver5, ver8], uv_left)
@@ -164,7 +164,7 @@ class ModelBuilder:
 		#-------------------------------------------------------
 		# Return list of polygons
 		# poly2=top, poly3=front, poly4=right, poly6=left
-		polyList = [poly_left, poly_right, poly_top, poly_front]
+		polyList = [poly_back, poly_left, poly_right, poly_top, poly_front]
 		return polyList
 		
 		
@@ -366,7 +366,7 @@ class ModelBuilder:
 		exist_right = False
 		exist_top = False
 		uv_front = []
-		#uv_back = []
+		uv_back = []
 		uv_left = []
 		uv_right = []
 		uv_top = [] 
@@ -450,18 +450,18 @@ class ModelBuilder:
 		# else:
 		# 	print "Bottom surface wanna copy from top, BUT Fail !!!"
 		# # Invent back surface
-		# if(exist_front):
-		# 	for i in uv_front:
-		# 		uv_back.append(i)
-		# else:
-		# 	print "Back surface wanna copy from front, BUT Fail !!!"
+		if(exist_front):
+			for i in uv_front:
+				uv_back.append(i)
+		else:
+			print "Back surface wanna copy from front, BUT Fail !!!"
 
 
 		#-------------------------------------------------------
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
 		poly_top = Polygon([ver5, ver6, ver7, ver8], uv_top)
-		#poly_back = Polygon([ver1, ver2, ver6, ver5], uv_back)
+		poly_back = Polygon([ver1, ver2, ver6, ver5], uv_back)
 		poly_right = Polygon([ver2, ver3, ver7, ver6], uv_right)
 		poly_front = Polygon([ver3, ver4, ver8, ver7], uv_front)
 		poly_left = Polygon([ver4, ver1, ver5, ver8], uv_left)
@@ -469,7 +469,7 @@ class ModelBuilder:
 
 		#-------------------------------------------------------
 		# Return list of polygons
-		polyList = [poly_left, poly_right, poly_top, poly_front]
+		polyList = [poly_back, poly_left, poly_right, poly_top, poly_front]
 		return polyList
 		
 	
@@ -497,7 +497,7 @@ class ModelBuilder:
 		exist_left = False
 		exist_right = False
 		uv_front = []
-		#uv_back = []
+		uv_back = []
 		uv_left = []
 		uv_right = []
 		#uv_btm = []
@@ -575,17 +575,17 @@ class ModelBuilder:
 		# else:
 		# 	print "Bottom surface wanna copy from left, BUT Fail !!!"
 		# # Invent back surface
-		# if(exist_front):
-		# 	for i in uv_front:
-		# 		uv_back.append(i)
-		# else:
-		# 	print "Back surface wanna copy from front, BUT Fail !!!"
+		if(exist_front):
+			for i in uv_front:
+				uv_back.append(i)
+		else:
+			print "Back surface wanna copy from front, BUT Fail !!!"
 
 
 		#-------------------------------------------------------
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
-		#poly_back = Polygon([ver1, ver2, ver5], uv_back)
+		poly_back = Polygon([ver1, ver2, ver5], uv_back)
 		poly_right = Polygon([ver2, ver3, ver6, ver5], uv_right)
 		poly_front = Polygon([ver3, ver4, ver6], uv_front)
 		poly_left = Polygon([ver4, ver1, ver5, ver6], uv_left)
@@ -593,7 +593,7 @@ class ModelBuilder:
 
 		#-------------------------------------------------------
 		# Return list of polygons
-		polyList = [poly_left, poly_right, poly_front]
+		polyList = [poly_back,poly_left, poly_right, poly_front]
 		return polyList
 
 

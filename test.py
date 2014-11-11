@@ -1,8 +1,11 @@
 from Tkinter import *
+import os
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import cv2
 import timeit
+
+import videoMaker as vmaker
 
 def medianOfColor(mylist):
     length = len(mylist)
@@ -15,28 +18,46 @@ def medianOfColor(mylist):
     return sorts[length / 2]
 
 
-image = cv2.imread("imgs/result.png",cv2.CV_LOAD_IMAGE_COLOR)
+dir = 'testData/imgs/'
 
-width = image.shape[1] 
-height= image.shape[0]
-start = timeit.default_timer()
-for x in range(width):
- 	for y in range(height):
- 		zero = np.array([0 for i in range(3)])
- 		if not (image[y][x] == zero).all or y < 800:
- 			continue
- 		rgbs = []
- 		for i in xrange(-1,2):
- 			for j in xrange(-1,2):
- 				if x+i < 0 or x+i >= width or y+j<0 or y+j>=height:
- 					continue
- 				rgbs.append(image[y+j][x+i])
- 		# if len(rgbs) == 0 or :
- 		# 	continue
- 		image[y][x] = medianOfColor(rgbs)
+# files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir,f))]
+files = []
+for x in range(26):
+	filename = os.path.join(dir,"points_"+str(x)+".dat")
+	files.append(filename)
+for x in range(26):
+	filename = os.path.join(dir,"model_"+str(x)+".dat")
+	print filename
+	files.append(filename)
 
-cv2.imwrite("testing.png",image)
-print "Processing Time:", timeit.default_timer()-start,"s"
+width = 1632
+height = 1224
+
+vm = vmaker.VideoMaker(52, width, height, 0, 0)
+vm.generateVideoFromFiles(files)
+
+# image = cv2.imread("imgs/result.png",cv2.CV_LOAD_IMAGE_COLOR)
+
+# width = image.shape[1] 
+# height= image.shape[0]
+# start = timeit.default_timer()
+# for x in range(width):
+#  	for y in range(height):
+#  		zero = np.array([0 for i in range(3)])
+#  		if not (image[y][x] == zero).all or y < 800:
+#  			continue
+#  		rgbs = []
+#  		for i in xrange(-1,2):
+#  			for j in xrange(-1,2):
+#  				if x+i < 0 or x+i >= width or y+j<0 or y+j>=height:
+#  					continue
+#  				rgbs.append(image[y+j][x+i])
+#  		# if len(rgbs) == 0 or :
+#  		# 	continue
+#  		image[y][x] = medianOfColor(rgbs)
+
+# cv2.imwrite("testing.png",image)
+# print "Processing Time:", timeit.default_timer()-start,"s"
 # list_a = [2,55,150,24,434]
 # list_b = [2,23,214,545,24]
 # sorts = [(x,y) for (y,x) in sorted(zip(list_a,list_b))]
