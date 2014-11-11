@@ -323,7 +323,7 @@ class ModelBuilder:
 		# Store corresponding Texel coordinates
 		txs = []
 		for i in range(4):
-			txs[i] = faces[0].facePoints[i]
+			txs.append(faces[0].facePoints[i])
 		uvs = []
 		for i in range(4):
 			uvs.append(tx(txs[i][0], txs[i][1]))
