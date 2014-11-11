@@ -355,7 +355,7 @@ class Texture:
         '''for i in range (len(mem)):
             for j in range(len(mem[i])):
                 print mem[i][j]'''
-        threshold = 2
+        threshold = 1
         for i in range(minw, maxw - threshold, threshold):
             for j in range(minh, maxh - threshold, threshold):
                 if mem[i - minw][j - minh] == 1:

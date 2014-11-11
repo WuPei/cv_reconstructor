@@ -45,7 +45,7 @@ outDir = "testData/imgs/"
 files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir,f))]
 count = 0
 
-for x in range(len(files)):
+for x in range(len(files)-1):
 	filename = os.path.join(dir,"model_"+str(x)+".dat")
 	print filename
 	points, rgb_values = file.importPointsWithRGB(filename)	
@@ -59,7 +59,7 @@ for x in range(len(files)):
 	shader.x_cords = x_cords
 	shader.y_cords = y_cords
 	print "----projected poitns generated-----"
-	out_img = shader.medianShading(rgb_values)
+	out_img = shader.shading(rgb_values)
 	print "Processing Time:", timeit.default_timer()-start,"s"
 	print "-----points shaded------------------"
 	cv2.imwrite(os.path.join(outDir,"img_"+str(x)+".png"),out_img)
