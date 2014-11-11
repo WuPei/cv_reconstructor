@@ -355,34 +355,35 @@ class Texture:
         '''for i in range (len(mem)):
             for j in range(len(mem[i])):
                 print mem[i][j]'''
-        for i in range(minw, maxw - 1):
-            for j in range(minh, maxh - 1):
+        threshold = 2
+        for i in range(minw, maxw - threshold, threshold):
+            for j in range(minh, maxh - threshold, threshold):
                 if mem[i - minw][j - minh] == 1:
                     dp = [memdpx[i - minw][j - minh], memdpy[i - minw][j - minh], memdpz[i - minw][j - minh]]
                     lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i, 0], self.texture[j, i, 1],
                                       self.texture[j, i, 2])
                     plist.append(lastPoint)
                     count = count + 1;
-                if mem[i + 1 - minw][j - minh] == 1:
-                    dp = [memdpx[i + 1 - minw][j - minh], memdpy[i + 1 - minw][j - minh],
-                          memdpz[i + 1 - minw][j - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i + 1, 0], self.texture[j, i + 1, 1],
-                                      self.texture[j, i + 1, 2])
+                if mem[i + threshold - minw][j - minh] == 1:
+                    dp = [memdpx[i + threshold - minw][j - minh], memdpy[i + threshold - minw][j - minh],
+                          memdpz[i + threshold - minw][j - minh]]
+                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i + threshold, 0], self.texture[j, i + threshold, 1],
+                                      self.texture[j, i + threshold, 2])
                     plist.append(lastPoint)
                     count = count + 1;
-                if mem[i + 1 - minw][j + 1 - minh] == 1:
-                    dp = [memdpx[i + 1 - minw][j + 1 - minh], memdpy[i + 1 - minw][j + 1 - minh],
-                          memdpz[i + 1 - minw][j + 1 - minh]]
+                if mem[i + threshold - minw][j + threshold - minh] == 1:
+                    dp = [memdpx[i + threshold - minw][j + threshold - minh], memdpy[i + threshold - minw][j + threshold - minh],
+                          memdpz[i + threshold - minw][j + threshold - minh]]
                     #print i, j, self.texture.shape
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + 1, i + 1, 0], self.texture[j + 1, i + 1, 1],
-                                      self.texture[j + 1, i + 1, 2])
+                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i + threshold, 0], self.texture[j + threshold, i + threshold, 1],
+                                      self.texture[j + threshold, i + threshold, 2])
                     plist.append(lastPoint)
                     count = count + 1;
-                if mem[i - minw][j + 1 - minh] == 1:
-                    dp = [memdpx[i - minw][j + 1 - minh], memdpy[i - minw][j + 1 - minh],
-                          memdpz[i - minw][j + 1 - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + 1, i, 0], self.texture[j + 1, i, 1],
-                                      self.texture[j + 1, i, 2])
+                if mem[i - minw][j + threshold - minh] == 1:
+                    dp = [memdpx[i - minw][j + threshold - minh], memdpy[i - minw][j + threshold - minh],
+                          memdpz[i - minw][j + threshold - minh]]
+                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i, 0], self.texture[j + threshold, i, 1],
+                                      self.texture[j + threshold, i, 2])
                     plist.append(lastPoint)
                     count = count + 1;
                 if count == 3:
