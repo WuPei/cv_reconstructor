@@ -7,9 +7,7 @@ from texture import Point
 #This shader is trying to fill these holes by finding nearby points, and draw them as filled mesh.
 #shading mehtod must be used after intializing.
 class Shader:
-    def __init__(self, x_cords, y_cords, width, height):
-        self.x_cords = x_cords
-        self.y_cords = y_cords
+    def __init__(self, width, height):
         self.width = width
         self.height = height
         self.out_frame = cv2.imread("testData/sky.png",cv2.CV_LOAD_IMAGE_COLOR)
@@ -25,15 +23,15 @@ class Shader:
             return (sorts[length/2] + sorts[length/2-1]) /2
         return sorts[length / 2]
 
-    def shading(self, rgb_values):
-        print "len:",len(self.x_cords)
-        for i in range(0, len(self.x_cords), 4):
+    def shading(self, x_cords, y_cords, rgb_values):
+        print "len:",len(x_cords)
+        for i in range(0, len(x_cords), 4):
             point = [0 for index in range(4)]
-            if self.is_out_of_bounds(i):
+            if self.is_out_of_bounds(x_cords,y_cords,i):
                 continue
             for j in range(4):
-                x = self.x_cords[i + j]
-                y = self.height - self.y_cords[i + j]
+                x = x_cords[i + j]
+                y = y_cords[i + j]
                 point[j] = [x, y]
             pts = np.array([point[0], point[1], point[2], point[3]], np.int32)
             #get average color from four points
@@ -45,15 +43,15 @@ class Shader:
         return self.out_frame
 
 
-    def medianShading(self, rgb_values):
+    def medianShading(self,x_cords, y_cords, rgb_values):
         print "len:",len(self.x_cords)
         for i in range(0, len(self.x_cords), 4):
             point = [0 for index in range(4)]
             if self.is_out_of_bounds(i):
                 continue
             for j in range(4):
-                x = self.x_cords[i + j]
-                y = self.height - self.y_cords[i + j]
+                x = x_cords[i + j]
+                y = y_cords[i + j]
                 point[j] = [x, y]
             pts = np.array([point[0], point[1], point[2], point[3]], np.int32)
             #get average color from four points
@@ -95,19 +93,19 @@ class Shader:
     #     return self.out_frame
 
 
-    def plotPoints(self,rgb_values):
+    def plotPoints(self,x_cords, y_cords,rgb_values):
         self.out_frame = np.zeros((self.height, self.width, 3), np.uint8)
-        for i in range(0,len(self.x_cords)):
-            real_height = self.height - self.y_cords[i]
-            if self.x_cords[i]>=self.width or real_height>=self.height or self.x_cords[i]<0 or real_height<0:
+        for i in range(0,len(x_cords)):
+            real_height = y_cords[i]
+            if x_cords[i]>=self.width or real_height>=self.height or x_cords[i]<0 or real_height<0:
                 continue;
-            self.out_frame[real_height][self.x_cords[i]] = rgb_values[i]
+            self.out_frame[real_height][x_cords[i]] = rgb_values[i]
         return self.out_frame
 
-    def is_out_of_bounds(self, base):
+    def is_out_of_bounds(self, x_cords,y_cords,base):
         for i in range(4):
-            x = self.x_cords[base + i]
-            y = self.height - self.y_cords[base + i]
+            x = x_cords[base + i]
+            y = y_cords[base + i]
             if x >= self.width or x < 0:
                 return True
             elif y >= self.height or y < 0:

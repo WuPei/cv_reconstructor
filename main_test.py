@@ -48,6 +48,8 @@ count = 0
 for x in range(len(files)-1):
 	filename = os.path.join(dir,"model_"+str(x)+".dat")
 	print filename
+	if x ==0 :
+		continue
 	points, rgb_values = file.importPointsWithRGB(filename)	
 	camera_pos = [0, 0, 0, -400]  # (500,100,100) as initial position
 	I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
@@ -55,13 +57,13 @@ for x in range(len(files)-1):
 	cam = camera.Camera(points, camera_pos, camera_ori, 1)
 	start = timeit.default_timer()
 	x_cords, y_cords ,z_cords = cam.getProjectedPts(height, width)
-	shader = pts_shader.Shader(x_cords, y_cords, width, height)
+	shader = pts_shader.Shader( width, height)
 	print "----projected poitns generated-----"
-	out_img = shader.shading(rgb_values)
+	out_img = shader.shading(x_cords,y_cords,rgb_values)
 	print "Processing Time:", timeit.default_timer()-start,"s"
 	print "-----points shaded------------------"
 	cv2.imwrite(os.path.join(outDir,"img_"+str(x)+".png"),out_img)
-	#out_points = shader.plotPoints(rgb_values)
+	#out_points = shader.plotPoints(x_cords, y_cords,rgb_values)
 	#cv2.imwrite(os.path.join(outDir,"points_"+str(x)+".png"),out_points)
 	print "---img_"+str(x)+".png created!"
 	result = out_img
