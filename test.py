@@ -23,10 +23,10 @@ dir = 'testData/imgs/'
 # files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir,f))]
 files = []
 for x in range(26):
-	filename = os.path.join(dir,"points_"+str(x)+".dat")
+	filename = os.path.join(dir,"points_"+str(x)+".png")
 	files.append(filename)
 for x in range(26):
-	filename = os.path.join(dir,"model_"+str(x)+".dat")
+	filename = os.path.join(dir,"img_"+str(x)+".png")
 	print filename
 	files.append(filename)
 
