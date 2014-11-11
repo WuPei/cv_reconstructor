@@ -7,10 +7,10 @@ from texture import Point
 #This shader is trying to fill these holes by finding nearby points, and draw them as filled mesh.
 #shading mehtod must be used after intializing.
 class Shader:
-    def __init__(self, width, height):
+    def __init__(self, width, height, base_img):
         self.width = width
         self.height = height
-        self.out_frame = cv2.imread("testData/sky.png",cv2.CV_LOAD_IMAGE_COLOR)
+        self.out_frame = base_img
         #np.zeros((height, width, 3), np.uint8)
 
     def medianOfColor(self,mylist):
