@@ -23,8 +23,8 @@ class App:
 
         # create object for test purpose
         #create object for test purpose
-        FM = fm.FileManager("Standard_Input.txt")
-        self.shapes = FM.importShapes()
+        FM = fm.FileManager()
+        self.shapes = FM.importShapes("Standard_Input.txt")
 
         self.initUI()
         self.clear()

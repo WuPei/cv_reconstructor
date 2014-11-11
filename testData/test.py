@@ -15,13 +15,16 @@ def medianOfColor(mylist):
     return sorts[length / 2]
 
 
-image = cv2.imread("imgs/img_21.png",cv2.CV_LOAD_IMAGE_COLOR)
+image = cv2.imread("imgs/result.png",cv2.CV_LOAD_IMAGE_COLOR)
 
 width = image.shape[1] 
 height= image.shape[0]
 start = timeit.default_timer()
 for x in range(width):
  	for y in range(height):
+ 		zero = np.array([0 for i in range(3)])
+ 		if not (image[y][x] == zero).all or y < 800:
+ 			continue
  		rgbs = []
  		for i in xrange(-1,2):
  			for j in xrange(-1,2):
