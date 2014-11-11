@@ -30,8 +30,8 @@ def uniqfiy(seq, rgb_values,idfun=None):
        
    return result,rgbs
 
-def sortBasedOnZ(mylist,z_cords):
-	return [x for (y,x) in sorted(zip(z_cords,mylist),key = lambda pair:pair[0])]
+def sortBasedOnZ(mylist,refer_list):
+	return [x for (y,x) in sorted(zip(z_cords,mylist),key = lambda pair:pair[0],reverse = True)]
 
 width = 1632
 height = 1224
@@ -50,13 +50,21 @@ previous_img = cv2.imread(skyDir,cv2.CV_LOAD_IMAGE_COLOR)
 for x in range(len(files)-1):
 	filename = os.path.join(dir,"model_"+str(x)+".dat")
 	print filename
+	if x==0:
+		continue
 	points, rgb_values = file.importPointsWithRGB(filename)	
+
+	#STORE EACH FOUR PONITS INTO A MESH 
+
+
 	camera_pos = [0, 0, 0, -400]  # (500,100,100) as initial position
 	I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 	camera_ori = np.matrix(I)
 	cam = camera.Camera(points, camera_pos, camera_ori, 1)
 	start = timeit.default_timer()
 	x_cords, y_cords ,z_cords = cam.getProjectedPts(height, width)
+	#x_cords, y_cords ,z_cords = cam.getOrthProjectPts(height, width)
+
 	shader = pts_shader.Shader( width, height,previous_img)
 	print "----projected poitns generated-----"
 	out_img = shader.shading(x_cords,y_cords,rgb_values)

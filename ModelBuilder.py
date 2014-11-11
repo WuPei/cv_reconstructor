@@ -58,7 +58,7 @@ class ModelBuilder:
 		exist_right = False
 		exist_top = False
 		uv_front = []
-		#uv_back = []
+		uv_back = []
 		uv_left = []
 		uv_right = []
 		uv_top = [] 
@@ -143,7 +143,7 @@ class ModelBuilder:
 		# 	print "Bottom surface wanna copy from top, BUT Fail !!!"
 		# # Invent back surface
 		# if(exist_front):
-		# 	for i in uv_front:
+		#  	for i in uv_front:
 		# 		uv_back.append(i)
 		# else:
 		# 	print "Back surface wanna copy from front, BUT Fail !!!"
@@ -155,9 +155,9 @@ class ModelBuilder:
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
 		poly_top = Polygon([ver5, ver6, ver7, ver8], uv_top)
-		poly_front = Polygon([ver1, ver2, ver6, ver5], uv_front)
+		#poly_back = Polygon([ver1, ver2, ver6, ver5], uv_back)
 		poly_right = Polygon([ver2, ver3, ver7, ver6], uv_right)
-		#poly5 = Polygon([ver3, ver4, ver8, ver7], uv_back)
+		poly_front = Polygon([ver3, ver4, ver8, ver7], uv_front)
 		poly_left = Polygon([ver4, ver1, ver5, ver8], uv_left)
 		
 
@@ -461,9 +461,9 @@ class ModelBuilder:
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
 		poly_top = Polygon([ver5, ver6, ver7, ver8], uv_top)
-		poly_front = Polygon([ver1, ver2, ver6, ver5], uv_front)
+		#poly_back = Polygon([ver1, ver2, ver6, ver5], uv_back)
 		poly_right = Polygon([ver2, ver3, ver7, ver6], uv_right)
-		#poly5 = Polygon([ver3, ver4, ver8, ver7], uv_back)
+		poly_front = Polygon([ver3, ver4, ver8, ver7], uv_front)
 		poly_left = Polygon([ver4, ver1, ver5, ver8], uv_left)
 		
 
@@ -585,9 +585,9 @@ class ModelBuilder:
 		#-------------------------------------------------------
 		# Generate polygons
 		#poly1 = Polygon([ver1, ver2, ver3, ver4], uv_btm)
-		poly_front = Polygon([ver1, ver2, ver5], uv_front)
+		#poly_back = Polygon([ver1, ver2, ver5], uv_back)
 		poly_right = Polygon([ver2, ver3, ver6, ver5], uv_right)
-		#poly4 = Polygon([ver3, ver4, ver6], uv_back)
+		poly_front = Polygon([ver3, ver4, ver6], uv_front)
 		poly_left = Polygon([ver4, ver1, ver5, ver6], uv_left)
 		
 
