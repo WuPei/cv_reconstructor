@@ -31,6 +31,8 @@ for x in range(width):
  				if x+i < 0 or x+i >= width or y+j<0 or y+j>=height:
  					continue
  				rgbs.append(image[y+j][x+i])
+ 		# if len(rgbs) == 0 or :
+ 		# 	continue
  		image[y][x] = medianOfColor(rgbs)
 
 cv2.imwrite("testing.png",image)
