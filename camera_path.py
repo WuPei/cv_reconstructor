@@ -70,10 +70,10 @@ def theta(angle):
 	return angle * 1.0 / 180 * np.pi
 
 def rotateThroughX(angle):
-	return np.matrix([[math.cos(theta(angle)), 0, math.sin(theta(angle))], [0, 1, 0], [math.cos(theta(angle+90)), 0, math.sin(theta(angle+90))]])
+	return [[math.cos(theta(angle)), 0, math.sin(theta(angle))], [0, 1, 0], [math.cos(theta(angle+90)), 0, math.sin(theta(angle+90))]]
 
 def rotateThroughY(angle):
-	return np.matrix([[1,0, 0], [0, math.cos(theta(angle)), math.sin(theta(angle))], [0, math.cos(theta(angle+90)), math.sin(theta(angle+90))]])
+	return [[1,0, 0], [0, math.cos(theta(angle)), math.sin(theta(angle))], [0, math.cos(theta(angle+90)), math.sin(theta(angle+90))]]
 
 def generatePath1(start_pos,start_angle,final_pos,final_angle,frames):
 	start_ori = rotateThroughX(start_angle)
@@ -156,7 +156,7 @@ print "Path4"
 generatePath2(pos_4,angle_4y,pos_3,angle_3y,frames)
 
 #go stright
-I = np.matrix(np.identity(3))
+I = [[1,0,0],[0,1,0],[0,0,1]]
 print "Path5"
 generatePath3(I, pos_3,pos_5, frames)
 
