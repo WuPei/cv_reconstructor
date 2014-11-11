@@ -154,26 +154,26 @@ class Texture:
 
     def polygonDivide2D(self, border, n, option):
 
-        if n is 4:
+        if n == 4:
             #print border
             [[a, b], [c, d], [e, f], [g, h]] = border
             [A, B, C, D] = border
             E, F, G, H, I = [(a + c) / 2.0, (d + b) / 2.0], [(e + c) / 2.0, (d + f) / 2.0], [(g + e) / 2.0, (h + f) / 2.0], [(a + g) / 2.0, (h + b) / 2.0], [(a + e) / 2.0, (b + f) / 2.0]
-            if option is 0:
+            if option == 0:
                 border1 = [A, E, I, H]
                 border2 = [E, B, F, I]
                 border3 = [I, F, C, G]
                 border4 = [H, I, G, D]
                 return [border1, border2, border3, border4]
-            elif option is 2:
+            elif option == 2:
                 border1 = [A, E, G, D]
                 border2 = [E, B, C, G]
                 return [border1, border2]
-            elif option is 1:
+            elif option == 1:
                 border1 = [A, B, F, H]
                 border2 = [H, F, C, D]
                 return [border1, border2]
-        elif n is 3:
+        elif n == 3:
             [[a, b], [c, d], [e, f]] = border
             [A, B, C] = border
             E, F, G = [(a + c) / 2.0, (d + b) / 2.0], [(e + c) / 2.0, (d + f) / 2.0], [(e + a) / 2.0, (f + b) / 2.0]
@@ -184,7 +184,7 @@ class Texture:
             return [border1, border2, border3, border4]
 
     def polygonDivide3D(self, border, n, option):
-        if n is 4:
+        if n == 4:
             [[a, b, i], [c, d, j], [e, f, k], [g, h, l]] = border
             [A, B, C, D] = border
             E, F, G, H, I = [(a + c) / 2.0, (d + b) / 2.0, (i + j) / 2.0], [(e + c) / 2.0, (d + f) / 2.0,
@@ -193,21 +193,21 @@ class Texture:
                                                                                              (k + l) / 2.0], [
                                 (a + g) / 2.0, (h + b) / 2.0, (i + l) / 2.0], [(a + e) / 2.0, (b + f) / 2.0,
                                                                                (i + k) / 2.0]
-            if option is 0:
+            if option == 0:
                 border1 = [A, E, I, H]
                 border2 = [E, B, F, I]
                 border3 = [I, F, C, G]
                 border4 = [H, I, G, D]
                 return [border1, border2, border3, border4]
-            elif option is 2:
+            elif option == 2:
                 border1 = [A, E, G, D]
                 border2 = [E, B, C, G]
                 return [border1, border2]
-            elif option is 1:
+            elif option == 1:
                 border1 = [A, B, F, H]
                 border2 = [H, F, C, D]
                 return [border1, border2]
-        elif n is 3:
+        elif n == 3:
             [[a, b, g], [c, d, h], [e, f, i]] = border
             [A, B, C] = border
             E, F, G = [(a + c) / 2.0, (d + b) / 2.0, (g + h) / 2.0], [(e + c) / 2.0, (d + f) / 2.0, (i + h) / 2.0], [(e + a) / 2.0, (f + b) / 2.0, (g + i) / 2.0]
@@ -219,16 +219,16 @@ class Texture:
 
     def coord4D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
-        threshold = 0.5
+        threshold = 1
         if abs(txBorder[0][0] - txBorder[1][0]) < threshold and abs(txBorder[2][0] - txBorder[3][0]) < threshold and abs(txBorder[0][0]-txBorder[2][0]) < threshold and abs(txBorder[1][0] - txBorder[3][0]) < threshold:
             option = 1
         if abs(txBorder[0][1] - txBorder[1][1]) < threshold and abs(txBorder[2][1] - txBorder[3][1]) < threshold and abs(txBorder[0][1] - txBorder[2][1]) < threshold and abs(txBorder[1][1] - txBorder[3][1]) < threshold:
-            if option is 0:
+            if option == 0:
                 option = 2
             else:
                 option = -1
         #print abs(txBorder[0][0] - txBorder[2][0]) < 2 and abs(txBorder[1][0] - txBorder[3][0]) < 2, abs(txBorder[0][1] - txBorder[2][1]) < 2 and abs(txBorder[1][1] - txBorder[3][1]) < 2, option
-        if option is -1:
+        if option == -1:
             i = math.floor((txBorder[0][0] + txBorder[2][0]) / 2.0) - size[1]
             j = math.floor((txBorder[0][1] + txBorder[2][1]) / 2.0) - size[3]
             x = (vtxBorder[0][0] + vtxBorder[2][0]) / 2.0
@@ -248,10 +248,10 @@ class Texture:
             mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
             #print "Reach The End"
             return 0
-        elif option is 1:
+        elif option == 1:
             tx = self.polygonDivide2D(txBorder, 4, 0)
             vtx = self.polygonDivide3D(vtxBorder, 4, 0)
-        elif option is 2:
+        elif option == 2:
             tx = self.polygonDivide2D(txBorder, 4, 0)
             vtx = self.polygonDivide3D(vtxBorder, 4, 0)
         else:
@@ -262,16 +262,16 @@ class Texture:
 
     def coord3D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
-        threshold = 0.5
+        threshold = 1
         if abs(txBorder[0][0] - txBorder[1][0]) < threshold and abs(txBorder[1][0] - txBorder[2][0]) < threshold and abs(txBorder[2][0]-txBorder[0][0]) < threshold:
             option = 1
         if abs(txBorder[0][1] - txBorder[1][1]) < threshold and abs(txBorder[1][1] - txBorder[2][1]) < threshold and abs(txBorder[2][1] - txBorder[0][1]) < threshold:
-            if option is 0:
+            if option == 0:
                 option = 2
             else:
                 option = -1
         #print abs(txBorder[0][0] - txBorder[2][0]) < 2 and abs(txBorder[1][0] - txBorder[3][0]) < 2, abs(txBorder[0][1] - txBorder[2][1]) < 2 and abs(txBorder[1][1] - txBorder[3][1]) < 2, option
-        if option is -1:
+        if option == -1:
             i = math.floor((txBorder[0][0] + txBorder[1][0] + txBorder[2][0]) / 3.0) - size[1]
             j = math.floor((txBorder[0][1] + txBorder[1][1] + txBorder[2][1]) / 3.0) - size[3]
             x = (vtxBorder[0][0] + vtxBorder[1][0]+vtxBorder[2][0]) / 3.0
@@ -291,10 +291,10 @@ class Texture:
             mems[0][i][j], mems[1][i][j], mems[2][i][j] = x, y, z
             #print "Reach The End"
             return 0
-        elif option is 1:
+        elif option == 1:
             tx = self.polygonDivide2D(txBorder, 3, 0)
             vtx = self.polygonDivide3D(vtxBorder, 3, 0)
-        elif option is 2:
+        elif option == 2:
             tx = self.polygonDivide2D(txBorder, 3, 0)
             vtx = self.polygonDivide3D(vtxBorder, 3, 0)
         else:
@@ -305,12 +305,12 @@ class Texture:
 
     def coord(self, polygon, mems, size):
         #print len(polygon.Texel)
-        if len(polygon.Texel) is 4:
+        if len(polygon.Texel) == 4:
             #print len(polygon.Texel), "= 4"
             vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z],[polygon.Vertex[1].x, polygon.Vertex[1].y, polygon.Vertex[1].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z], [polygon.Vertex[3].x, polygon.Vertex[3].y, polygon.Vertex[3].z]]
             txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v], [polygon.Texel[3].u, polygon.Texel[3].v]]
             self.coord4D(polygon, vtxBorder, txBorder, mems, size)
-        elif len(polygon.Texel) is 3:
+        elif len(polygon.Texel) == 3:
             vtxBorder = [[polygon.Vertex[0].x, polygon.Vertex[0].y, polygon.Vertex[0].z], [polygon.Vertex[1].x, polygon.Vertex[1].y, polygon.Vertex[1].z], [polygon.Vertex[2].x, polygon.Vertex[2].y, polygon.Vertex[2].z]]
             txBorder = [[polygon.Texel[0].u, polygon.Texel[0].v], [polygon.Texel[1].u, polygon.Texel[1].v], [polygon.Texel[2].u, polygon.Texel[2].v]]
             self.coord3D(polygon, vtxBorder, txBorder, mems, size)
@@ -351,49 +351,144 @@ class Texture:
                     mem[i - minw][j - minh] = 1
                     # print mem[i-minw][j-minh]
                     #print memdpx[i - minw][j - minh], memdpy[i - minw][j - minh], memdpz[i - minw][j - minh]
+        extendtype = -1
 
         '''for i in range (len(mem)):
             for j in range(len(mem[i])):
                 print mem[i][j]'''
         threshold = 1
+        temppl = []
         for i in range(minw, maxw - threshold, threshold):
+            #if i == minw:
+            #    print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            #print "(", i, minw,")"
             for j in range(minh, maxh - threshold, threshold):
+                extendtype = 10000
                 if mem[i - minw][j - minh] == 1:
                     dp = [memdpx[i - minw][j - minh], memdpy[i - minw][j - minh], memdpz[i - minw][j - minh]]
                     lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i, 0], self.texture[j, i, 1],
                                       self.texture[j, i, 2])
+                    extendtype = extendtype + 1
                     plist.append(lastPoint)
                     count = count + 1;
+                    #if i == minw:
+                     #   temppl.append(lastPoint)
                 if mem[i + threshold - minw][j - minh] == 1:
                     dp = [memdpx[i + threshold - minw][j - minh], memdpy[i + threshold - minw][j - minh],
                           memdpz[i + threshold - minw][j - minh]]
                     lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i + threshold, 0], self.texture[j, i + threshold, 1],
                                       self.texture[j, i + threshold, 2])
+                    extendtype = extendtype + 10
                     plist.append(lastPoint)
                     count = count + 1;
+                    #if i == minw:
+                     #   temppl.append(lastPoint)
                 if mem[i + threshold - minw][j + threshold - minh] == 1:
                     dp = [memdpx[i + threshold - minw][j + threshold - minh], memdpy[i + threshold - minw][j + threshold - minh],
                           memdpz[i + threshold - minw][j + threshold - minh]]
                     #print i, j, self.texture.shape
                     lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i + threshold, 0], self.texture[j + threshold, i + threshold, 1],
                                       self.texture[j + threshold, i + threshold, 2])
+                    extendtype = extendtype + 100
                     plist.append(lastPoint)
                     count = count + 1;
+                    #if i == minw:
+                     #   temppl.append(lastPoint)
                 if mem[i - minw][j + threshold - minh] == 1:
                     dp = [memdpx[i - minw][j + threshold - minh], memdpy[i - minw][j + threshold - minh],
                           memdpz[i - minw][j + threshold - minh]]
                     lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i, 0], self.texture[j + threshold, i, 1],
                                       self.texture[j + threshold, i, 2])
+                    extendtype = extendtype + 1000
                     plist.append(lastPoint)
                     count = count + 1;
+                    #if i == minw:
+                     #   temppl.append(lastPoint)
+                #if i == minw:
+                #    print "i = w, count = ", count
                 if count == 3:
                     plist.append(lastPoint)
+                    #continue
                 elif count == 2:
-                    plist.pop()
-                    plist.pop()
+                    p2 = plist.pop()
+                    p1 = plist.pop()
+                    '''
+                    ex = lambda x, y: 2*x-y
+                    if extendtype == 10011:
+                        if i+threshold<maxw and j-threshold>=minw:
+                            dp1 = [memdpx[i - minw][j - threshold - minh], memdpy[i - minw][j - threshold - minh], memdpz[i - minw][j - threshold - minh]]
+                            dp2 = [memdpx[i + threshold - minw][j - threshold - minh], memdpy[i + threshold - minw][j - threshold - minh], memdpz[i + threshold - minw][j - threshold - minh]]
+                            dp1 = map( ex, p1.getCoord(), dp1)
+                            dp2 = map( ex, p2.getCoord(), dp2)
+                            plist.append(p1)
+                            plist.append(p2)
+                            plist.append(Point(dp2[0], dp2[1], dp2[2], p2.r, p2.g, p2.b))
+                            #plist.append(Point(dp2[0], dp2[1], dp2[2], 0, 255, 0))
+                            plist.append(Point(dp1[0], dp1[1], dp1[2], p1.r, p1.g, p1.b))
+                            #plist.append(Point(dp1[0], dp1[1], dp1[2], 255, 0, 0))
+                    elif extendtype == 10101:
+                        continue
+                    elif extendtype == 11001:
+                        if j+threshold<maxh and i-threshold>=minw:
+                            dp1 = [memdpx[i - threshold- minw][j - minh], memdpy[i - threshold- minw][j - minh], memdpz[i - threshold- minw][j - minh]]
+                            dp2 = [memdpx[i - threshold - minw][j + threshold - minh], memdpy[i - threshold - minw][j + threshold - minh], memdpz[i - threshold - minw][j + threshold - minh]]
+                            dp1 = map( ex, p1.getCoord(), dp1)
+                            dp2 = map( ex, p2.getCoord(), dp2)
+                            plist.append(p1)
+                            plist.append(Point(dp1[0], dp1[1], dp1[2], p1.r, p1.g, p1.b))
+                            #plist.append(Point(dp1[0], dp1[1], dp1[2], 255, 0, 0))
+                            plist.append(Point(dp2[0], dp2[1], dp2[2], p2.r, p2.g, p2.b))
+                            #plist.append(Point(dp2[0], dp2[1], dp2[2], 0, 255, 0))
+                            plist.append(p2)
+                    elif extendtype == 10110:
+                        if i+2*threshold<maxw and j+threshold<maxh and i-minw>=0:
+                            dp1 = [memdpx[i + 2*threshold- minw][j - minh], memdpy[i + 2*threshold- minw][j - minh], memdpz[i + 2*threshold- minw][j - minh]]
+                            dp2 = [memdpx[i + 2*threshold - minw][j + threshold - minh], memdpy[i + 2*threshold - minw][j + threshold - minh], memdpz[i + 2*threshold - minw][j + threshold - minh]]
+                            dp1 = map( ex, p1.getCoord(), dp1)
+                            dp2 = map( ex, p2.getCoord(), dp2)
+                            plist.append(Point(dp1[0], dp1[1], dp1[2], p1.r, p1.g, p1.b))
+                            #plist.append(Point(dp1[0], dp1[1], dp1[2], 255, 0, 0))
+                            plist.append(p1)
+                            plist.append(p2)
+                            plist.append(Point(dp2[0], dp2[1], dp2[2], p2.r, p2.g, p2.b))
+                            #plist.append(Point(dp2[0], dp2[1], dp2[2], 0, 255, 0))
+                    elif extendtype == 11010:
+                        continue
+                    elif extendtype == 11100:
+                        if i+threshold<maxw and j+2*threshold<maxh and i-minw>=0:
+                            dp1 = [memdpx[i + threshold - minw][j +2*threshold- minh], memdpy[i + threshold - minw][j +2*threshold- minh], memdpz[i + threshold - minw][j +2*threshold- minh]]
+                            dp2 = [memdpx[i - minw][j +2*threshold- minh], memdpy[i - minw][j +2*threshold- minh], memdpz[i - minw][j +2*threshold- minh]]
+                            dp1 = map( ex, p1.getCoord(), dp1)
+                            dp2 = map( ex, p2.getCoord(), dp2)
+                            plist.append(Point(dp2[0], dp2[1], dp2[2], p2.r, p2.g, p2.b))
+                            #plist.append(Point(dp2[0], dp2[1], dp2[2], 0, 255, 0))
+                            plist.append(Point(dp1[0], dp1[1], dp1[2], p1.r, p1.g, p1.b))
+                            #plist.append(Point(dp2[0], dp2[1], dp2[2], 0, 255, 0))
+                            plist.append(p1)
+                            plist.append(p2)
+                            '''
                 elif count == 1:
                     plist.pop()
+                elif count == 4:
+                    #print "else i is ", i, "minw is ", minw
+                    '''
+                    if i == minw:
+                        print "i is minw =",i
+                        p1 = temppl[0]
+                        p2 = temppl[3]
+                        ex = lambda x, y: 2*x-y
+                        dp1 = temppl[1].getCoord()[:]
+                        dp2 = temppl[2].getCoord()[:]
+                        dp1 = map( ex, p1.getCoord(), dp1)
+                        dp2 = map( ex, p2.getCoord(), dp2)
+                        plist.append(Point(dp2[0], dp2[1], dp2[2], p2.r, p2.g, p2.b))
+                        plist.append(p1)
+                        plist.append(p2)
+                        plist.append(Point(dp1[0], dp1[1], dp1[2], p1.r, p1.g, p1.b))
+                        '''
                 count = 0
+                temppl = []
+            #print "i = ", i, "minw = ", minw
         # print "zzzzzzzzzzzzzzzzzzzzzz"
         return plist
 						
