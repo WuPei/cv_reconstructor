@@ -219,7 +219,7 @@ class Texture:
 
     def coord4D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
-        threshold = 1
+        threshold = 0.5
         if abs(txBorder[0][0] - txBorder[1][0]) < threshold and abs(txBorder[2][0] - txBorder[3][0]) < threshold and abs(txBorder[0][0]-txBorder[2][0]) < threshold and abs(txBorder[1][0] - txBorder[3][0]) < threshold:
             option = 1
         if abs(txBorder[0][1] - txBorder[1][1]) < threshold and abs(txBorder[2][1] - txBorder[3][1]) < threshold and abs(txBorder[0][1] - txBorder[2][1]) < threshold and abs(txBorder[1][1] - txBorder[3][1]) < threshold:
@@ -262,7 +262,7 @@ class Texture:
 
     def coord3D(self, polygon, vtxBorder, txBorder, mems, size):
         option = 0
-        threshold = 1
+        threshold = 0.5
         if abs(txBorder[0][0] - txBorder[1][0]) < threshold and abs(txBorder[1][0] - txBorder[2][0]) < threshold and abs(txBorder[2][0]-txBorder[0][0]) < threshold:
             option = 1
         if abs(txBorder[0][1] - txBorder[1][1]) < threshold and abs(txBorder[1][1] - txBorder[2][1]) < threshold and abs(txBorder[2][1] - txBorder[0][1]) < threshold:
@@ -368,40 +368,44 @@ class Texture:
                     dp = [memdpx[i - minw][j - minh], memdpy[i - minw][j - minh], memdpz[i - minw][j - minh]]
                     lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i, 0], self.texture[j, i, 1],
                                       self.texture[j, i, 2])
-                    extendtype = extendtype + 1
-                    plist.append(lastPoint)
-                    count = count + 1;
+                    if dp[0]!=0 or dp[1]!=0 or dp[2]!=0:
+                        extendtype = extendtype + 1
+                        plist.append(lastPoint)
+                        count = count + 1;
                     #if i == minw:
                      #   temppl.append(lastPoint)
                 if mem[i + threshold - minw][j - minh] == 1:
                     dp = [memdpx[i + threshold - minw][j - minh], memdpy[i + threshold - minw][j - minh],
                           memdpz[i + threshold - minw][j - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i + threshold, 0], self.texture[j, i + threshold, 1],
-                                      self.texture[j, i + threshold, 2])
-                    extendtype = extendtype + 10
-                    plist.append(lastPoint)
-                    count = count + 1;
+                    if dp[0]!=0 or dp[1]!=0 or dp[2]!=0:
+                        lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j, i + threshold, 0], self.texture[j, i + threshold, 1],
+                                          self.texture[j, i + threshold, 2])
+                        extendtype = extendtype + 10
+                        plist.append(lastPoint)
+                        count = count + 1;
                     #if i == minw:
                      #   temppl.append(lastPoint)
                 if mem[i + threshold - minw][j + threshold - minh] == 1:
                     dp = [memdpx[i + threshold - minw][j + threshold - minh], memdpy[i + threshold - minw][j + threshold - minh],
                           memdpz[i + threshold - minw][j + threshold - minh]]
                     #print i, j, self.texture.shape
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i + threshold, 0], self.texture[j + threshold, i + threshold, 1],
-                                      self.texture[j + threshold, i + threshold, 2])
-                    extendtype = extendtype + 100
-                    plist.append(lastPoint)
-                    count = count + 1;
+                    if dp[0]!=0 or dp[1]!=0 or dp[2]!=0:
+                        lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i + threshold, 0], self.texture[j + threshold, i + threshold, 1],
+                                          self.texture[j + threshold, i + threshold, 2])
+                        extendtype = extendtype + 100
+                        plist.append(lastPoint)
+                        count = count + 1;
                     #if i == minw:
                      #   temppl.append(lastPoint)
                 if mem[i - minw][j + threshold - minh] == 1:
                     dp = [memdpx[i - minw][j + threshold - minh], memdpy[i - minw][j + threshold - minh],
                           memdpz[i - minw][j + threshold - minh]]
-                    lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i, 0], self.texture[j + threshold, i, 1],
-                                      self.texture[j + threshold, i, 2])
-                    extendtype = extendtype + 1000
-                    plist.append(lastPoint)
-                    count = count + 1;
+                    if dp[0]!=0 or dp[1]!=0 or dp[2]!=0:
+                        lastPoint = Point(dp[0], dp[1], dp[2], self.texture[j + threshold, i, 0], self.texture[j + threshold, i, 1],
+                                          self.texture[j + threshold, i, 2])
+                        extendtype = extendtype + 1000
+                        plist.append(lastPoint)
+                        count = count + 1;
                     #if i == minw:
                      #   temppl.append(lastPoint)
                 #if i == minw:
