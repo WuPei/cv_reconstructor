@@ -55,9 +55,9 @@ class FileManager:
     #cuboid [600,0,50] 100 40 30 building1 Front:[[1250.0,867.0],[1301.0,867.0],[1301.0,691.0],[1248.0,695.0]]
     #prism [580,25,180] 80 90 20 building2 Front:[[708.0,790.0],[851.0,793.0],[782.0,754.0]]
     #frumstum center hight uL uW lL             lW                                                              name    faces
-    def importShapes(self):
+    def importShapes(self,filename):
         shapes = []
-        for line in open(self.fileName,'r'):
+        for line in open(filename,'r'):
             inData = line.rstrip().split(" ")
             if len(inData) >0:
 
