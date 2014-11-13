@@ -452,38 +452,40 @@ class App:
         points = []
         
         for i in range(0,len(Models),1):
-            if i>=7 and i<12:
-                continue
-
-            if i==13:
-                continue
-
-            #print "Models list #: ", i
+            
             pointsOfEachModel = []
-            for j in range(len(Models[i])): # j is surfaces of each model
-                pointsOfEachFace = texture.putTexture(Models[i][j])
-                pointsOfEachModel.extend(pointsOfEachFace)
-                #print "length of points",len(points)'
-            #points = sorted(pointsOfEachModel,key = lambda point:point.z,reverse = True)
-            points = pointsOfEachModel
-            if i==6 : # for i from 6-11, put the surfaces of those models into one file (for building 9)
-                for j in range(7, 12):
-                    for k in range(len(Models[j])): # k is surfaces of each model j from 7-11
+            if (i<5): # for single model building 4,11,12,13 and ground
+                fileIndex = i
+                for j in range(len(Models[i])): # j is surfaces of each model
+                    pointsOfEachFace = texture.putTexture(Models[i][j])
+                    pointsOfEachModel.extend(pointsOfEachFace)
+                
+            elif i==5: #5-6 compound building 10
+                fileIndex = 5
+                for j in range(5, 7):
+                    for k in range(len(Models[j])): 
                         pointsOfEachFace = texture.putTexture(Models[j][k])
                         pointsOfEachModel.extend(pointsOfEachFace)
 
-            if i==12 : # for i from 12-13, put the surfaces of 
-                for j in range(len(Models[13])):
-                    pointsOfEachFace = texture.putTexture(Models[13][j])
-                    pointsOfEachModel.extend(pointsOfEachFace)
+            elif i==7: #7-12 compound building 9
+                fileIndex = 6
+                for j in range(7, 13):
+                    for k in range(len(Models[j])): 
+                        pointsOfEachFace = texture.putTexture(Models[j][k])
+                        pointsOfEachModel.extend(pointsOfEachFace)
 
-            if i<7:
-                fileIndex = i
-            elif i>13:
-                fileIndex = i - 6
+            elif (i-13)>=0 and (i-13)%2==0: #compound buildings 1-8
+                multiple = (i-13)/2
+                fileIndex = 7 + multiple
+                for j in range(i, i+2):
+                    for k in range(len(Models[j])): 
+                        pointsOfEachFace = texture.putTexture(Models[j][k])
+                        pointsOfEachModel.extend(pointsOfEachFace)
+
             else:
-                fileIndex = i - 5
+                continue
 
+            points = pointsOfEachModel
             fileRGB = open("testData/Models/model_"+str(fileIndex)+".dat", "w+")
             for k in range(len(pointsOfEachModel)):
                 point = "{0},{1},{2},{r},{g},{b}\n".format(points[k].x, points[k].y,points[k].z,r=points[k].r, g=points[k].g, b=points[k].b)
@@ -501,7 +503,6 @@ class App:
         # print "points generated"
         
         
-
     def newShapeButton(self):
         self.newShapeFlag = True
         self.updateRightFrame2Flag = True;

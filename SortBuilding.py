@@ -20,23 +20,23 @@ class SortBuilding:
 		self.buildings.append([550,0,250]) #B13
 		self.buildings.append([330,0,330]) #B12
 		self.buildings.append([0,0,280]) #B11
-		self.buildings.append([-20,0,60]) #B10_body
-		self.buildings.append([-20,25,50]) #B10_roof
+		self.buildings.append([470,0,180]) #B4
+		self.buildings.append([-20,0,60]) #B10
+		#self.buildings.append([-20,25,50]) #B10_roof
 		self.buildings.append([330,0,235]) #B9
 		self.buildings.append([200,0,260]) #B8
-		self.buildings.append([50,0,190]) #B7_body
-		self.buildings.append([50,30,190]) #B7_roof
-		self.buildings.append([200,0,150]) #B6_body
-		self.buildings.append([200,30,150]) #B6_roof
-		self.buildings.append([330,0,180]) #B5_body
-		self.buildings.append([330,25,180]) #B5_roof
-		self.buildings.append([580,0,180]) #B3_body
-		self.buildings.append([580,25,180]) #B3_roof
-		self.buildings.append([470,0,180]) #B4
-		self.buildings.append([600,0,110]) #B2_body
-		self.buildings.append([600,30,110]) #B2_roof
-		self.buildings.append([600,0,50]) #B1_body
-		self.buildings.append([600,30,50]) #B1_roof
+		self.buildings.append([50,0,190]) #B7
+		#self.buildings.append([50,30,190]) #B7_roof
+		self.buildings.append([200,0,150]) #B6
+		#self.buildings.append([200,30,150]) #B6_roof
+		self.buildings.append([330,0,180]) #B5
+		#self.buildings.append([330,25,180]) #B5_roof
+		self.buildings.append([580,0,180]) #B3
+		#self.buildings.append([580,25,180]) #B3_roof
+		self.buildings.append([600,0,110]) #B2
+		#self.buildings.append([600,30,110]) #B2_roof
+		self.buildings.append([600,0,50]) #B1
+		#self.buildings.append([600,30,50]) #B1_roof
 		
 		
 		self.models = [] # total number should be 26 (excluding ground)
@@ -86,19 +86,21 @@ class SortBuilding:
 	# Sort buildings/models based on distance
 	# --------------------------------------------------	
 	def SortBuildings(self, camera_pos):
+		camera_pos = [camera_pos[1],camera_pos[2],camera_pos[3]]
 		# Compute Distance
 		distance = []
 		for i in range(len(self.buildings)):
-			distance.append([i, self.ComputeDistance(self.buildings[i], camera_pos)])
+			distance.append([i+1, self.ComputeDistance(self.buildings[i], camera_pos)])
 			
 		# Sort distance 
 		sorted_dist = sorted(distance, key=lambda tup:tup[1])
-		
+		sorted_dist.append([0,1000])
 		# Test
 		for i in sorted_dist:
 			print "index is: ", i[0], "  --------- distance is: ", i[1]
 		
-		return sorted_dist
+		#reverse the order of this array
+		return sorted_dist[::-1]
 		
 	def SortModels(self, camera_pos):
 		# Compute Distance
@@ -113,5 +115,4 @@ class SortBuilding:
 		for i in sorted_dist:
 			print "index is: ", i[0], "  --------- distance is: ", i[1]
 		
-		return sorted_dist
-		
+		return sorted_dist		
