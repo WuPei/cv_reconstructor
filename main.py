@@ -37,7 +37,6 @@ def sortBasedOnZ(mylist,refer_list):
 	return [x for (y,x) in sorted(zip(refer_list,mylist),key = lambda pair:pair[0],reverse = False)]
 
 
-
 width = 1632
 height = 1224
 y_axis = [0, 1, 0]
@@ -64,17 +63,17 @@ sorted_models = [x for [x,y] in result]
 print "sorted models:",sorted_models
 
 
-cam_pos = []
-cam_ori = []
+cam_pos = [camera_pos for x in range(frame_num)]
+cam_ori = [camera_ori for x in range(frame_num)]
 for each_angle in range(frame_num):
 	cam = camera.Camera(points, camera_pos, camera_ori, 1)
-	cam.rotateCamera(y_axis,-37.2+each_angle*1)
+	cam.rotateCamera(y_axis,-37.2+each_angle*1*37.2/56)
 	theta = each_angle*1.0/180*np.pi
 	alpha = math.atan(200.0/300)
 	beta= alpha + theta 
 	R = 300.0/math.cos(alpha)
-	cam_ori.append(cam.ori_mat)
-	cam_pos.append([0,300-R*math.cos(beta),0,-R*math.sin(beta)])
+	cam_ori[each_angle] = cam.ori_mat
+	cam_pos[each_angle] = [0,300-R*math.cos(beta),0,-R*math.sin(beta)]
 	#print "x,z",300-R*math.cos(beta),-R*math.sin(beta)
 
 init = 1
