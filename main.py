@@ -137,7 +137,7 @@ for t in range(init,end):
 		previous_img[t] = out_img
 
 
-for i in range(frame_num):
+for i in range(init,end):
 	cv2.imwrite(os.path.join(outDir,"result_"+str(i)+".png"),previous_img[i])
 
 
