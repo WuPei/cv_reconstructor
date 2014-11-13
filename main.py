@@ -36,6 +36,33 @@ def uniqfiy(seq, rgb_values,idfun=None):
 def sortBasedOnZ(mylist,refer_list):
 	return [x for (y,x) in sorted(zip(refer_list,mylist),key = lambda pair:pair[0],reverse = False)]
 
+def generate1stPath():
+	cam_pos = [camera_pos for x in range(frame_num)]
+	cam_ori = [camera_ori for x in range(frame_num)]
+	for each_angle in range(frame_num):
+		cam = camera.Camera(points, camera_pos, camera_ori, 1)
+		cam.rotateCamera(y_axis,-37.2+each_angle*1*37.2/56)
+		theta = each_angle*1.0/180*np.pi
+		alpha = math.atan(200.0/300)
+		beta= alpha + theta 
+		R = 300.0/math.cos(alpha)
+		cam_ori[each_angle] = cam.ori_mat
+		cam_pos[each_angle] = [0,300-R*math.cos(beta),0,-R*math.sin(beta)]
+		#print "x,z",300-R*math.cos(beta),-R*math.sin(beta)
+	return cam_pos,cam_ori
+
+def generate2ndPath():
+	camera_pos = [0, 300, 0, -200]
+	cam_pos = [camera_pos for x in range(frame_num)]
+	cam_ori = [camera_ori for x in range(frame_num)]
+	for each_angle in range(frame_num):
+		cam = camera.Camera(points, camera_pos, camera_ori, 1)
+		cam.rotateCamera(x_axis,-each_angle*1*42.6/180)
+		theta = each_angle*2.0/180*np.pi
+		R = 200.0
+		cam_ori[each_angle] = cam.ori_mat
+		cam_pos[each_angle] = [0,300,(200-R*math.cos(theta)),-200-R*math.sin(theta)]
+	return cam_pos,cam_ori
 
 width = 1632
 height = 1224
@@ -50,7 +77,9 @@ skyDir = "sky.png"
 
 files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir,f))]
 count = 0
-frame_num = 112
+frame_num = 90
+#90 for 2nd path
+#112 for 1st path 
 previous_img = [cv2.imread(skyDir,cv2.CV_LOAD_IMAGE_COLOR) for i in range(frame_num)]
 camera_pos = [0, 0, 0, -200]
 I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
@@ -62,26 +91,15 @@ result = sort_build.SortBuildings(camera_pos)
 sorted_models = [x for [x,y] in result]
 print "sorted models:",sorted_models
 
+#cam_pos,cam_ori = generate1stPath()
+cam_pos,cam_ori = generate2ndPath()
 
-cam_pos = [camera_pos for x in range(frame_num)]
-cam_ori = [camera_ori for x in range(frame_num)]
-for each_angle in range(frame_num):
-	cam = camera.Camera(points, camera_pos, camera_ori, 1)
-	cam.rotateCamera(y_axis,-37.2+each_angle*1*37.2/56)
-	theta = each_angle*1.0/180*np.pi
-	alpha = math.atan(200.0/300)
-	beta= alpha + theta 
-	R = 300.0/math.cos(alpha)
-	cam_ori[each_angle] = cam.ori_mat
-	cam_pos[each_angle] = [0,300-R*math.cos(beta),0,-R*math.sin(beta)]
-	#print "x,z",300-R*math.cos(beta),-R*math.sin(beta)
-
-init = 1
-end = 56
+init = 89
+end = 90
 for t in range(init,end):
 	print "t",t
 	for index in range(len(sorted_models)):
-		if index ==0:#skip ground
+		if index == 0:
 			continue
 		fileindex = sorted_models[index]
 		filename = os.path.join(dir,"model_"+str(fileindex)+".dat")
@@ -119,9 +137,10 @@ for t in range(init,end):
 		cam = camera.Camera(points, camera_pos, camera_ori, 1)
 		cam.camera_pos = cam_pos[t]
 		cam.ori_mat = cam_ori[t]
-
+		print cam_pos[t],cam_ori[t]
 		print "----------get projected points-------------"
 		x_cords, y_cords ,z_cords = cam.getProjectedPts(height, width)
+		print zip(x_cords,y_cords)
 		#x_cords, y_cords ,z_cords = cam.getOrthProjectPts(height, width)
 		
 		shader = pts_shader.Shader(width, height,previous_img[t])

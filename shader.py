@@ -31,7 +31,7 @@ class Shader:
                 continue
             for j in range(4):
                 x = x_cords[i + j]
-                y =self.height- y_cords[i + j]
+                y = -y_cords[i + j]#self.height- y_cords[i + j]
                 point[j] = [x, y]
             pts = np.array([point[0], point[1], point[2], point[3]], np.int32)
             #get average color from four points
@@ -105,7 +105,7 @@ class Shader:
     def is_out_of_bounds(self, x_cords,y_cords,base):
         for i in range(4):
             x = x_cords[base + i]
-            y = self.height - y_cords[base + i]
+            y = -y_cords[base + i]#self.height - y_cords[base + i]
             if x >= self.width or x < 0:
                 return True
             elif y >= self.height or y < 0:
