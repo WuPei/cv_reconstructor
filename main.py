@@ -118,7 +118,7 @@ for t in range(init,end):
 			rgb_values.append(c4)
 		cam = camera.Camera(points, camera_pos, camera_ori, 1)
 		cam.camera_pos = cam_pos[t]
-		cam.cam_ori = cam_ori[t]
+		cam.ori_mat = cam_ori[t]
 
 		print "----------get projected points-------------"
 		x_cords, y_cords ,z_cords = cam.getProjectedPts(height, width)
