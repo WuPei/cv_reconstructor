@@ -65,7 +65,8 @@ class Camera:
         M[2][2] = q[0] ** 2 + q[3] ** 2 - q[1] ** 2 - q[2] ** 2
         return np.matrix(M)
 
-    def perspProj(self, point, ori_mat, posi_mat, focal, u_0=0, v_0=0, beta_u=1, beta_v=1):
+    #we set the u_0 as offset, it is the half of width of screen
+    def perspProj(self, point, ori_mat, posi_mat, focal, u_0=0 , v_0=0, beta_u=1, beta_v=1):
         #beta_u pixel scaling factor in horizontal direction
         #beta_v pixel scaling factor in vertical direction
         s_p = point
@@ -112,7 +113,7 @@ class Camera:
         #2.1 Figure 1 for perspective projection
         for x in range(len(self.pts)):
             u_fp, v_fp = self.perspProj(self.pts[x],self.ori_mat,self.camera_pos, self.focal)
-            x_cord[x] = int(round(height * u_fp))
+            x_cord[x] = int(round(height * u_fp)) + 1632/2
             y_cord[x] = int(round(width * v_fp))
             z_cord[x] = int(round(self.pts[x][2]))
         return x_cord, y_cord, z_cord
@@ -125,7 +126,7 @@ class Camera:
         #2.1 Figure 1 for perspective projection
         for x in range(len(self.pts)):
             u_fp, v_fp = self.orthProj(self.pts[x], self.ori_mat, self.camera_pos)
-            x_cord[x] = int(round(height * u_fp))
+            x_cord[x] = int(round(height * u_fp)) 
             y_cord[x] = int(round(width * v_fp))
             z_cord[x] = int(round(self.pts[x][2]))
         return x_cord, y_cord, z_cord

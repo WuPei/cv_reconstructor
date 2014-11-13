@@ -9,31 +9,6 @@ import os
 import timeit
 import math
 
-
-def uniqfiy(seq, rgb_values,idfun=None): 
-   # order preserving
-   if idfun is None:
-       def idfun(x): return x
-   seen = {}
-   result = []
-   rgbs = []
-   count = -1
-   for item in seq:
-       marker = idfun(item)
-       # in old Python versions:
-       # if seen.has_key(marker)
-       # but in new ones:
-       count+=1
-       if marker in seen: continue
-       seen[marker] = 1
-       result.append(item)
-       rgbs.append(rgb_values[count])
-       
-   return result,rgbs
-
-def sortBasedOnZ(mylist,refer_list):
-	return [x for (y,x) in sorted(zip(z_cords,mylist),key = lambda pair:pair[0],reverse = True)]
-
 def generateImg(file,width,length,cam_pos,cam_ori):
 	files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir,f))]
 	count = 0

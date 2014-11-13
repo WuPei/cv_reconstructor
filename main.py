@@ -50,7 +50,7 @@ files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir,f))]
 count = 0
 frame_num = 1
 previous_img = [cv2.imread(skyDir,cv2.CV_LOAD_IMAGE_COLOR) for i in range(frame_num)]
-camera_pos = [0, 0, 0, -400]
+camera_pos = [0, 300, 0, -250]
 I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 camera_ori = np.matrix(I)
 
