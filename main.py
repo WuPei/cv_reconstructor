@@ -99,8 +99,6 @@ end = 90
 for t in range(init,end):
 	print "t",t
 	for index in range(len(sorted_models)):
-		if index == 0:
-			continue
 		fileindex = sorted_models[index]
 		filename = os.path.join(dir,"model_"+str(fileindex)+".dat")
 		print filename
