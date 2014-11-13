@@ -9,6 +9,7 @@ import os
 import timeit
 from texture import Mesh
 from SortBuilding import SortBuilding as sb
+import math
 
 
 def uniqfiy(seq, rgb_values,idfun=None): 
@@ -35,6 +36,8 @@ def uniqfiy(seq, rgb_values,idfun=None):
 def sortBasedOnZ(mylist,refer_list):
 	return [x for (y,x) in sorted(zip(refer_list,mylist),key = lambda pair:pair[0],reverse = False)]
 
+
+
 width = 1632
 height = 1224
 y_axis = [0, 1, 0]
@@ -48,19 +51,36 @@ skyDir = "sky.png"
 
 files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir,f))]
 count = 0
-frame_num = 1
+frame_num = 112
 previous_img = [cv2.imread(skyDir,cv2.CV_LOAD_IMAGE_COLOR) for i in range(frame_num)]
-camera_pos = [0, 300, 0, -250]
+camera_pos = [0, 0, 0, -200]
 I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 camera_ori = np.matrix(I)
-
+points = []
 sort_build = sb()
 result = sort_build.SortBuildings(camera_pos)
 
 sorted_models = [x for [x,y] in result]
 print "sorted models:",sorted_models
 
-for t in range(frame_num):
+
+cam_pos = []
+cam_ori = []
+for each_angle in range(frame_num):
+	cam = camera.Camera(points, camera_pos, camera_ori, 1)
+	cam.rotateCamera(y_axis,-37.2+each_angle*1)
+	theta = each_angle*1.0/180*np.pi
+	alpha = math.atan(200.0/300)
+	beta= alpha + theta 
+	R = 300.0/math.cos(alpha)
+	cam_ori.append(cam.ori_mat)
+	cam_pos.append([0,300-R*math.cos(beta),0,-R*math.sin(beta)])
+	#print "x,z",300-R*math.cos(beta),-R*math.sin(beta)
+
+init = 1
+end = 56
+for t in range(init,end):
+	print "t",t
 	for index in range(len(sorted_models)):
 		if index ==0:#skip ground
 			continue
@@ -98,7 +118,9 @@ for t in range(frame_num):
 			rgb_values.append(c3)
 			rgb_values.append(c4)
 		cam = camera.Camera(points, camera_pos, camera_ori, 1)
-		
+		cam.camera_pos = cam_pos[t]
+		cam.cam_ori = cam_ori[t]
+
 		print "----------get projected points-------------"
 		x_cords, y_cords ,z_cords = cam.getProjectedPts(height, width)
 		#x_cords, y_cords ,z_cords = cam.getOrthProjectPts(height, width)

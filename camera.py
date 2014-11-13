@@ -16,13 +16,16 @@ class Camera:
         self.focal = focal
 
     def translateCamera(self, translateMat):
-            self.camera_pos = self.camera_pos + translateMat
+        self.camera_pos = self.camera_pos + translateMat
 
-    def translateCameraWithAxisAngle(self, axis, angle):
+    def translateCameraWithAxisAngle(self, axis, angle,offset_x,offset_z):
         angle = angle * 1.0 / 180 * np.pi
+        self.camera_pos = [0,self.camera_pos[1]-offset_x,self.camera_pos[1],self.camera_pos[2]-offset_z]
         q = self.getQuternion(axis, angle)
         self.camera_pos = self.quatmult(self.quatmult(q, self.camera_pos), self.conjugate(q))
+        self.camera_pos = [0,self.camera_pos[1]+offset_x,self.camera_pos[1],self.camera_pos[2]+offset_z]
 
+    #angle is negative if clockwise, count-clockwise, the angle must be positive
     def rotateCamera(self, axis, angle):
         theta = angle * 1.0 / 180 * pi
         quter = self.getQuternion(axis, theta)
