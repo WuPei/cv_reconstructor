@@ -313,10 +313,10 @@ class ModelBuilder:
 	def BuildPlane (self, height, faces):
 		#-------------------------------------------------------
 		# Generate all four vectors
-		ver1 = vt(-20, height, -100)
-		ver2 = vt(600, height, -100)
-		ver3 = vt(600, height, 200)
-		ver4 = vt(-20, height, 200)
+		ver1 = vt(-500, height, -800)
+		ver2 = vt(1000, height, -800)
+		ver3 = vt(1000, height, 800)
+		ver4 = vt(-500, height, 800)
 
 
 		#-------------------------------------------------------

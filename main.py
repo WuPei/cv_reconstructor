@@ -93,11 +93,13 @@ print "sorted models:",sorted_models
 
 #cam_pos,cam_ori = generate1stPath()
 cam_pos,cam_ori = generate2ndPath()
+path = 2
 
 init = 89
 end = 90
-for t in range(init,end):
-	print "t",t
+
+print "initial:",init,"end:",end
+for t in range(init,end):	
 	for index in range(len(sorted_models)):
 		fileindex = sorted_models[index]
 		filename = os.path.join(dir,"model_"+str(fileindex)+".dat")
@@ -135,15 +137,13 @@ for t in range(init,end):
 		cam = camera.Camera(points, camera_pos, camera_ori, 1)
 		cam.camera_pos = cam_pos[t]
 		cam.ori_mat = cam_ori[t]
-		print cam_pos[t],cam_ori[t]
+		
 		print "----------get projected points-------------"
 		x_cords, y_cords ,z_cords = cam.getProjectedPts(height, width)
-		print zip(x_cords,y_cords)
-		#x_cords, y_cords ,z_cords = cam.getOrthProjectPts(height, width)
 		
 		shader = pts_shader.Shader(width, height,previous_img[t])
 		print "----projected poitns generated-----"
-		out_img = shader.shading(x_cords,y_cords,rgb_values)
+		out_img = shader.shading(x_cords,y_cords,rgb_values,path)
 		print "Processing Time:", timeit.default_timer()-start,"s"
 		print "-----points shaded------------------"
 		cv2.imwrite(os.path.join(outDir,"frame_"+str(t)+"_img_"+str(index)+".png"),out_img)
