@@ -493,14 +493,7 @@ class App:
             print "Model "+str(fileIndex)+":"+str(k)+" points generated"
 
         print "----------UI Part Finished----------"
-
-        #     points.extend(pointsOfEachModel)
-
-        # fileRGB = open("testData/test.dat", "w+")
-        # for i in range(len(points)):
-        #     point = "{0},{1},{2},{r},{g},{b}\n".format(points[i].x, points[i].y,points[i].z,r=points[i].r, g=points[i].g, b=points[i].b)
-        #     fileRGB.write(point)
-        # print "points generated"
+        print "All models have been generated, please use main.py to generate fraems of video"
         
         
     def newShapeButton(self):
