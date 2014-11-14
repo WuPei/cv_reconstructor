@@ -23,18 +23,19 @@ class Shader:
             return (sorts[length/2] + sorts[length/2-1]) /2
         return sorts[length / 2]
 
-    def shading(self, x_cords, y_cords, rgb_values,path):
+    def shading(self, x_cords, y_cords, rgb_values):
         print "len:",len(x_cords)
         for i in range(0, len(x_cords), 4):
             point = [0 for index in range(4)]
-            if self.is_out_of_bounds(x_cords,y_cords,i,path):
+            if self.is_out_of_bounds(x_cords,y_cords,i):
                 continue
             for j in range(4):
                 x = x_cords[i + j]
-                if path ==1:
+                if y_cords[i+j]<0:
+                    y = -y_cords[i + j]
+                else:
                     y = self.height- y_cords[i + j]
-                elif path == 2:
-                    y = -y_cords[i + j]#self.height- y_cords[i + j]
+                    #self.height- y_cords[i + j]
                 point[j] = [x, y]
             pts = np.array([point[0], point[1], point[2], point[3]], np.int32)
             #get average color from four points
@@ -105,12 +106,12 @@ class Shader:
             self.out_frame[real_height][x_cords[i]] = rgb_values[i]
         return self.out_frame
 
-    def is_out_of_bounds(self, x_cords,y_cords,base,path):
+    def is_out_of_bounds(self, x_cords,y_cords,base):
         for i in range(4):
             x = x_cords[base + i]
-            if path ==1:
+            if y_cords[base + i]>0:
                 y = self.height- y_cords[base + i]
-            elif path == 2:
+            else:
                 y = -y_cords[base + i]#self.height- y_cords[i + j]
             if x >= self.width or x < 0:
                 return True
