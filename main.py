@@ -92,9 +92,9 @@ result = sort_build.SortBuildings(camera_pos)
 sorted_models = [x for [x,y] in result]
 print "sorted models:",sorted_models
 
-#cam_pos,cam_ori = generate1stPath()
-cam_pos,cam_ori = generate2ndPath()
-path = 2
+#cam_pos,cam_ori = generate1stPath(frame_num)
+cam_pos,cam_ori = generate2ndPath(frame_num)
+mode = 1 
 
 init = 0
 end = frame_num
@@ -102,6 +102,8 @@ end = frame_num
 print "initial:",init,"end:",end
 for t in range(init,end):	
 	for index in range(len(sorted_models)):
+		if index ==0:
+			continue
 		fileindex = sorted_models[index]
 		filename = os.path.join(dir,"model_"+str(fileindex)+".dat")
 		print filename
@@ -117,7 +119,7 @@ for t in range(init,end):
 		#shading the projected points 
 		shader = pts_shader.Shader(width, height,previous_img[t])
 		print "----projected poitns generated-----"
-		out_img = shader.shading(x_cords,y_cords,rgb_values,path)
+		out_img = shader.shading(x_cords,y_cords,rgb_values,mode)
 		print "Processing Time:", timeit.default_timer()-start,"s"
 		print "-----points shaded------------------"
 		#write all the middle frames

@@ -23,19 +23,18 @@ class Shader:
             return (sorts[length/2] + sorts[length/2-1]) /2
         return sorts[length / 2]
 
-    def shading(self, x_cords, y_cords, rgb_values):
+    def shading(self, x_cords, y_cords, rgb_values,mode):
         print "len:",len(x_cords)
         for i in range(0, len(x_cords), 4):
             point = [0 for index in range(4)]
-            if self.is_out_of_bounds(x_cords,y_cords,i):
+            if self.is_out_of_bounds(x_cords,y_cords,i,mode):
                 continue
             for j in range(4):
                 x = x_cords[i + j]
-                if y_cords[i+j]<0:
+                if mode==2:
                     y = -y_cords[i + j]
-                else:
+                elif mode==1:
                     y = self.height- y_cords[i + j]
-                    #self.height- y_cords[i + j]
                 point[j] = [x, y]
             pts = np.array([point[0], point[1], point[2], point[3]], np.int32)
             #get average color from four points
@@ -66,36 +65,6 @@ class Shader:
         #print each_frame
         print "shading image finished/n"
         return self.out_frame
-    
-    # def testShading(self, rgb_values,num):
-    #     print "len:",len(self.x_cords)
-    #     #count = 0 
-    #     for i in range(len(self.x_cords)):
-    #         points = np.array(zip(self.x_cords,self.y_cords))
-    #         knn = NearestNeighbors(n_neighbors=num)
-    #         knn.fit(points)
-    #         NearestNeighbors(algorithm='auto', leaf_size=30, n_neighbors=num, p=2,radius=1.0, warn_on_equidistant=True)
-    #         indexArr = knn.kneighbors(points[i], return_distance=False)
-    #         #print indexArr
-    #         neighbourPts = []
-    #         rgbs = []
-    #         for j in range(len(indexArr)):
-    #             index = indexArr[j]
-    #             point = points[index]
-    #             neighbourPts.append(point)
-    #             rgbs.append(np.asarray(rgb_values)[index])
-
-    #         uniqueNeighb = np.array(list(set(tuple(p) for p in neighbourPts[0].tolist())),np.int32)
-    #         if len(uniqueNeighb) < 3:
-    #             #print count
-    #             continue
-    #         median_color = self.medianOfColor(rgbs[0])
-    #         #count = count + 1
-    #         #print count
-    #         #shading using fillPoly with average color
-    #         cv2.fillPoly(self.out_frame, [uniqueNeighb], median_color)
-    #     return self.out_frame
-
 
     def plotPoints(self,x_cords, y_cords,rgb_values):
         self.out_frame = np.zeros((self.height, self.width, 3), np.uint8)
@@ -106,12 +75,12 @@ class Shader:
             self.out_frame[real_height][x_cords[i]] = rgb_values[i]
         return self.out_frame
 
-    def is_out_of_bounds(self, x_cords,y_cords,base):
+    def is_out_of_bounds(self, x_cords,y_cords,base,mode):
         for i in range(4):
             x = x_cords[base + i]
-            if y_cords[base + i]>0:
+            if mode==1:
                 y = self.height- y_cords[base + i]
-            else:
+            elif mode==2:
                 y = -y_cords[base + i]#self.height- y_cords[i + j]
             if x >= self.width or x < 0:
                 return True

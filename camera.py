@@ -84,7 +84,7 @@ class Camera:
         if (float)((s_p - t_f) * k_f) == 0:
             u_fp = 0
             v_fp = 0
-            print "zeros"
+            print "WARNING!The Model is crashing with Camera, reset the position of Models"
         else:
             u_fp = (float)(focal * (s_p - t_f) * i_f) / (float)((s_p - t_f) * k_f * beta_u) + u_0
             v_fp = (float)(focal * (s_p - t_f) * j_f) / (float)((s_p - t_f) * k_f * beta_v) + v_0
