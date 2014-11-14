@@ -62,7 +62,7 @@ def generate2ndPath(frame_num):
 	cam_ori = [camera_ori for x in range(frame_num)]
 	for each_angle in range(frame_num):
 		cam = camera.Camera(points, camera_pos, camera_ori, 1)
-		cam.rotateCamera(x_axis,-each_angle*1*42.6/180)
+		cam.rotateCamera(x_axis,-each_angle*1*60.0/90)
 		theta = each_angle*2.0/180*np.pi
 		R = 200.0
 		cam_ori[each_angle] = cam.ori_mat
@@ -106,7 +106,7 @@ for t in range(init,end):
 			continue
 		fileindex = sorted_models[index]
 		filename = os.path.join(dir,"model_"+str(fileindex)+".dat")
-		print filename
+		print "----------get projected points ",filename,"-------------"
 		points, rgb_values = file.importPointsWithRGB(filename)	
 
 		start = timeit.default_timer()
@@ -132,5 +132,5 @@ for t in range(init,end):
 for i in range(init,end):
 	cv2.imwrite(os.path.join(outDir,"result_"+str(i)+".png"),previous_img[i])
 
-print "------------Main Part Finished------------"
+print "------------Main Phase Finished------------"
 print "--All Results has been output, please use makingVideoMain.py to generate a video--"

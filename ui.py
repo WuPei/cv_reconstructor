@@ -147,7 +147,7 @@ class App:
         self.shapeOptionMenu = OptionMenu(self.topFrame1, self.shape, "cylinder", "cuboid", "prism", "frustum", "tree",
                                           "ground", "sky")
         self.newShapeButton = Button(self.topFrame1, text="create new shape", command=self.newShapeButton)
-        self.generateVideoButton = Button(self.topFrame1, text="generate video", command=self.generateVideoButton)
+        self.generateVideoButton = Button(self.topFrame1, text="generate models", command=self.generateVideoButton)
 
         #top frame 2
         self.topFrame2 = Frame(self.master, width=900 + 20, height=30, bd=1, relief=SUNKEN)
@@ -492,7 +492,7 @@ class App:
                 fileRGB.write(point)
             print "Model "+str(fileIndex)+":"+str(k)+" points generated"
 
-        print "----------UI Part Finished----------"
+        print "----------UI Phase Finished----------"
         print "All models have been generated, please use main.py to generate fraems of video"
         
         
