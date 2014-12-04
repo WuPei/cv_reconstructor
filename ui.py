@@ -486,7 +486,7 @@ class App:
                 continue
 
             points = pointsOfEachModel
-            fileRGB = open("testData/Models/model_"+str(fileIndex)+".dat", "w+")
+            fileRGB = open("Models/model_"+str(fileIndex)+".dat", "w+")
             for k in range(len(pointsOfEachModel)):
                 point = "{0},{1},{2},{r},{g},{b}\n".format(points[k].x, points[k].y,points[k].z,r=points[k].r, g=points[k].g, b=points[k].b)
                 fileRGB.write(point)

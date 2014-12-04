@@ -74,8 +74,8 @@ height = 1224
 y_axis = [0, 1, 0]
 x_axis = [1, 0, 0]
 file = fm.FileManager()
-dir = 'testData/Models/'
-outDir = "testData/imgs/"
+dir = 'Models/'
+outDir = "output/"
 skyDir = "sky.png"
 
 frame_num = 90
@@ -87,10 +87,6 @@ I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 camera_ori = np.matrix(I)
 points = []
 sort_build = sb()
-result = sort_build.SortBuildings(camera_pos)
-
-sorted_models = [x for [x,y] in result]
-print "sorted models:",sorted_models
 
 #cam_pos,cam_ori = generate1stPath(frame_num)
 cam_pos,cam_ori = generate2ndPath(frame_num)
@@ -101,9 +97,11 @@ end = frame_num
 
 print "initial:",init,"end:",end
 for t in range(init,end):	
+	result = sort_build.SortBuildings(cam_pos[t])
+	sorted_models = [x for [x,y] in result]
+	print "sorted models:",sorted_models
+	
 	for index in range(len(sorted_models)):
-		if index ==0:
-			continue
 		fileindex = sorted_models[index]
 		filename = os.path.join(dir,"model_"+str(fileindex)+".dat")
 		print "----------get projected points ",filename,"-------------"
